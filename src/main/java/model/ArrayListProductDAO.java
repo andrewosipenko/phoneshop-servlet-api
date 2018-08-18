@@ -1,10 +1,7 @@
 package model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDAO implements ProductDAO{
@@ -20,6 +17,7 @@ public class ArrayListProductDAO implements ProductDAO{
     public ArrayListProductDAO() {
         products = getInstance();
         Product product = new Product();
+        product.setId();
         product.setCode("code 1");
         product.setDescription("description 1");
         product.setPrice(new BigDecimal(100));
@@ -27,6 +25,7 @@ public class ArrayListProductDAO implements ProductDAO{
         save(product);
 
         product = new Product();
+        product.setId();
         product.setCode("code 2");
         product.setDescription("description 2");
         product.setPrice(new BigDecimal(200));
@@ -34,6 +33,7 @@ public class ArrayListProductDAO implements ProductDAO{
         save(product);
 
         product = new Product();
+        product.setId();
         product.setCode("code 3");
         product.setDescription("description 3");
         product.setPrice(new BigDecimal(300));
@@ -41,6 +41,7 @@ public class ArrayListProductDAO implements ProductDAO{
         save(product);
 
         product = new Product();
+        product.setId();
         product.setCode("code 4");
         product.setDescription("description 4");
         product.setPrice(new BigDecimal(400));
@@ -48,6 +49,7 @@ public class ArrayListProductDAO implements ProductDAO{
         save(product);
 
         product = new Product();
+        product.setId();
         product.setCode("code 5");
         product.setDescription("description 5");
         product.setPrice(null);
