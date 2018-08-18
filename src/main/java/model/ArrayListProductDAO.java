@@ -50,7 +50,7 @@ public class ArrayListProductDAO implements ProductDAO{
         product = new Product();
         product.setCode("code 5");
         product.setDescription("description 5");
-        product.setPrice(new BigDecimal(-500));
+        product.setPrice(null);
         product.setStock(500);
         save(product);
     }
@@ -65,7 +65,7 @@ public class ArrayListProductDAO implements ProductDAO{
     }
 
     public List<Product> findProducts() {
-        List<Product> productList = products.stream().filter(a -> a.getPrice().signum() == 1 && a.getStock() > 0).
+        List<Product> productList = products.stream().filter(a -> a.getPrice() != null && a.getStock() > 0).
                 collect(Collectors.toList());
         return productList;
     }
