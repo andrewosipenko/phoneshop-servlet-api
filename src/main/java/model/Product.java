@@ -11,14 +11,12 @@ public class Product {
     private Currency currency;
     private Integer stock;
 
-    private static Long counter = 1L;
-
     public Long getId() {
         return id;
     }
 
-    public void setId() {
-        this.id = counter++;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCode() {
