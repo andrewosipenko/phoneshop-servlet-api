@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="phoneshop-servlet-api:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="phoneshop-servlet-api.war">
+      <element id="artifact" artifact-name="phoneshop-servlet-api:war exploded" />
+    </root>
+  </artifact>
+</component>
