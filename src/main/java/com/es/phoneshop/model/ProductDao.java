@@ -6,5 +6,5 @@ public interface ProductDao {
     Product getProduct(Long id);
     List<Product> findProducts();
     void save(Product product);
-    void delete(Long id);
+    void remove(Long id);
 }

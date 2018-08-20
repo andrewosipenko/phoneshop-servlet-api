@@ -17,10 +17,10 @@
   <c:forEach var="product" items="${products}">
     <tr>
       <td>
-        <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+        <%--<img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">--%>
       </td>
-      <td>${product.brand}</td>
-      <td>${product.model}</td>
+      <%--<td>${product.brand}</td>--%>
+      <td>${product.code}</td>
       <td>$ ${product.price}</td>
     </tr>
   </c:forEach>
