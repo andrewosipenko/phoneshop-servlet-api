@@ -11,6 +11,15 @@ public class Product {
     private Currency currency;
     private Integer stock;
 
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, Integer stock){
+        setId(id);
+        setCode(code);
+        setDescription(description);
+        setPrice(price);
+        setCurrency(currency);
+        setStock(stock);
+    }
+
     public Long getId() {
         return id;
     }

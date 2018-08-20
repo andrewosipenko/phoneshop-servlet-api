@@ -22,50 +22,17 @@ public class ArrayListProductDAO implements ProductDAO{
 
     public ArrayListProductDAO() {
         products = getInstance();
-        Product product = new Product();
-        product.setId(generateId());
-        product.setCode("code 1");
-        product.setDescription("description 1");
-        product.setPrice(new BigDecimal(100));
-        product.setCurrency(Currency.getInstance(Locale.UK));
-        product.setStock(100);
-        save(product);
-
-        product = new Product();
-        product.setId(generateId());
-        product.setCode("code 2");
-        product.setDescription("description 2");
-        product.setPrice(new BigDecimal(200));
-        product.setCurrency(Currency.getInstance(Locale.UK));
-        product.setStock(200);
-        save(product);
-
-        product = new Product();
-        product.setId(generateId());
-        product.setCode("code 3");
-        product.setDescription("description 3");
-        product.setPrice(new BigDecimal(300));
-        product.setCurrency(Currency.getInstance(Locale.UK));
-        product.setStock(300);
-        save(product);
-
-        product = new Product();
-        product.setId(generateId());
-        product.setCode("code 4");
-        product.setDescription("description 4");
-        product.setPrice(new BigDecimal(400));
-        product.setCurrency(Currency.getInstance(Locale.UK));
-        product.setStock(0);
-        save(product);
-
-        product = new Product();
-        product.setId(generateId());
-        product.setCode("code 5");
-        product.setDescription("description 5");
-        product.setPrice(null);
-        product.setCurrency(Currency.getInstance(Locale.UK));
-        product.setStock(500);
-        save(product);
+        
+        save(new Product(generateId(), "code 1", "description 1", new BigDecimal(100),
+                Currency.getInstance(Locale.UK), 100));
+        save(new Product(generateId(), "code 2", "description 2", new BigDecimal(200),
+                Currency.getInstance(Locale.UK), 200));
+        save(new Product(generateId(), "code 3", "description 3", new BigDecimal(300),
+                Currency.getInstance(Locale.UK), 300));
+        save(new Product(generateId(), "code 4", "description 4", new BigDecimal(400),
+                Currency.getInstance(Locale.UK), 0));
+        save(new Product(generateId(), "code 5", "description 5", null,
+                Currency.getInstance(Locale.UK), 500));
     }
 
     public Product getProduct(Long id) {
@@ -89,10 +56,11 @@ public class ArrayListProductDAO implements ProductDAO{
     }
 
     public void remove(Long id) {
-        for(Product product : products){
+        /*for(Product product : products){
             if(product.getId().equals(id)){
                 products.remove(product);
             }
-        }
+        }*/
+        products.remove(getProduct(id));
     }
 }
