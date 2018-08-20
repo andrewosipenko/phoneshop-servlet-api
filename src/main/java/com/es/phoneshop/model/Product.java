@@ -7,11 +7,9 @@ public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
     private BigDecimal price;
-    /** can be null if the price is null */
     private Currency currency;
-    private int stock;
+    private Integer stock;
 
     public Long getId() {
         return id;
@@ -53,11 +51,11 @@ public class Product {
         this.currency = currency;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 }
