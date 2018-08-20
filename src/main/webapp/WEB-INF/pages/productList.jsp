@@ -23,12 +23,12 @@
         <%--<img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">--%>
         <%--</td>--%>
 
-      <td>${product.id}</td>
-      <td>${product.code}</td>
-      <td>${product.description}</td>
-      <td>${product.price}</td>
-      <td>${product.currency}</td>
-      <td>${product.stock}</td>
+      <td><c:out value="${product.id}"/></td>
+      <td><c:out value="${product.code}"/></td>
+      <td><c:out value="${product.description}"/></td>
+      <td><c:out value="${product.price}"/></td>
+      <td><c:out value="${product.currency}"/></td>
+      <td><c:out value="${product.stock}"/></td>
     </tr>
   </c:forEach>
 </table>

@@ -7,4 +7,5 @@ public interface ProductDao {
     Product getProduct(Long id);
     void save(Product product);
     boolean remove(Long id);
+    List<Product> getAllProducts();
 }

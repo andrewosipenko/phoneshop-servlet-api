@@ -7,26 +7,26 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private static volatile  ArrayListProductDao instance;
+    private static volatile ProductDao instance;
     private ArrayList<Product> products;
 
 
     private ArrayListProductDao(){
-        products = new ArrayList<Product>();
+        products = new ArrayList<>();
     }
 
-    public ArrayList<Product> getAllProducts() {
+    public synchronized ArrayList<Product> getAllProducts() {
         return products;
     }
 
-    public List<Product> findProducts() {
+    public synchronized List<Product> findProducts() {
         return products.stream()
                 .filter( (product) -> (product.getStock() > 0
                         && product.getPrice().compareTo(BigDecimal.ONE) == 1) )
                 .collect(Collectors.toList());
     }
 
-    public Product getProduct(Long id) {
+    public synchronized Product getProduct(Long id) {
         for(Product temp : products){
             if(temp.getId().equals(id)){
                 return temp;
@@ -35,7 +35,7 @@ public class ArrayListProductDao implements ProductDao {
         return null;
     }
 
-    public void save(Product product){
+    public synchronized void save(Product product){
         for(Product temp : products){
             if(temp.getId().equals(product.getId())){
                 products.set(products.indexOf(temp), product);
@@ -45,7 +45,7 @@ public class ArrayListProductDao implements ProductDao {
         products.add(product);
     }
 
-    public boolean remove(Long id) {
+    public synchronized boolean remove(Long id) {
         for(Product temp : products){
             if(temp.getId().equals(id)){
                 return products.remove(temp);
@@ -54,13 +54,11 @@ public class ArrayListProductDao implements ProductDao {
         return false;
     }
 
-    public static synchronized ArrayListProductDao getInstance() {
-        if (instance == null) {
+    public static synchronized ProductDao getInstance() {
             if (instance == null) {
                 instance = new ArrayListProductDao();
             }
-        }
-        return instance;
+            return instance;
     }
 
 }
