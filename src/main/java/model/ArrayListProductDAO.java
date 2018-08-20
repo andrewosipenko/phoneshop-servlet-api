@@ -5,7 +5,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDAO implements ProductDAO{
-    private static List<Product> products;
+    private List<Product> products;
+    private static ArrayListProductDAO instance = null;
 
     private static Long counter = 1L;
 
@@ -13,16 +14,19 @@ public class ArrayListProductDAO implements ProductDAO{
         return counter++;
     }
 
-    public static List<Product> getInstance(){
-        if(products == null){
-            products = new ArrayList<Product>();
+    public static ArrayListProductDAO getInstance(){
+        if (instance == null){
+            synchronized (ArrayListProductDAO.class){
+                if (instance == null)
+                    instance = new ArrayListProductDAO();
+            }
         }
-        return products;
+        return instance;
     }
 
-    public ArrayListProductDAO() {
-        products = getInstance();
-        
+    private ArrayListProductDAO() {
+        products = new ArrayList<>();
+
         save(new Product(generateId(), "code 1", "description 1", new BigDecimal(100),
                 Currency.getInstance(Locale.UK), 100));
         save(new Product(generateId(), "code 2", "description 2", new BigDecimal(200),
