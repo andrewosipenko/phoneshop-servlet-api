@@ -1,0 +1,4 @@
+0:0:0:0:0:0:0:1 - - [15/Aug/2018:21:06:01 +0300] "GET /phoneshop-servlet-api HTTP/1.1" 302 - http-bio-8080-exec-1 0
+0:0:0:0:0:0:0:1 - - [15/Aug/2018:21:06:02 +0300] "GET /phoneshop-servlet-api/ HTTP/1.1" 302 - http-bio-8080-exec-2 1141
+0:0:0:0:0:0:0:1 - - [15/Aug/2018:22:45:41 +0300] "GET /phoneshop-servlet-api HTTP/1.1" 302 - http-bio-8080-exec-4 0
+0:0:0:0:0:0:0:1 - - [15/Aug/2018:22:45:41 +0300] "GET /phoneshop-servlet-api/ HTTP/1.1" 302 - http-bio-8080-exec-5 2
