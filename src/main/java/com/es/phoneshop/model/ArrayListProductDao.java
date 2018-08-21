@@ -43,17 +43,16 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public synchronized Product getProduct(long id) {
-        Product product = products.stream().filter((p) -> p.getId().equals(id))
-                .findFirst().orElse(null);
-        if (product != null) {
-            return product;
-        } else {
-            throw new RuntimeException("Not implemented.");
-        }
+        return products.stream()
+                .filter((p) -> p.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No products with such id."));
+
     }
 
     public synchronized List<Product> findProducts() {
-        return products.stream().filter(p -> p.getPrice() != null && p.getStock() > 0)
+        return products.stream()
+                .filter(p -> p.getPrice() != null && p.getStock() > 0)
                 .collect(Collectors.toList());
     }
 
