@@ -13,7 +13,7 @@ public class ArrayListProductDao implements ProductDao {
 
     private ArrayList<Product> products;
 
-    public ArrayListProductDao() {
+    ArrayListProductDao() {
         products = new ArrayList<Product>();
         save(new Product(2L, "12", "iPhone", new BigDecimal(10.0), 2));
         save(new Product(5L, "42", "iPhone5", new BigDecimal(0), 1));
