@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,13 +12,13 @@ import java.util.stream.Stream;
 public class ArrayListProductDao implements ProductDao {
     private static ArrayListProductDao instance = new ArrayListProductDao();
 
-    private ArrayList<Product> products;
+    private List<Product> products;
 
     ArrayListProductDao() {
         products = new ArrayList<Product>();
-        save(new Product(2L, "12", "iPhone", new BigDecimal(10.0), 2));
-        save(new Product(5L, "42", "iPhone5", new BigDecimal(0), 1));
-        save(new Product(7L, "phone", "iPhoneX", new BigDecimal(100.0), 1));
+        save(new Product( "12", "iPhone", new BigDecimal(10.0), 2));
+        save(new Product("42", "iPhone5", new BigDecimal(0), 1));
+        save(new Product("phone", "iPhoneX", new BigDecimal(100.0), 1));
     }
 
     public static ArrayListProductDao getInstance() {
@@ -44,4 +45,6 @@ public class ArrayListProductDao implements ProductDao {
         products.parallelStream()
                 .filter(s -> s.getId() == id).limit(1).forEach(s -> products.remove(s));
     }
+
+
 }
