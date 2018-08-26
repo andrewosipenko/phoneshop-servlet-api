@@ -1,5 +1,6 @@
-package model;
-
+import model.ArrayListProductDAO;
+import model.Product;
+import model.ProductDAO;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,12 +12,12 @@ import static org.junit.Assert.*;
 
 public class ArrayListProductDAOTest {
 
-    ProductDAO productDAO;
+    ProductDAO products;
 
     @Before
     public void init(){
-        productDAO = ArrayListProductDAO.getInstance();
-        productDAO.save(new Product(1L, "code", "desc", new BigDecimal(100),
+        products = ArrayListProductDAO.getInstance();
+        products.save(new Product(1L, "code", "desc", new BigDecimal(100),
                 Currency.getInstance(Locale.UK), 10));
     }
 
@@ -32,24 +33,26 @@ public class ArrayListProductDAOTest {
 
     @Test
     public void getProduct() {
-        assertEquals(1L, productDAO.getProduct(1L).getId().longValue());
+        assertEquals(1L, products.getProduct(1L).getId().longValue());
     }
 
     @Test
     public void findProducts() {
-        assertTrue(!productDAO.findProducts().isEmpty());
+        assertTrue(!products.findProducts().isEmpty());
     }
 
     @Test
     public void save() {
-        productDAO.save(new Product(2L, "code 2", "desc 2", new BigDecimal(200),
+        products.save(new Product(2L, "code 2", "desc 2", new BigDecimal(200),
                 Currency.getInstance(Locale.UK), 2));
-        assertNotNull(productDAO.getProduct(2L));
+        assertNotNull(products.getProduct(2L));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void remove() {
-        productDAO.remove(2L);
-        assertNull(productDAO.getProduct(2L));
+        products.save(new Product(3L, "code 3", "desc 3", new BigDecimal(300),
+                Currency.getInstance(Locale.UK), 3));
+        products.remove(3L);
+        products.getProduct(3L);
     }
 }

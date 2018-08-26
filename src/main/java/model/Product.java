@@ -2,6 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Product {
     private Long id;
@@ -18,6 +19,19 @@ public class Product {
         setPrice(price);
         setCurrency(currency);
         setStock(stock);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public Long getId() {

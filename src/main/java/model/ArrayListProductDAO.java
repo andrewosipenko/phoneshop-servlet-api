@@ -1,6 +1,5 @@
 package model;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,13 +27,11 @@ public class ArrayListProductDAO implements ProductDAO{
         products = new ArrayList<>();
     }
 
-    public Product getProduct(Long id) {
-        for(Product product : products){
-            if(product.getId().equals(id)){
-                return product;
-            }
-        }
-        return null;
+    public synchronized Product getProduct(Long id) {
+        return products.stream()
+                .filter((p) -> p.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No products with such id."));
     }
 
     public List<Product> findProducts() {
@@ -48,12 +45,7 @@ public class ArrayListProductDAO implements ProductDAO{
         products.add(product);
     }
 
-    public void remove(Long id) {
-        /*for(Product product : products){
-            if(product.getId().equals(id)){
-                products.remove(product);
-            }
-        }*/
+    public synchronized void remove(Long id) {
         products.remove(getProduct(id));
     }
 }
