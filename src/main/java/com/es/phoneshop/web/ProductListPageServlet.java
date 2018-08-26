@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ProductListServlet extends HttpServlet {
+public class ProductListPageServlet extends HttpServlet {
 
     private ProductDao productDao;
 
