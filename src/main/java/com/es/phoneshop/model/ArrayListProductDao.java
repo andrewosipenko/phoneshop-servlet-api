@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private static volatile ProductDao instance;
+    private static volatile ProductDao INSTANCE;
     private List<Product> products;
 
 
@@ -26,7 +26,7 @@ public class ArrayListProductDao implements ProductDao {
         return products.stream()
                 .filter((p) -> p.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("There is no products with such id"));
+                .orElseThrow(() -> new IllegalArgumentException("There is no products with such id: " + id));
     }
 
     public synchronized void save(Product product) {
@@ -41,10 +41,10 @@ public class ArrayListProductDao implements ProductDao {
         return products.remove(getProduct(id));
     }
 
-    public static synchronized ProductDao getInstance() {
-        if (instance == null) {
-            instance = new ArrayListProductDao();
+    public static synchronized ProductDao getINSTANCE() {
+        if (INSTANCE == null) {
+            INSTANCE = new ArrayListProductDao();
         }
-        return instance;
+        return INSTANCE;
     }
 }

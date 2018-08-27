@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Oops!</title>
@@ -6,9 +7,6 @@
 <br>
 <label>Что-то пошло не так!</label><br><br>
 
-<form method="get" action="/phoneshop-servlet-api/products">
-    <button type="submit">Вернуться</button>
-</form>
+<a href = "<c:url value = "/products"/>">Вернуться </a>
 
-</body>
 </html>

@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlets;
 
 import com.es.phoneshop.model.ArrayListProductDao;
 import com.es.phoneshop.model.ProductDao;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
-    ProductDao productDao = ArrayListProductDao.getInstance();
+    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -18,8 +18,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String id = uri.substring(uri.lastIndexOf("/")+1);
 
         try {
-            request.setAttribute("product",productDao.getProduct(Long.valueOf(id)) );
-        }catch (IllegalArgumentException e){
+            request.setAttribute("product",productDao.getProduct(Long.valueOf(id)));
+        }catch (IllegalArgumentException e) {
             response.sendError(404);
             return;
         }

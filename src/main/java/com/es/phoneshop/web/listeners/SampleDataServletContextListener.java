@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.listeners;
 
 import com.es.phoneshop.model.*;
 
@@ -9,12 +9,16 @@ import java.util.Currency;
 import java.util.Locale;
 
 public class SampleDataServletContextListener implements ServletContextListener {
+    private final String addSampleData = "addSampleData";
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ProductDao dao = ArrayListProductDao.getInstance();
+        ProductDao dao = ArrayListProductDao.getINSTANCE();
 
-        if(!Boolean.valueOf(servletContextEvent.getServletContext().getInitParameter("addSampleData")))
+        if(!Boolean.valueOf(servletContextEvent.getServletContext()
+                .getInitParameter(addSampleData))) {
             return;
+        }
 
         dao.save(new Product(1L, "A1B", "desc1", new BigDecimal("123.3"),
                 Currency.getInstance(Locale.UK), 1));
@@ -27,7 +31,6 @@ public class SampleDataServletContextListener implements ServletContextListener 
 
         dao.save(new Product(4L, "A4B", "desc4", new BigDecimal("112323.3"),
                 Currency.getInstance(Locale.JAPAN), 1321223));
-
     }
 
     @Override

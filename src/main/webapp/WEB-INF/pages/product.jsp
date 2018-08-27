@@ -8,30 +8,26 @@
 <thead>
     <tr>
         <td>Id</td>
-        <<td><c:out value="${product.id}"/></td>>
+        <td><c:out value="${product.id}"/></td>
     </tr><br>
     <tr>
         <td>Code</td>
-        <<td><c:out value="${product.code}"/></td>>
+        <td><c:out value="${product.code}"/></td>
     </tr><br>
     <tr>
         <td>Description</td>
-        <<td><c:out value="${product.description}"/></td>>
+        <td><c:out value="${product.description}"/></td>
     </tr><br>
     <tr>
         <td>Price</td>
-        <<td><c:out value="${product.price}"/></td>>
+        <td><c:out value="${product.price}"/></td>
     </tr><br>
     <tr>
         <td>Currency</td>
-        <<td><c:out value="${product.currency}"/></td>>
+        <td><c:out value="${product.currency}"/></td>
     </tr><br>
     <tr>
         <td>Stock</td>
-        <<td><c:out value="${product.stock}"/></td>>
+        <td><c:out value="${product.stock}"/></td>
     </tr><br>
-
-    <form action="/phoneshop-servlet-api/products"><br>
-        <button type="submit">Вернуться</button>
-    </form>
 </thead>
