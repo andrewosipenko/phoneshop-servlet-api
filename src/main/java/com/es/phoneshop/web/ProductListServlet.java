@@ -1,7 +1,6 @@
 package com.es.phoneshop.web;
 
-import model.ArrayListProductDAO;
-import model.ProductDAO;
+import com.es.phoneshop.model.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

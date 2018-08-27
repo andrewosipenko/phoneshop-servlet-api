@@ -1,4 +1,4 @@
-package model;
+package com.es.phoneshop.model;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,4 @@
-import model.ArrayListProductDAO;
-import model.Product;
-import model.ProductDAO;
+import com.es.phoneshop.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
