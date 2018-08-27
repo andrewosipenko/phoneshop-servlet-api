@@ -12,6 +12,5 @@
 </head>
 <body>
     <p align="center">Error 500 - product with current id doesn't exist</p>
-    <p align="center"></p>
 </body>
 </html>
