@@ -25,7 +25,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String uri = request.getRequestURI();
         int index = request.getRequestURI().lastIndexOf("/");
         String idString = uri.substring(index + 1);
-        request.setAttribute("product", productDAO.getProduct(Long.valueOf(idString)));
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+
+        try {
+            request.setAttribute("product", productDAO.getProduct(Long.valueOf(idString)));
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 }
