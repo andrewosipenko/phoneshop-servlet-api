@@ -36,6 +36,8 @@
         <location>/WEB-INF/pages/errorCode404.jsp</location>
     </error-page>
 
-
-
+    <context-param>
+        <param-name>addSampleData</param-name>
+        <param-value>true</param-value>
+    </context-param>
 </web-app>
