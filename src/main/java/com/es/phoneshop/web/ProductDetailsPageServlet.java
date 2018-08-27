@@ -29,9 +29,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
         else {
             try {
-                productDao.getProduct(Long.parseLong(id));
                 request.setAttribute("product", productDao.getProduct(Long.parseLong(id)));
-                request.getAttribute("product");
                 request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
             } catch (IllegalArgumentException e) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -11,15 +11,17 @@ import static org.junit.Assert.*;
 public class ArrayListProductDaoTest {
     private ProductDao products = ArrayListProductDao.getInstance();
 
+    private static final Long EXISTING_ID = 1L;
+
     @Before
     public void init() {
-        products.save(new Product(1L, "a1", "descr1", new BigDecimal(162),
+        products.save(new Product(EXISTING_ID, "a1", "descr1", new BigDecimal(162),
                 Currency.getInstance("BYN"), 61));
     }
 
     @Test
     public void testGetInstance() {
-        ProductDao productDao = ArrayListProductDao.getInstance();
+        ProductDao productDao = ArrayListProductDao.getInstance ();
 
 
         assertNotNull(productDao);
@@ -27,10 +29,10 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testGetProduct() {
-        Long id = products.getProduct(1L).getId();
+        Long id = products.getProduct(EXISTING_ID).getId();
 
 
-        assertEquals(1L, id.longValue());
+        assertEquals(EXISTING_ID.longValue(), id.longValue());
     }
 
     @Test
@@ -43,11 +45,12 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testSave() {
-        products.save(new Product(2L, "a2", "descr2", new BigDecimal(162),
+        Long local_ID = 2L;
+        products.save(new Product(local_ID, "a2", "descr2", new BigDecimal(162),
                 Currency.getInstance("BYN"), 61));
 
 
-        Product product = products.getProduct(2L);
+        Product product = products.getProduct(local_ID);
 
 
         assertNotNull(product);
@@ -55,13 +58,14 @@ public class ArrayListProductDaoTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRemove() {
-        products.save(new Product(4L, "a4", "descr4", new BigDecimal(123),
+        final Long local_ID = 4L;
+        products.save(new Product(local_ID, "a4", "descr4", new BigDecimal(123),
                 Currency.getInstance("BYN"), 16));
 
 
-        products.remove(4L);
+        products.remove(local_ID);
 
 
-        products.getProduct(4L);
+        products.getProduct(local_ID);
     }
 }
