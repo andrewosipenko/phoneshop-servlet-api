@@ -19,7 +19,9 @@
   <c:forEach var="product" items="${products}">
     <tr>
       <td>${product.id}</td>
-      <td>${product.code}</td>
+      <td>
+        <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.code}</a>
+      </td>
       <td>${product.description}</td>
       <td>$ ${product.price}</td>
       <td>${product.currency}</td>
