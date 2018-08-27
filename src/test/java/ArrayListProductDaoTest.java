@@ -13,7 +13,7 @@ import java.util.Locale;
 import static org.junit.Assert.*;
 
 public class ArrayListProductDaoTest {
-    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
     private final Long id = 1L, id2 = 2L, id3 = 3L;
     private final Product product = new Product(id, "A1B", "desc1", new BigDecimal("123.3"),
             Currency.getInstance(Locale.UK), 1);
@@ -71,11 +71,11 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void getInstance() {
-        assertNotNull(ArrayListProductDao.getINSTANCE());
+        assertNotNull(ArrayListProductDao.getInstance());
     }
 
     @Test
     public void checkEqualsOfInstances(){
-        assertEquals(ArrayListProductDao.getINSTANCE(), ArrayListProductDao.getINSTANCE());
+        assertEquals(ArrayListProductDao.getInstance(), ArrayListProductDao.getInstance());
     }
 }

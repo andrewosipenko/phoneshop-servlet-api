@@ -1,6 +1,8 @@
 package com.es.phoneshop.web.listeners;
 
-import com.es.phoneshop.model.*;
+import com.es.phoneshop.model.ArrayListProductDao;
+import com.es.phoneshop.model.Product;
+import com.es.phoneshop.model.ProductDao;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -13,7 +15,7 @@ public class SampleDataServletContextListener implements ServletContextListener 
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ProductDao dao = ArrayListProductDao.getINSTANCE();
+        ProductDao dao = ArrayListProductDao.getInstance();
 
         if(!Boolean.valueOf(servletContextEvent.getServletContext()
                 .getInitParameter(addSampleData))) {

@@ -41,7 +41,7 @@ public class ArrayListProductDao implements ProductDao {
         return products.remove(getProduct(id));
     }
 
-    public static synchronized ProductDao getINSTANCE() {
+    public static synchronized ProductDao getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new ArrayListProductDao();
         }
