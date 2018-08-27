@@ -2,6 +2,7 @@ package com.es.phoneshop.model;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Product {
     private Long id;
@@ -9,7 +10,16 @@ public class Product {
     private String description;
     private BigDecimal price;
     private Currency currency;
-    private Integer stock;
+    private int stock;
+
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+    }
 
     public Long getId() {
         return id;
@@ -51,11 +61,24 @@ public class Product {
         this.currency = currency;
     }
 
-    public Integer getStock() {
+    public int getStock() {
         return stock;
     }
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
