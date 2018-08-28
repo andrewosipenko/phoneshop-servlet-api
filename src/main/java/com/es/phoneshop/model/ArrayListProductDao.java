@@ -25,8 +25,8 @@ public class ArrayListProductDao implements ProductDao {
 
     public synchronized Product getProduct(Long id) {
         /*Product res = products.parallelStream().filter(s -> s.getId() == id).findAny().get();*/
-        for(Product prod: products){
-            if(prod.getId() == id)
+        for (Product prod : products) {
+            if (prod.getId() == id)
                 return prod;
         }
         return null;

@@ -16,10 +16,10 @@ public class ArrayListProductDaoTest {
     private long productID;
 
     @Before
-    public void setTectProducts(){
-         productDao = ArrayListProductDao.getInstance();
-         productID = Product.generateId();
-         productDao.save(new Product(productID, "4", "iPhone7", new BigDecimal(1000.0), Currency.getInstance("USD"), 10) );
+    public void setTectProducts() {
+        productDao = ArrayListProductDao.getInstance();
+        productID = Product.generateId();
+        productDao.save(new Product(productID, "4", "iPhone7", new BigDecimal(1000.0), Currency.getInstance("USD"), 10));
     }
 
 
@@ -40,6 +40,7 @@ public class ArrayListProductDaoTest {
         productDao.delete(id);
         assertNull(productDao.getProduct(id));
     }
+
     @org.junit.Test
     public void getInstance() {
         assertNotNull(ArrayListProductDao.getInstance());

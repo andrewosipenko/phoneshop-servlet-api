@@ -23,7 +23,7 @@
                  </td>--%>
             <td>${product.id}</td>
             <td>${product.code}</td>
-            <td><a href="/products/${product.id}">${product.description}</a></td>
+            <td><a href="./products/${product.id}">${product.description}</a></td>
             <td>${product.price}</td>
             <td>${product.currency}</td>
             <td>${product.stock}</td>
