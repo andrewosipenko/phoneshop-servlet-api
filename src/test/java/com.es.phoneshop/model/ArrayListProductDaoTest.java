@@ -23,14 +23,12 @@ public class ArrayListProductDaoTest {
     public void testGetInstance() {
         ProductDao productDao = ArrayListProductDao.getInstance ();
 
-
         assertNotNull(productDao);
     }
 
     @Test
     public void testGetProduct() {
         Long id = products.getProduct(EXISTING_ID).getId();
-
 
         assertEquals(EXISTING_ID.longValue(), id.longValue());
     }
@@ -39,33 +37,28 @@ public class ArrayListProductDaoTest {
     public void testFindProducts() {
         boolean isListEmpty = products.findProducts().isEmpty();
 
-
         assertFalse(isListEmpty);
     }
 
     @Test
     public void testSave() {
-        Long local_ID = 2L;
-        products.save(new Product(local_ID, "a2", "descr2", new BigDecimal(162),
+        Long localId = 2L;
+        products.save(new Product(localId, "a2", "descr2", new BigDecimal(162),
                 Currency.getInstance("BYN"), 61));
 
-
-        Product product = products.getProduct(local_ID);
-
+        Product product = products.getProduct(localId);
 
         assertNotNull(product);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testRemove() {
-        final Long local_ID = 4L;
-        products.save(new Product(local_ID, "a4", "descr4", new BigDecimal(123),
+        final Long localId = 4L;
+        products.save(new Product(localId, "a4", "descr4", new BigDecimal(123),
                 Currency.getInstance("BYN"), 16));
 
+        products.remove(localId);
 
-        products.remove(local_ID);
-
-
-        products.getProduct(local_ID);
+        products.getProduct(localId);
     }
 }
