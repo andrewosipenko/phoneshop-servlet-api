@@ -5,7 +5,7 @@
          version="3.1">
     <display-name>Phoneshop servlet api training</display-name>
 
-    <!--<error-page>
+    <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/pages/error404.jsp</location>
     </error-page>
@@ -13,7 +13,7 @@
     <error-page>
         <error-code>500</error-code>
         <location>/WEB-INF/pages/error500.jsp</location>
-    </error-page>-->
+    </error-page>
 
     <listener>
         <listener-class>com.es.phoneshop.web.SampleDataServletContextListener</listener-class>

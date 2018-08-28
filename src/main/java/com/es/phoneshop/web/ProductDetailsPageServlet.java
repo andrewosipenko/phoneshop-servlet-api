@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.ArrayListProductDao;
 import com.es.phoneshop.model.ProductDao;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,25 +23,22 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String id = getPageId(request);
-        if(!id.matches("\\d*")){
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            request.getRequestDispatcher("/WEB-INF/pages/error500.jsp").forward(request, response);
-        }
-        else {
-            try {
-                request.setAttribute("product", productDao.getProduct(Long.parseLong(id)));
-                request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
-            } catch (IllegalArgumentException e) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                request.getRequestDispatcher("/WEB-INF/pages/error404.jsp").forward(request, response);
+        String id = request.getPathInfo();
+        if (id.length() == 1) {
+            response.sendRedirect(request.getContextPath() + request.getServletPath());
+        } else {
+            id = id.substring(1);   
+            if (!id.matches("\\d*")) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            } else {
+                try {
+                    request.setAttribute("product", productDao.getProduct(Long.parseLong(id)));
+                    request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+                } catch (IllegalArgumentException e) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
             }
         }
     }
 
-    private String getPageId(HttpServletRequest request){
-        String uri = request.getRequestURI();
-        int index = uri.lastIndexOf("/");
-        return uri.substring(index + 1);
-    }
 }
