@@ -16,9 +16,6 @@ public class ArrayListProductDao implements ProductDao {
 
     ArrayListProductDao() {
         products = new ArrayList<Product>();
-        save(new Product( "12", "iPhone", new BigDecimal(10.0), 2));
-        save(new Product("42", "iPhone5", new BigDecimal(0), 1));
-        save(new Product("phone", "iPhoneX", new BigDecimal(100.0), 1));
     }
 
     public static ArrayListProductDao getInstance() {

@@ -11,6 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProductListPageServlet extends HttpServlet {
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("products", ArrayListProductDao.getInstance().findProducts());

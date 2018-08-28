@@ -14,15 +14,20 @@ public class Product {
     private Currency currency;
     private int stock;
 
-    private static Long generateId = 0L;
+    private static Long generateId = 1L;
+
+
+    public static Long generateId(){
+        return generateId++;
+    }
 
 
     public Long getId() {
         return id;
     }
 
-    public Product(String code, String description, BigDecimal price, int stock) {
-        this.id = generateId++;
+    public Product(Long id ,String code, String description, BigDecimal price,Currency currency, int stock) {
+        this.id = id;
         this.code = code;
         this.description = description;
         this.price = price;
