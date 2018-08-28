@@ -21,9 +21,7 @@ public class ProductDetaiilsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-/*
-        request.setAttribute("product", productDao.getProduct(Long.valueOf(request.getRequestURI().lastIndexOf("/") + 1))).get());
-*/
+
         request.setAttribute("product", productDao.getProduct(Long.parseLong(request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1))));
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }

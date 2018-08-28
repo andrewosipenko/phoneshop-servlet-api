@@ -15,10 +15,22 @@
     <servlet-name>productList</servlet-name>
     <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
   </servlet>
+
   
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>productDetaiils</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetaiilsPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>productDetaiils</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
 
 </web-app>
