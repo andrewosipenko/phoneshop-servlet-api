@@ -21,14 +21,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String uri = request.getRequestURI();
-        int index = request.getRequestURI().lastIndexOf("/");
-        String idString = uri.substring(index + 1);
+        String idString = request.getPathInfo();
 
         try {
-            request.setAttribute("product", productDAO.getProduct(Long.valueOf(idString)));
+            request.setAttribute("product", productDAO.getProduct(Long.valueOf(idString.substring(1))));
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
