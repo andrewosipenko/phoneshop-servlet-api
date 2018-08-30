@@ -1,8 +1,6 @@
 package com.es.phoneshop.web;
 
-import model.ArrayListProductDAO;
-import model.Product;
-import model.ProductDAO;
+import com.es.phoneshop.model.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -10,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
 
-import static model.ArrayListProductDAO.generateId;
+import static com.es.phoneshop.model.ArrayListProductDAO.generateId;
 
 public class SampleDataServletContextListener implements ServletContextListener {
     @Override

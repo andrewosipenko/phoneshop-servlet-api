@@ -1,6 +1,4 @@
-import model.ArrayListProductDAO;
-import model.Product;
-import model.ProductDAO;
+import com.es.phoneshop.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,34 +20,34 @@ public class ArrayListProductDAOTest {
     }
 
     @Test
-    public void generateId() {
+    public void testGenerateId() {
         assertNotNull(ArrayListProductDAO.generateId());
     }
 
     @Test
-    public void getInstance() {
+    public void testGetInstance() {
         assertNotNull(ArrayListProductDAO.getInstance());
     }
 
     @Test
-    public void getProduct() {
+    public void testGetProduct() {
         assertEquals(1L, products.getProduct(1L).getId().longValue());
     }
 
     @Test
-    public void findProducts() {
+    public void testFindProducts() {
         assertTrue(!products.findProducts().isEmpty());
     }
 
     @Test
-    public void save() {
+    public void testSave() {
         products.save(new Product(2L, "code 2", "desc 2", new BigDecimal(200),
                 Currency.getInstance(Locale.UK), 2));
         assertNotNull(products.getProduct(2L));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void remove() {
+    public void testRemove() {
         products.save(new Product(3L, "code 3", "desc 3", new BigDecimal(300),
                 Currency.getInstance(Locale.UK), 3));
         products.remove(3L);
