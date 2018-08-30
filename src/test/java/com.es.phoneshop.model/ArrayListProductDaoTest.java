@@ -3,6 +3,7 @@ package com.es.phoneshop.model;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigDecimal;
@@ -23,8 +24,8 @@ public class ArrayListProductDaoTest {
     }
 
 
-    @org.junit.Test
-    public void save() {
+    @Test
+    public void testSave() {
         Long id = Product.generateId();
         assertNull(productDao.getProduct(id));
         productDao.save(new Product(id, "5", "iPhone7", new BigDecimal(1000.0), Currency.getInstance("USD"), 10));
@@ -32,8 +33,8 @@ public class ArrayListProductDaoTest {
         productDao.delete(id);
     }
 
-    @org.junit.Test
-    public void delete() {
+    @Test
+    public void testDelete() {
         Long id = Product.generateId();
         productDao.save(new Product(id, "5", "iPhone7", new BigDecimal(1000.0), Currency.getInstance("USD"), 10));
         assertNotNull(productDao.getProduct(id));
@@ -41,18 +42,18 @@ public class ArrayListProductDaoTest {
         assertNull(productDao.getProduct(id));
     }
 
-    @org.junit.Test
-    public void getInstance() {
+    @Test
+    public void testGetInstance() {
         assertNotNull(ArrayListProductDao.getInstance());
     }
 
-    @org.junit.Test
-    public void getProduct() {
+    @Test
+    public void testGetProduct() {
         assertNotNull(productDao.getProduct(productID));
     }
 
-    @org.junit.Test
-    public void FindProducts() {
+    @Test
+    public void testFindProducts() {
         assertFalse(productDao.findProducts().isEmpty());
     }
 

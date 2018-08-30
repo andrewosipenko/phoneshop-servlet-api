@@ -14,7 +14,7 @@ public class ArrayListProductDao implements ProductDao {
 
     private List<Product> products;
 
-    ArrayListProductDao() {
+    private ArrayListProductDao() {
         products = new ArrayList<Product>();
     }
 
@@ -26,7 +26,7 @@ public class ArrayListProductDao implements ProductDao {
     public synchronized Product getProduct(Long id) {
         /*Product res = products.parallelStream().filter(s -> s.getId() == id).findAny().get();*/
         for (Product prod : products) {
-            if (prod.getId() == id)
+            if (prod.getId().equals(id))
                 return prod;
         }
         return null;
@@ -45,7 +45,7 @@ public class ArrayListProductDao implements ProductDao {
 
     public synchronized void delete(Long id) {
         products.parallelStream()
-                .filter(s -> s.getId() == id).limit(1).forEach(s -> products.remove(s));
+                .filter(s -> s.getId().equals(id)).limit(1).forEach(s -> products.remove(s));
     }
 
 
