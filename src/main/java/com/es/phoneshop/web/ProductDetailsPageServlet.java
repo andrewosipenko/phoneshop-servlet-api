@@ -27,7 +27,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         if (id.length() == 1) {
             response.sendRedirect(request.getContextPath() + request.getServletPath());
         } else {
-            id = id.substring(1);   
+            id = id.substring(1);
             if (!id.matches("\\d*")) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } else {
