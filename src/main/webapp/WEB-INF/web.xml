@@ -16,7 +16,7 @@
     </error-page>
 
     <listener>
-        <listener-class>com.es.phoneshop.web.SampleDataServletContextListener</listener-class>
+        <listener-class>com.es.phoneshop.model.SampleDataServletContextListener</listener-class>
     </listener>
     <context-param>
         <param-name>SampleData</param-name>
@@ -41,5 +41,15 @@
     <servlet-mapping>
         <servlet-name>productDetails</servlet-name>
         <url-pattern>/products/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>cart</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cart</servlet-name>
+        <url-pattern>/cart</url-pattern>
     </servlet-mapping>
 </web-app>
