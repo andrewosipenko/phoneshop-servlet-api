@@ -5,6 +5,16 @@
          version="3.1">
   <display-name>Phoneshop servlet api training</display-name>
 
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/pages/errorPage500.jsp</location>
+  </error-page>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/pages/errorPage404.jsp</location>
+  </error-page>
+
   <listener>
     <listener-class>com.es.phoneshop.web.SampleDataServletContextListener</listener-class>
   </listener>
