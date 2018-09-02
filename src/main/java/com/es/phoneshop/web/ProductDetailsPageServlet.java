@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ProductListServlet extends HttpServlet {
+public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
-
     @Override
     public void init() throws ServletException {
         super.init();
@@ -20,7 +19,10 @@ public class ProductListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.findProducts());
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        //super.doGet(req, resp);
+        String[] splitedContextPath = request.getRequestURI().split("/");
+        Long productID = Long.parseLong(splitedContextPath[splitedContextPath.length-1]);
+        request.setAttribute("product", productDao.getProduct(productID));
+        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
 }
