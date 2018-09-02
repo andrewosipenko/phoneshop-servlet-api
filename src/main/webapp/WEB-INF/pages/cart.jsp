@@ -3,33 +3,40 @@
 
 <jsp:useBean id="cart" type="com.es.phoneshop.model.Cart" scope="request"/>
 <html>
-<head>
-    <title>my cart</title>
-</head>
-<body>
-<table>
-    <thead>
-    <tr>
-        <td>Id</td>
-        <td>Code</td>
-        <td>Description</td>
-        <td>Price</td>
-        <td>Currency</td>
-    </tr>
-    </thead>
-    <c:forEach var="cartItem" items="${cart.cartItems}">
-        <tr>
-            <td>${cartItem.product.id}</td>
-            <td>${cartItem.product.code}</td>
-            <td>
-                <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                        ${product.description}
-                </a>
-            </td>
-            <td>${cartItem.product.price}</td>
-            <td>${cartItem.product.currency}</td>
-        </tr>
-    </c:forEach>
-</table>
-</body>
+    <head>
+        <title>my cart</title>
+        <style type="text/css">
+            <%@include file="/WEB-INF/styles/common.css" %>
+        </style>
+    </head>
+    <body>
+        <%@include file="/WEB-INF/common/header.jsp"%>
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Currency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="cartItem" items="${cart.cartItems}">
+                    <tr>
+                        <td>${cartItem.product.id}</td>
+                        <td>${cartItem.product.code}</td>
+                        <td>
+                            <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">
+                                    ${cartItem.product.description}
+                            </a>
+                        </td>
+                        <td>${cartItem.product.price}</td>
+                        <td>${cartItem.product.currency}</td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+        <%@include file="/WEB-INF/common/footer.jsp"%>
+    </body>
 </html>

@@ -1,9 +1,5 @@
 package com.es.phoneshop.model;
 
-import com.es.phoneshop.model.ArrayListProductDao;
-import com.es.phoneshop.model.Product;
-import com.es.phoneshop.model.ProductDao;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.math.BigDecimal;
@@ -24,10 +20,10 @@ public class SampleDataServletContextListener implements ServletContextListener 
             return;
         }
         ProductDao products = ArrayListProductDao.getInstance();
-        products.save(new Product(generateId(),"a1", "descr1", new BigDecimal(162), Currency.getInstance("BYN"), 61));
-        products.save(new Product(generateId(),"a2", "descr2", new BigDecimal(112), Currency.getInstance("BYN"), 0));
-        products.save(new Product(generateId(),"a3", "descr3", new BigDecimal(2), Currency.getInstance("BYN"), 12));
-        products.save(new Product(generateId(),"a4", "descr4", new BigDecimal(123), Currency.getInstance("BYN"), 16));
+        products.save(new Product(generateId(),"17.1010405", "Xiaomi Pocophone F1 64GB", new BigDecimal(949.00), Currency.getInstance("BYN"), 61));
+        products.save(new Product(generateId(),"17.1001233", "HTC U Play", new BigDecimal(749.00), Currency.getInstance("BYN"), 0));
+        products.save(new Product(generateId(),"17.1010114", "Samsung Galaxy Note9 128GB", new BigDecimal(2339.00), Currency.getInstance("BYN"), 12));
+        products.save(new Product(generateId(),"17.1008510", "Apple iPhone SE 32GB", new BigDecimal(799.00), Currency.getInstance("BYN"), 16));
     }
 
     @Override
