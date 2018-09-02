@@ -2,7 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
-<p>
+<header>
+  <jsp:include page="/WEB-INF/pages/header.jsp"/>
+</header>
+
+<p align="center">
   Hello from product list!
 </p>
 <table>
@@ -29,3 +33,7 @@
     </tr>
   </c:forEach>
 </table>
+
+<footer>
+  <jsp:include page="/WEB-INF/pages/footer.jsp"/>
+</footer>

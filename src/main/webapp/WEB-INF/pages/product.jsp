@@ -1,3 +1,7 @@
+<header>
+    <jsp:include page="/WEB-INF/pages/header.jsp"/>
+</header>
+
 <p>
     Hello from product details page!
 </p>
@@ -26,3 +30,7 @@
     </tr>
     </thead>
 </table>
+
+<footer>
+    <jsp:include page="/WEB-INF/pages/footer.jsp"/>
+</footer>

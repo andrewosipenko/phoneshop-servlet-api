@@ -34,6 +34,15 @@
     <url-pattern>/products/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>Cart</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Cart</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <error-code>404</error-code>
     <location>/WEB-INF/pages/errorPage404.jsp</location>
