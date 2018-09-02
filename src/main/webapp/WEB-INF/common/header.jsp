@@ -1,5 +1,5 @@
 <header>
-    <table style="width: 90%">
+    <table style="width: 98%">
         <tr>
             <th style="text-align: left">
                 <a href="${pageContext.servletContext.contextPath}">

@@ -1,11 +1,9 @@
 header {
     display: flex;
     height: 50px;
-    width: 110%;
+    width: 100%;
     background: dodgerblue;
     align-items: center;
-    margin-top: -10px;
-    margin-left: -10px;
 }
 header a {
     font-size: x-large;
@@ -55,4 +53,9 @@ a:visited {
 table {
     width: 50%;
     text-align: center;
+}
+
+body{
+    padding: 0;
+    margin: 0;
 }
