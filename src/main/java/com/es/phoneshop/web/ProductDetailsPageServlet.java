@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
-    ProductDao productDao;
+    private ProductDao productDao;
     @Override
     public void init() throws ServletException {
         super.init();
