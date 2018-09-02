@@ -22,7 +22,7 @@ public class CartServiceTest {
     @Test
     public void testAdd() {
         Cart cart = new Cart();
-        
+
         service.add(cart, ArrayListProductDao.getInstance().findProducts().get(0), 1);
 
         assertFalse(cart.getCartItems().isEmpty());
