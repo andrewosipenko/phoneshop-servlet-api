@@ -1,28 +1,26 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.ArrayListProductDao;
-import com.es.phoneshop.model.ProductDao;
-
+import com.es.phoneshop.model.CartService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+public class CartPageServlet extends HttpServlet {
 
-
-public class ProductListPageServlet extends HttpServlet {
-    private ProductDao productDao;
+    private CartService cartService;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        productDao = ArrayListProductDao.getInstance();
+        cartService = CartService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.findProducts());
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.setAttribute("cart", cartService.getCart(request));
+        request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
+
 }

@@ -1,0 +1,61 @@
+header {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    background: dodgerblue;
+    align-items: center;
+}
+header a {
+    font-size: x-large;
+    margin-left: 20px;
+    align-self: center;
+}
+header a:link {
+    color: purple;
+}
+
+header a:visited {
+    color: purple;
+}
+
+footer {
+    display: flex;
+    height: 30px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    align-items: center;
+
+
+    background-color: dodgerblue;
+    text-align: center;
+}
+
+footer a {
+    font-size: xx-large;
+    font-weight: bold;
+    margin-left: 20px;
+    align-self: center;
+    color: purple;
+}
+
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+table {
+    width: 50%;
+    text-align: center;
+}
+
+body{
+    padding: 0;
+    margin: 0;
+}
