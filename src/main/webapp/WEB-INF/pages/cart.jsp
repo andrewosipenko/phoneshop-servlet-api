@@ -12,8 +12,7 @@
 <p>
     Welcome to cart page!
 </p>
-
-table>
+<table>
 <thead>
 <tr>
     <td>ID</td>
@@ -24,14 +23,14 @@ table>
     <td>Stock</td>
 </tr>
 </thead>
-<c:forEach var="cartItem" items="${cart.cartItems}">
+<c:forEach var="cartItem" items="${cart.getCartItems()}">
     <tr>
-        <td>${product.id}</td>
-        <td>${product.code}</td>
-        <td>${product.description}</td>
-        <td>${product.price}</td>
-        <td>${product.currency}</td>
-        <td>${product.stock}</td>
+        <td>${cartItem.product.id}</td>
+        <td>${cartItem.product.code}</td>
+        <td><a href="./products/${cartItem.product.id}">${cartItem.product.description}</a></td>
+        <td>${cartItem.product.price}</td>
+        <td>${cartItem.product.currency}</td>
+        <td>${cartItem.product.stock}</td>
     </tr>
 </c:forEach>
 </table>
