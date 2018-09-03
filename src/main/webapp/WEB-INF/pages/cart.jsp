@@ -2,6 +2,11 @@
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
         <jsp:useBean id="cart" type="com.es.phoneshop.model.Cart" scope="request"/>
+        <html>
+        <head>
+        </head>
+        <body>
+        <jsp:include page="header.jsp"/>
         <p>
         Hello from cart!
         </p>
@@ -23,3 +28,6 @@
             </tr>
         </c:forEach>
         </table>
+        <jsp:include page="footer.jsp"/>
+        </body>
+        </html>
