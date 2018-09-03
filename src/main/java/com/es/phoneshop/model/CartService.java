@@ -38,10 +38,8 @@ public class CartService {
         return cart;
     }
 
-    public void add(Cart cart, Product product, int quantity) throws StockIsEmptyException {
-        if (productDao.getProduct(product.getId()).getStock() >= 0)
+    public void add(Cart cart, Product product, int quantity) {
+        if (productDao.getProduct(product.getId()).getStock() > 0)
             cart.getCartItems().add(new CartItem(product, quantity));
-        else
-            throw new StockIsEmptyException("This Product's stock is empty");
     }
 }
