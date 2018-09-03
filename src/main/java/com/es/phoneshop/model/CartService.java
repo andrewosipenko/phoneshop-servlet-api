@@ -1,11 +1,14 @@
 package com.es.phoneshop.model;
 
+import com.es.phoneshop.exceptions.StockIsEmptyException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class CartService {
     private static volatile CartService instance;
     private static final String CART_ATTRIBUTE_NAME = "cart";
+    private ProductDao productDao = ArrayListProductDao.getInstance();
 
     private CartService() {}
 
@@ -35,8 +38,10 @@ public class CartService {
         return cart;
     }
 
-    public void add(Cart cart, Product product, int quantity) {
-        cart.getCartItems().add(new CartItem(product, quantity));
-        //TODO check stock
+    public void add(Cart cart, Product product, int quantity) throws StockIsEmptyException {
+        if (productDao.getProduct(product.getId()).getStock() >= 0)
+            cart.getCartItems().add(new CartItem(product, quantity));
+        else
+            throw new StockIsEmptyException("This Product's stock is empty");
     }
 }

@@ -1,7 +1,7 @@
 import com.es.phoneshop.web.ProductIDGenerator;
-import model.ArrayListProductDao;
-import model.Product;
-import model.ProductDao;
+import com.es.phoneshop.model.ArrayListProductDao;
+import com.es.phoneshop.model.Product;
+import com.es.phoneshop.model.ProductDao;
 import org.junit.Test;
 
 import java.math.BigDecimal;

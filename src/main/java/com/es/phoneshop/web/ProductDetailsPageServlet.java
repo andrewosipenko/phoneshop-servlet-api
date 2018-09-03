@@ -19,8 +19,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String[] splitedContextPath = request.getRequestURI().split("/");
-        Long productID = Long.parseLong(splitedContextPath[splitedContextPath.length-1]);
+        Long productID = Long.parseLong(request.getPathInfo().substring(1));
         request.setAttribute("product", productDao.getProduct(productID));
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
