@@ -21,21 +21,19 @@
             <td>Code</td>
             <td>Description</td>
             <td>Price</td>
-            <td>Currency</td>
             <td>Quantity</td>
         </tr>
         </thead>
 
         <c:forEach var="cartItem" items="${cart.cartItems}">
             <tr>
-                <td><c:out value="${cartItem.product.id}"/></td>
+                <td>${cartItem.product.id}</td>
                 <td>
-                    <a href = "<c:url value = "/products/${cartItem.product.id}" />"><c:out value="${cartItem.product.code}"/></a>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${cartItem.product.code}</a>
                 </td>
-                <td><c:out value="${cartItem.product.description}"/></td>
-                <td><c:out value="${cartItem.product.price}"/></td>
-                <td><c:out value="${cartItem.product.currency}"/></td>
-                <td><c:out value="${cartItem.quantity}"/></td>
+                <td>${cartItem.product.description}</td>
+                <td>${cartItem.product.price} ${cartItem.product.currency}</td>
+                <td>${cartItem.quantity}</td>
             </tr>
         </c:forEach>
 
