@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="product" type="com.es.phoneshop.model.Product" scope="request"/>
 
+<jsp:include page ="/WEB-INF/common/header.jsp"/>
+
 <html>
 <head>
     <title>Product</title>
