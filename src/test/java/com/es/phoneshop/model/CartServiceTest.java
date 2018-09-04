@@ -60,7 +60,7 @@ public class CartServiceTest {
     public void add() {
         Cart cart = new Cart();
         Product product = mock(Product.class);
-        product.setStock(2);
+        when(product.getStock()).thenReturn(2);
         CartItem cartItem = new CartItem(product, 1);
         cartService.add(cart, cartItem.getProduct(), cartItem.getQuantity());
         assertTrue(cart.getCartItems().contains(cartItem));
@@ -70,7 +70,7 @@ public class CartServiceTest {
     public void addOutOfStock() {
         Cart cart = new Cart();
         Product product = mock(Product.class);
-        product.setStock(0);
+        when(product.getStock()).thenReturn(0);
         CartItem cartItem = new CartItem(product, 1);
         cartService.add(cart, cartItem.getProduct(), cartItem.getQuantity());
         assertFalse(cart.getCartItems().contains(cartItem));
