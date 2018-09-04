@@ -4,8 +4,13 @@ import com.es.phoneshop.web.ProductIDGenerator;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 
@@ -13,7 +18,6 @@ import static org.junit.Assert.*;
 
 public class CartServiceTest {
     private CartService cartService = CartService.getInstance();
-    private HttpServletRequest testHttpServletRequest = null;
     private static ProductDao productDao;
 
     @BeforeClass
@@ -31,16 +35,24 @@ public class CartServiceTest {
         }
     }
 
-    /*@Before
-    public void clear() {
-        cartService.getCart(testHttpServletRequest).getCartItems().clear();
-    }*/
+    @Mock
+    private HttpSession session = mock(HttpSession.class);
 
-    /*@Test
+    @Mock
+    private HttpServletRequest request = mock(HttpServletRequest.class);
+
+    @Before
+    public void clear() {
+        when(request.getSession()).thenReturn(session);
+        cartService.getCart(request).getCartItems().clear();
+    }
+
+    @Test
     public void getCart() {
-        Cart cart = cartService.getCart(testHttpServletRequest);
-        assertTrue(cart.getCartItems());
-    }*/
+        when(request.getSession()).thenReturn(session);
+        Cart cart = cartService.getCart(request);
+        assertFalse(cart.getCartItems().isEmpty());
+    }
 
     @Test
     public void add() {
