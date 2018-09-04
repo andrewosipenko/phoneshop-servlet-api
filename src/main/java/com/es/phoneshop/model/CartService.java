@@ -37,7 +37,7 @@ public class CartService {
     }
 
     public void add(Cart cart, Product product, int quantity) {
-        if (productDao.getProduct(product.getId()).getStock() > 0) {
+        if (productDao.getProduct(product.getId()).getStock() >= quantity) {
             CartItem newCartItem = new CartItem(product, quantity);
             if (cart.getCartItems().contains(newCartItem))
                 cart.getCartItems().get(cart.getCartItems().indexOf(newCartItem)).increaseQuantity(quantity);
