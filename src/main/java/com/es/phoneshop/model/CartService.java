@@ -1,7 +1,5 @@
 package com.es.phoneshop.model;
 
-import com.es.phoneshop.exceptions.StockIsEmptyException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -39,7 +37,12 @@ public class CartService {
     }
 
     public void add(Cart cart, Product product, int quantity) {
-        if (productDao.getProduct(product.getId()).getStock() > 0)
-            cart.getCartItems().add(new CartItem(product, quantity));
+        if (productDao.getProduct(product.getId()).getStock() > 0) {
+            CartItem newCartItem = new CartItem(product, quantity);
+            if (cart.getCartItems().contains(newCartItem))
+                cart.getCartItems().get(cart.getCartItems().indexOf(newCartItem)).increaseQuantity(quantity);
+            else
+                cart.getCartItems().add(newCartItem);
+        }
     }
 }

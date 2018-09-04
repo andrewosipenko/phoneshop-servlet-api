@@ -27,6 +27,10 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public void increaseQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
