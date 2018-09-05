@@ -1,6 +1,6 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.CartService;
+import com.es.phoneshop.model.CartServiceImpl;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,17 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CartPageServlet extends HttpServlet {
-    private CartService cartService;
+    private CartServiceImpl cartServiceImpl;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        cartService = CartService.getInstance();
+        cartServiceImpl = CartServiceImpl.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("cart", cartService.getCart(request));
+        request.setAttribute("cart", cartServiceImpl.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
 }

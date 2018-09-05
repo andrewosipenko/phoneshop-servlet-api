@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class ArrayListProductDAOTest {
 
-    ProductDAO products;
+    private ArrayListProductDAO products;
 
     @Before
     public void init(){
@@ -37,7 +37,7 @@ public class ArrayListProductDAOTest {
 
     @Test
     public void testFindProducts() {
-        assertTrue(!products.findProducts().isEmpty());
+        assertFalse(products.findProducts().isEmpty());
     }
 
     @Test
