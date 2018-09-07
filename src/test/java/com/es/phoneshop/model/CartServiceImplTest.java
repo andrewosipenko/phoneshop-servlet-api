@@ -9,6 +9,8 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class CartServiceImplTest {
@@ -55,7 +57,8 @@ public class CartServiceImplTest {
         //Cart cart = new Cart();
         Mockito.when(product.getStock()).thenReturn(10);
         Mockito.when(cartItem.getProduct()).thenReturn(product);
+
         cartService.add(cart, cartItem.getProduct(), cartItem.getQuantity());
-        assertFalse(cart.getCartItems().isEmpty());
+        Mockito.verify(cart, Mockito.times(2)).getCartItems();
     }
 }
