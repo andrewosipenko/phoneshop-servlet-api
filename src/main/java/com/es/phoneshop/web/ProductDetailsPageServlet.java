@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
@@ -27,10 +30,20 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer quantity = Integer.valueOf(request.getParameter("quantity"));
-
         Long productId = Long.valueOf(getLastPathPatameter(request));
         Product product = productDao.getProduct(productId);
+        Integer quantity;
+
+        try {
+            Locale locale = request.getLocale();
+            quantity = DecimalFormat.getInstance(locale).parse(request.getParameter("quantity")).intValue();
+        } catch (ParseException ex) {
+            request.setAttribute("error", "Not a number");
+            request.setAttribute("product", product);
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+            return;
+        }
+
         Cart cart = cartService.getCart(request);
         cartService.add(cart, product, quantity);
         request.setAttribute("product", product);

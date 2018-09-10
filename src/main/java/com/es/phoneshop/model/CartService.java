@@ -33,17 +33,29 @@ public class CartService {
     }
 
     public void add(Cart cart, Product product, int quantity) {
-        if (product.getStock() >= quantity) {
             CartItem newCartItem = new CartItem(product, quantity);
             if (cart.getCartItems().contains(newCartItem))
                 increaseProductQuantity(cart, product, quantity);
-            else
+            else if(product.getStock() < quantity) {
+                newCartItem.setQuantity(product.getStock());
                 cart.getCartItems().add(newCartItem);
+                product.setStock(0);
+            }
+                else {
+                cart.getCartItems().add(newCartItem);
+                product.setStock(product.getStock()-quantity);
+            }
         }
-    }
 
     private void increaseProductQuantity(Cart cart, Product product, int quantity) {
-        CartItem cartItem = cart.getCartItems().get(cart.getCartItems().indexOf(product));
-        cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            CartItem cartItem = cart.getCartItems().get(cart.getCartItems().indexOf(new CartItem(product, quantity)));
+            if(product.getStock() >= quantity) {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                product.setStock(product.getStock()-quantity);
+            }
+            else {
+                cartItem.setQuantity(cartItem.getQuantity() + product.getStock());
+                product.setStock(0);
+            }
     }
 }
