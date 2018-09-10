@@ -10,7 +10,8 @@
                 PDP
                 </p>
                 <form method=post>
-                <table>
+                <table bgcolor="#32cd32" border="1px">
+    <thead>
                     <tr>
                     <td>ID</td>
                     <td>${product.id}</td>
@@ -38,17 +39,16 @@
                     </tr>
                     <tr>
     <td>
-    <input type = "text" name = "quantity" value = "1" style = "text-align: right">
-    <c:if test = "${error}">
-    <p style="color: red">${error}</p>
-    </c:if>
+    <input type = "text" name = "quantity" id = quantity value = "1" style = "text-align: right">
+        <label for = quantity style="color: red">${error}</label>
     </td>
     <td>
         <input type = "submit" value = "add to Cart">
     </td>
     </tr>
+    </thead>
                 </table>
                 </form>
-                <jsp:include page="footer.jsp"/> 
+                <jsp:include page="footer.jsp"/>
             </body>
         </html>

@@ -10,7 +10,7 @@
         <p>
         Hello from cart!
         </p>
-        <table>
+        <table bgcolor="#32cd32" border="1px">
         <thead>
         <tr>
         <td>Code</td>

@@ -9,7 +9,7 @@
       <p>
         Hello from product list!
       </p>
-      <table>
+      <table bgcolor="#32cd32" border="1px">
         <thead>
           <tr>
             <td>ID</td>
