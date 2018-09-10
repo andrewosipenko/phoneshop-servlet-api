@@ -29,9 +29,6 @@ public class CartServiceImpl implements CartService {
                 if(session.getAttribute(CART_ATTRIBUTE_NAME) == null){
                     cart = new Cart();
                     session.setAttribute(CART_ATTRIBUTE_NAME, cart);
-                    for (Product product : ArrayListProductDAO.getInstance().findProducts()){
-                        add(cart, product, 1);
-                    }
                 }
             }
         }
