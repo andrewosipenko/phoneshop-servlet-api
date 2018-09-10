@@ -39,9 +39,14 @@ public class CartService {
         if (product.getStock() >= quantity) {
             CartItem newCartItem = new CartItem(product, quantity);
             if (cart.getCartItems().contains(newCartItem))
-                cart.getCartItems().get(cart.getCartItems().indexOf(newCartItem)).increaseQuantity(quantity);
+                increaseProductQuantity(cart, product, quantity);
             else
                 cart.getCartItems().add(newCartItem);
         }
+    }
+
+    private void increaseProductQuantity(Cart cart, Product product, int quantity) {
+        CartItem cartItem = cart.getCartItems().get(cart.getCartItems().indexOf(product));
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
     }
 }
