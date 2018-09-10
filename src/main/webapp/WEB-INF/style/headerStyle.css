@@ -1,0 +1,29 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: white;
+    flex: 0 0 auto;
+    border-bottom: black solid 2px;
+    height: 70px;
+    width: 100%;
+    z-index: 2;
+}
+
+.newPhoto {
+   /* background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;*/
+    background: url(/mainIkon.png) 100% 100% no-repeat;
+    background-size: cover;
+    border: none;
+    margin: 15px 30px;
+    width: 54px;
+    height: 43px;
+}
+
+
+.title {
+    font-size: 3em;
+    margin: auto;
+}
