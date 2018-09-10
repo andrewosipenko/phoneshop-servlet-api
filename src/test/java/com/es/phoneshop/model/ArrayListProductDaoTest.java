@@ -1,8 +1,10 @@
+package com.es.phoneshop.model;
+
 import com.es.phoneshop.web.ProductIDGenerator;
-import model.ArrayListProductDao;
-import model.Product;
-import model.ProductDao;
+
 import org.junit.Test;
+
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class ArrayListProductDaoTest {
-    ProductDao productDao = ArrayListProductDao.getInstance();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
 
     @Test
     public void findProducts() {
@@ -28,7 +30,7 @@ public class ArrayListProductDaoTest {
         Product[] expectedProducts = new Product[2];
         expectedProducts[1] = product;
         product = new Product();
-        product.setId((long)1);
+        product.setId(1L);
         product.setCode(1 + "");
         product.setDescription("description" + 1);
         product.setPrice(new BigDecimal(1));
@@ -39,38 +41,26 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void getProduct() {
-        Product product = new Product();
-        product.setId((long)1);
+        Product product = mock(Product.class);
+        when(product.getId()).thenReturn(1L);
         productDao.save(product);
-        product = new Product();
-        product.setId((long)2);
-        product = new Product();
-        product.setId((long)1);
-        assertEquals(product, productDao.getProduct((long)1));
+        assertEquals(product, productDao.getProduct(1L));
     }
 
     @Test
     public void save() {
-        Product product = new Product();
-        product.setId((long)1);
-        product.setCode(1 + "");
-        product.setDescription("description" + 1);
-        product.setPrice(new BigDecimal(1));
-        product.setStock(1);
+        Product product = mock(Product.class);
+        when(product.getId()).thenReturn(3L);
         productDao.save(product);
         assertTrue(productDao.findProducts().contains(product));
     }
 
     @Test
     public void remove() {
-        Product product = new Product();
-        product.setId((long)1);
-        product.setCode(1 + "");
-        product.setDescription("description" + 1);
-        product.setPrice(new BigDecimal(1));
-        product.setStock(1);
+        Product product = mock(Product.class);
+        when(product.getId()).thenReturn(1L);
         productDao.save(product);
-        productDao.remove((long)1);
+        productDao.remove(1L);
         assertFalse(productDao.findProducts().contains(product));
     }
 }

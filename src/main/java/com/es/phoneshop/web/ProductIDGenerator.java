@@ -1,6 +1,6 @@
 package com.es.phoneshop.web;
 
-import model.Product;
+import com.es.phoneshop.model.Product;
 
 public class ProductIDGenerator {
     private static long counter = 0;
