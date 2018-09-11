@@ -42,7 +42,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer quantity;
-        //ResourceBundle resourceBundle = ResourceBundle.getBundle("message", request.getLocale());
+        //ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", request.getLocale());
         Long productId = Long.valueOf(getLastPathParameter(request));
         Product product = productDAO.getProduct(productId);
         try {
@@ -62,9 +62,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         cartService.add(cart, product, quantity);
         request.setAttribute("addQuantity", quantity);
         //response.sendRedirect(request.getRequestURI() + "?addQuantity=" + quantity );
-        request.setAttribute("product", product);
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
-
+        showProductPage(product, request, response);
     }
     private String getLastPathParameter(HttpServletRequest request) {
         String uri = request.getRequestURI();
@@ -72,7 +70,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
         return uri.substring(index+1);
     }
 
-    private void exceptionError(Product product, HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+    private void showProductPage(Product product, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("product", product);
+        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+    }
+
+        private void exceptionError(Product product, HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("error", Boolean.TRUE);
         request.setAttribute("errorText", message);
         request.setAttribute("product", product);

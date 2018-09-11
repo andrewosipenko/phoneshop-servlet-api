@@ -9,7 +9,7 @@
     <title>Product</title>
     <meta charset="utf-8">
 </head>
-<body class="bodyStile">
+<body>
 <div>
     <jsp:include page="/WEB-INF/pages/header.jsp"/>
 </div>
@@ -19,7 +19,6 @@
             Added ${addQuantity} successfully.
         </c:if>
         <table>
-            <col width=40%/>
             <thead>
             <tr>
                 <td>Id</td>
