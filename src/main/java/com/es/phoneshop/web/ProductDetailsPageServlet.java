@@ -42,7 +42,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer quantity;
-        //ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", request.getLocale());
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("messages", request.getLocale());
         Long productId = Long.valueOf(getLastPathParameter(request));
         Product product = productDAO.getProduct(productId);
         try {
@@ -51,18 +51,20 @@ public class ProductDetailsPageServlet extends HttpServlet {
                 throw new NotEnoughException(NotEnoughException.NOT_ENOUGH_MESSAGE);
             }
         } catch (ParseException e) {
-            //exceptionError(product, request, response, resourceBundle.getString("error.number.format"));
-            exceptionError(product, request, response, "Not a number");
+            exceptionError(product, request, response, resourceBundle.getString("error.number.format"));
             return;
         } catch (NotEnoughException e) {
             exceptionError(product, request, response, "Number must being > 0");
             return;
         }
         Cart cart = cartService.getCart(request);
-        cartService.add(cart, product, quantity);
-        request.setAttribute("addQuantity", quantity);
-        //response.sendRedirect(request.getRequestURI() + "?addQuantity=" + quantity );
-        showProductPage(product, request, response);
+        try {
+            cartService.add(cart, product, quantity);
+            request.setAttribute("addQuantity", quantity);
+            response.sendRedirect(request.getRequestURI() + "?addQuantity=" + quantity );
+        } catch (NotEnoughException e) {
+            exceptionError(product, request, response, NotEnoughException.NOT_ENOUGH_MESSAGE);
+        }
     }
     private String getLastPathParameter(HttpServletRequest request) {
         String uri = request.getRequestURI();
@@ -70,12 +72,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         return uri.substring(index+1);
     }
 
-    private void showProductPage(Product product, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("product", product);
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
-    }
-
-        private void exceptionError(Product product, HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+    private void exceptionError(Product product, HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("error", Boolean.TRUE);
         request.setAttribute("errorText", message);
         request.setAttribute("product", product);
