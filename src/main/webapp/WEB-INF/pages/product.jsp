@@ -10,8 +10,8 @@
 </head>
 <body>
 <form method="post">
-    <c:if test = "${not empty addQuantity}">
-        Added ${addQuantity} succtsfully
+    <c:if test = "${not empty param.addQuantity}">
+        Added ${param.addQuantity} succesfully
     </c:if>
     <table>
         <thead>
@@ -39,8 +39,7 @@
                        style="text-align: right">
                 <c:if test="${error}">
                     <label for = "quantity">
-                           <%-- <fmy:message key="error.number.format" bundle="i18n/messages"/>--%>
-                        error
+                        ${errorText}
                     </label>
                 </c:if>
             </td>

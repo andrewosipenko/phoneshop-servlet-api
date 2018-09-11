@@ -19,6 +19,11 @@ public class CartItem {
         return product.equals(item.product);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(product.getId(), quantity);
+    }
+
     public Product getProduct() {
         return product;
     }
