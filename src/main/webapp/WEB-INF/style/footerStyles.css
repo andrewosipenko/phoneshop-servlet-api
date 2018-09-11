@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    position: relative;
+    border-top: black solid 2px;
+    font-size: 1.3em;
+    background: white;
+    height: 20px;
+    margin-top: -80px;
+}
+
+.link{
+    flex-direction: column;
+}
+
+.contact{
+    margin-right: 20px;
+    flex-direction: column;
+}
+
+body{
+  height: 100%;
+}
