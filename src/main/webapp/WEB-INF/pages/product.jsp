@@ -15,8 +15,8 @@
 </div>
 <div>
     <form method="post" action="<c:url value="/products"/>/${product.id}">
-        <c:if test = "${not empty addQuantity}">
-            Added ${addQuantity} successfully.
+        <c:if test = "${not empty param.addQuantity}">
+            Added ${param.addQuantity} products successfully.
         </c:if>
         <table>
             <thead>
