@@ -15,7 +15,8 @@ import java.util.Locale;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
-    CartService cartService;
+    private CartService cartService;
+
     @Override
     public void init() throws ServletException {
         super.init();
