@@ -24,7 +24,7 @@ public class CartService {
         return localInstance;
     }
 
-    public Cart getCart(HttpServletRequest request) {
+    public synchronized Cart getCart(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Cart cart = (Cart) session.getAttribute(CART_ATTRIBUTE_NAME);
         if (cart == null) {
