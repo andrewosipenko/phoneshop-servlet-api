@@ -16,7 +16,7 @@ public class CartItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItem item = (CartItem) o;
-        return product.equals(item.product);
+        return product.equals(item.product)&&(quantity == item.quantity);
     }
 
     @Override
