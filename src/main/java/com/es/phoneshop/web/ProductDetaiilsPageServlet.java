@@ -44,11 +44,17 @@ public class ProductDetaiilsPageServlet extends HttpServlet {
         Locale locale = request.getLocale();
         try {
             quantity = DecimalFormat.getInstance(locale).parse(request.getParameter("quantity")).intValue();
+            if(quantity < 0){
+                throw new IllegalArgumentException();
+            }
         } catch (NumberFormatException ex) {
             catchExeption(product, "error", request, response);
             return;
         } catch (ParseException ex) {
             catchExeption(product, "NaN", request, response);
+            return;
+        } catch(IllegalArgumentException ex){
+            catchExeption(product, "toMuch", request, response);
             return;
         }
         Cart cart = cartServise.getCart(request);
