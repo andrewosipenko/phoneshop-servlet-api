@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
@@ -27,8 +28,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productID = Long.parseLong(request.getPathInfo().substring(1));
-        request.setAttribute("product", productDao.getProduct(productID));
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        try {
+            request.setAttribute("product", productDao.getProduct(productID));
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        } catch (NoSuchElementException ex) {
+            request.getRequestDispatcher("/WEB-INF/pages/productNotFoundError").forward(request, response);
+        }
     }
 
     @Override
