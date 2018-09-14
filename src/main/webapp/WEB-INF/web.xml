@@ -48,4 +48,8 @@
     <error-code>500</error-code>
     <location>/WEB-INF/pages/error500.jsp</location>
   </error-page>
+  <error-page>
+    <exception-type>ProductNotFoundException</exception-type>
+    <location>/WEB-INF/pages/productNotFound.jsp</location>
+  </error-page>
 </web-app>
