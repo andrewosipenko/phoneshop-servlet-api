@@ -4,14 +4,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/common/header.jsp"/>
 
+<fmt:setBundle basename="i18n.msg"/>
+<fmt:setLocale value="en"/>
+
 <html>
 <head>
     <title>${product.description}</title>
 </head>
 <body>
+
 <form method="post">
     <c:if test = "${not empty param.addQuantity}">
-        Added ${param.addQuantity} succesfully
+        <label for = "quantity">
+            <fmt:message key="success" />
+        </label>
     </c:if>
     <table>
         <thead>
@@ -19,7 +25,7 @@
             <td>ID</td>
             <td>Code</td>
             <td>Description</td>
-            <td>Price</td>
+                <td>Price</td>
             <td>Currency</td>
             <td>Stock</td>
         </tr>
@@ -39,7 +45,7 @@
                        style="text-align: right">
                 <c:if test="${error}">
                     <label for = "quantity">
-                        ${errorText}
+                        <fmt:message key="error.${errorText}" />
                     </label>
                 </c:if>
             </td>

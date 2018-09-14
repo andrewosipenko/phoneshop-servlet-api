@@ -43,12 +43,12 @@ public class ProductDetaiilsPageServlet extends HttpServlet {
         Product product = productDao.getProduct(productId);
         Locale locale = request.getLocale();
         try {
-            quantity = DecimalFormat.getInstance(request.getLocale()).parse(request.getParameter("quantity")).intValue();
+            quantity = DecimalFormat.getInstance(locale).parse(request.getParameter("quantity")).intValue();
         } catch (NumberFormatException ex) {
-            catchExeption(product, "not a number", request, response);
+            catchExeption(product, "error", request, response);
             return;
         } catch (ParseException ex) {
-            catchExeption(product, "error", request, response);
+            catchExeption(product, "NaN", request, response);
             return;
         }
         Cart cart = cartServise.getCart(request);
