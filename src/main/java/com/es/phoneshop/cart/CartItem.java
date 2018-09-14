@@ -1,4 +1,6 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.cart;
+
+import com.es.phoneshop.model.Product;
 
 import java.util.Objects;
 
