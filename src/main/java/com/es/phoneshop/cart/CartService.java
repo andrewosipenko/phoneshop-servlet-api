@@ -36,14 +36,13 @@ public class CartService {
 
     public void add(Cart cart, Product product, int quantity) {
             CartItem newCartItem = new CartItem(product, quantity);
-            if (cart.getCartItems().contains(newCartItem))
+            if (cart.getCartItems().contains(newCartItem)) {
                 increaseProductQuantity(cart, product, quantity);
-            else if(product.getStock() < quantity) {
+            } else if(product.getStock() < quantity) {
                 newCartItem.setQuantity(product.getStock());
                 cart.getCartItems().add(newCartItem);
                 product.setStock(0);
-            }
-                else {
+            } else {
                 cart.getCartItems().add(newCartItem);
                 product.setStock(product.getStock()-quantity);
             }
@@ -54,8 +53,7 @@ public class CartService {
             if(product.getStock() >= quantity) {
                 cartItem.setQuantity(cartItem.getQuantity() + quantity);
                 product.setStock(product.getStock()-quantity);
-            }
-            else {
+            } else {
                 cartItem.setQuantity(cartItem.getQuantity() + product.getStock());
                 product.setStock(0);
             }

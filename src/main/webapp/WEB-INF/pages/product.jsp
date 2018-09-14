@@ -40,6 +40,8 @@
                     <tr>
     <td>
     <input type = "text" name = "quantity" id = quantity value = "1" style = "text-align: right">
+    <c:if test = "${true}">hello</c:if>
+    exit
         <label for = quantity style="color: red">${error}</label>
     </td>
     <td>

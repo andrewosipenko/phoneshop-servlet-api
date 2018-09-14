@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao{
     private static volatile ArrayListProductDao instance;
     private List<Product> productList;
+    private static long counter = 0;
 
     private ArrayListProductDao() {
         productList = new ArrayList<>();
@@ -23,6 +24,12 @@ public class ArrayListProductDao implements ProductDao{
             }
         }
         return localInstance;
+    }
+
+    @Override
+    public synchronized void generateID(Product product) {
+        product.setId(counter);
+        counter++;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = Long.valueOf(getLastPathPatameter(request));
+        Long productId = Long.valueOf(getLastPathParameter(request));
         Product product = productDao.getProduct(productId);
         Integer quantity;
 
@@ -53,7 +53,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
 
-    private String getLastPathPatameter(HttpServletRequest request) {
+    private String getLastPathParameter(HttpServletRequest request) {
         String uri = request.getRequestURI();
         int index = uri.lastIndexOf("/");
         return uri.substring(index+1);
