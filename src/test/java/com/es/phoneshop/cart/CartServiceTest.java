@@ -1,8 +1,5 @@
 package com.es.phoneshop.cart;
 
-import com.es.phoneshop.cart.Cart;
-import com.es.phoneshop.cart.CartItem;
-import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.model.Product;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +45,23 @@ public class CartServiceTest {
     }
 
     @Test
+    public void addExisted() {
+        Cart cart = new Cart();
+        Product product = mock(Product.class);
+        when(product.getStock()).thenReturn(2);
+        CartItem cartItem = new CartItem(product, 1);
+        cart.getCartItems().add(cartItem);
+        cartService.add(cart, cartItem.getProduct(), 1);
+        assertTrue(cart.getCartItems().get(cart.getCartItems().indexOf(cartItem)).getQuantity()==2);
+    }
+
+    @Test
     public void addOutOfStock() {
         Cart cart = new Cart();
         Product product = mock(Product.class);
         when(product.getStock()).thenReturn(2);
         CartItem cartItem = new CartItem(product, 2);
+        cart.getCartItems().add(cartItem);
         cartService.add(cart, cartItem.getProduct(), 3);
         assertTrue(cart.getCartItems().get(cart.getCartItems().indexOf(cartItem)).getQuantity()==2);
     }

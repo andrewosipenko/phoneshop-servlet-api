@@ -1,6 +1,8 @@
 package com.es.phoneshop.model;
 
+import org.junit.Before;
 import org.junit.Test;
+import sun.reflect.Reflection;
 
 import static org.mockito.Mockito.*;
 
@@ -12,6 +14,10 @@ import static org.junit.Assert.*;
 public class ArrayListProductDaoTest {
     private ProductDao productDao = ArrayListProductDao.getInstance();
 
+    @Before
+    private void clear() {
+        
+    }
     @Test
     public void findProducts() {
         Product product = null;
@@ -50,7 +56,7 @@ public class ArrayListProductDaoTest {
         Product product = mock(Product.class);
         when(product.getId()).thenReturn(3L);
         productDao.save(product);
-        assertTrue(productDao.findProducts().contains(product));
+        assertTrue(productDao.findProducts().contains((Product) product));
     }
 
     @Test
