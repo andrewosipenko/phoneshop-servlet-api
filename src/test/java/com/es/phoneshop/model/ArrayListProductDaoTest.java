@@ -1,7 +1,5 @@
 package com.es.phoneshop.model;
 
-import com.es.phoneshop.web.ProductIDGenerator;
-
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
@@ -19,7 +17,7 @@ public class ArrayListProductDaoTest {
         Product product = null;
         for (int i = 0; i < 3; i++) {
             product = new Product();
-            ProductIDGenerator.generateID(product);
+            productDao.generateID(product);
             product.setCode(i + "");
             product.setDescription("description" + i);
             product.setPrice(new BigDecimal(i));

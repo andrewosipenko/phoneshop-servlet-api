@@ -1,5 +1,9 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.cart;
 
+import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.cart.CartItem;
+import com.es.phoneshop.cart.CartService;
+import com.es.phoneshop.model.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -47,9 +51,9 @@ public class CartServiceTest {
     public void addOutOfStock() {
         Cart cart = new Cart();
         Product product = mock(Product.class);
-        when(product.getStock()).thenReturn(0);
-        CartItem cartItem = new CartItem(product, 1);
-        cartService.add(cart, cartItem.getProduct(), cartItem.getQuantity());
-        assertFalse(cart.getCartItems().contains(cartItem));
+        when(product.getStock()).thenReturn(2);
+        CartItem cartItem = new CartItem(product, 2);
+        cartService.add(cart, cartItem.getProduct(), 3);
+        assertTrue(cart.getCartItems().get(cart.getCartItems().indexOf(cartItem)).getQuantity()==2);
     }
 }
