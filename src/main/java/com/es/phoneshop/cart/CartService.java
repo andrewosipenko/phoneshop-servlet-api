@@ -41,21 +41,17 @@ public class CartService {
             } else if(product.getStock() < quantity) {
                 newCartItem.setQuantity(product.getStock());
                 cart.getCartItems().add(newCartItem);
-                product.setStock(0);
             } else {
                 cart.getCartItems().add(newCartItem);
-                product.setStock(product.getStock()-quantity);
             }
         }
 
     private void increaseProductQuantity(Cart cart, Product product, int quantity) {
             CartItem cartItem = cart.getCartItems().get(cart.getCartItems().indexOf(new CartItem(product, quantity)));
-            if(product.getStock() >= quantity) {
+            if(product.getStock() >= quantity + cartItem.getQuantity()) {
                 cartItem.setQuantity(cartItem.getQuantity() + quantity);
-                product.setStock(product.getStock()-quantity);
             } else {
-                cartItem.setQuantity(cartItem.getQuantity() + product.getStock());
-                product.setStock(0);
+                cartItem.setQuantity(product.getStock());
             }
     }
 }
