@@ -2,11 +2,12 @@ package com.es.phoneshop.model;
 
 import org.junit.Before;
 import org.junit.Test;
-import sun.reflect.Reflection;
 
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -15,9 +16,10 @@ public class ArrayListProductDaoTest {
     private ProductDao productDao = ArrayListProductDao.getInstance();
 
     @Before
-    private void clear() {
-        
+    public void clear() {
+        setInternalState(productDao, "productList", new ArrayList<Product>());
     }
+
     @Test
     public void findProducts() {
         Product product = null;
@@ -30,7 +32,6 @@ public class ArrayListProductDaoTest {
             product.setStock(i);
             productDao.save(product);
         }
-        List<Product> products = productDao.findProducts();
         Product[] expectedProducts = new Product[2];
         expectedProducts[1] = product;
         product = new Product();
@@ -40,6 +41,7 @@ public class ArrayListProductDaoTest {
         product.setPrice(new BigDecimal(1));
         product.setStock(1);
         expectedProducts[0] = product;
+        List<Product> products = productDao.findProducts();
         assertArrayEquals(expectedProducts, products.toArray());
     }
 
@@ -55,6 +57,8 @@ public class ArrayListProductDaoTest {
     public void save() {
         Product product = mock(Product.class);
         when(product.getId()).thenReturn(3L);
+        when(product.getPrice()).thenReturn(BigDecimal.ONE);
+        when(product.getStock()).thenReturn(1);
         productDao.save(product);
         assertTrue(productDao.findProducts().contains((Product) product));
     }
@@ -62,9 +66,25 @@ public class ArrayListProductDaoTest {
     @Test
     public void remove() {
         Product product = mock(Product.class);
-        when(product.getId()).thenReturn(1L);
-        productDao.save(product);
-        productDao.remove(1L);
+        when(product.getId()).thenReturn(3L);
+        when(product.getPrice()).thenReturn(BigDecimal.ONE);
+        when(product.getStock()).thenReturn(1);
+        List<Product> productList = new ArrayList<>();
+        productList.add(product);
+        setInternalState(productDao, "productList", productList);
+        productDao.remove(3L);
         assertFalse(productDao.findProducts().contains(product));
+    }
+
+    public void setInternalState(Object c, String field, Object value) {
+        try {
+            Field f = c.getClass().getDeclaredField(field);
+            f.setAccessible(true);
+            f.set(c, value);
+        } catch (NoSuchFieldException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException er) {
+            er.printStackTrace();
+        }
     }
 }
