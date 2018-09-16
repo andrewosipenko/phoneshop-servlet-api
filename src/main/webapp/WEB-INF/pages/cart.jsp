@@ -21,7 +21,8 @@
         <c:forEach var="cartItem" items="${cart.getCartItems()}">
             <tr>
             <td>
-            <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">${cartItem.product.code}</a>
+            <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">${cartItem.product.code}
+            </a>
             </td>
             <td>${cartItem.quantity}</td>
             <td>$ ${cartItem.product.price * cartItem.quantity}</td>
