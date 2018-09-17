@@ -4,6 +4,7 @@ import com.es.phoneshop.exceptions.NotEnoughException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
@@ -40,22 +41,36 @@ public class CartServiceImpl implements CartService {
         return cart;
     }
 
-    public void add(Cart cart, Product product, int quantity) throws NotEnoughException{
+    private void addOrUpdate(Cart cart, Product product, int quantity, boolean add){
         if (product.getStock() < quantity) {
             throw new NotEnoughException(NotEnoughException.NOT_ENOUGH_MESSAGE);
         }
-        Optional<CartItem> optionalCartItem = cart.getCartItems().stream().filter(cartItem -> cartItem.getProduct().equals(product)).findAny();
-        if (!optionalCartItem.isPresent()) {
-            product.setStock(product.getStock() - quantity);
+        List<CartItem> cartItems = cart.getCartItems();
+        Optional<CartItem> cartItemOptional = cartItems.stream()
+                .filter(ci -> ci.getProduct().equals(product))
+                .findAny();
+        if(cartItemOptional.isPresent()) {
+            CartItem cartItem = cartItemOptional.get();
+            int newQuantity = add ? cartItem.getQuantity() + quantity : quantity;
+            cartItem.setQuantity(newQuantity);
+        }
+        else{
             cart.getCartItems().add(new CartItem(product, quantity));
-        } else {
-            optionalCartItem = optionalCartItem.filter(cartItem -> cartItem.getQuantity() + quantity <= cartItem.getProduct().getStock());
-            if (!optionalCartItem.isPresent()) {
-                throw new NotEnoughException(NotEnoughException.NOT_ENOUGH_MESSAGE);
-            }
-            product.setStock(product.getStock() - quantity);
-            optionalCartItem.get().setProduct(product);
-            optionalCartItem.get().setQuantity(optionalCartItem.get().getQuantity() + quantity);
+        }
+    }
+
+    public void add(Cart cart, Product product, int quantity){
+        addOrUpdate(cart, product, quantity, true);
+    }
+
+    public void update(Cart cart, Product product, int quantity){
+        addOrUpdate(cart, product, quantity, false);
+    }
+
+    public void delete(Cart cart, Product product) {
+        synchronized (cart) {
+            List<CartItem> cartItems = cart.getCartItems();
+            cartItems.remove(new CartItem(product, 0));
         }
     }
 }

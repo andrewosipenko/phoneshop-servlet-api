@@ -54,7 +54,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             exceptionError(product, request, response, resourceBundle.getString("error.number.format"));
             return;
         } catch (NotEnoughException e) {
-            exceptionError(product, request, response, "Number must being > 0");
+            exceptionError(product, request, response, resourceBundle.getString("error.number.must.being"));
             return;
         }
         Cart cart = cartService.getCart(request);
