@@ -10,7 +10,7 @@
   </listener>
 
   <context-param>
-    <param-name>ServletContextListenerIsTurnedOn</param-name>
+    <param-name>CreateSampleData</param-name>
     <param-value>true</param-value>
   </context-param>
 

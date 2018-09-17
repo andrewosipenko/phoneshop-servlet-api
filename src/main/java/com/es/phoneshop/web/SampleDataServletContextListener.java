@@ -11,9 +11,11 @@ import java.util.Currency;
 import java.util.Locale;
 
 public class SampleDataServletContextListener implements ServletContextListener {
+    private static final String INIT_PARAMETER = "CreateSampleData";
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        if(sce.getServletContext().getInitParameter("ServletContextListenerIsTurnedOn").equals("true")) {
+        if(Boolean.valueOf(sce.getServletContext().getInitParameter(INIT_PARAMETER))) {
             ProductDao productDao = ArrayListProductDao.getInstance();
             Product product;
             for (int i = 0; i < 7; i++) {
