@@ -1,4 +1,6 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.cart;
+
+import com.es.phoneshop.model.Product;
 
 import java.util.Objects;
 
@@ -25,10 +27,6 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public void increaseQuantity(int quantity) {
-        this.quantity += quantity;
     }
 
     @Override

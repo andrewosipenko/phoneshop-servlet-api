@@ -1,4 +1,6 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.cart;
+
+import com.es.phoneshop.model.Product;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,26 +24,34 @@ public class CartService {
         return localInstance;
     }
 
-    public Cart getCart(HttpServletRequest request) {
+    public synchronized Cart getCart(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Cart cart = (Cart) session.getAttribute(CART_ATTRIBUTE_NAME);
         if (cart == null) {
             cart = new Cart();
-            for (Product product: ArrayListProductDao.getInstance().findProducts()) {
-                add(cart, product, product.getStock());
-            }
         }
         session.setAttribute(CART_ATTRIBUTE_NAME, cart);
         return cart;
     }
 
     public void add(Cart cart, Product product, int quantity) {
-        if (product.getStock() >= quantity) {
             CartItem newCartItem = new CartItem(product, quantity);
-            if (cart.getCartItems().contains(newCartItem))
-                cart.getCartItems().get(cart.getCartItems().indexOf(newCartItem)).increaseQuantity(quantity);
-            else
+            if (cart.getCartItems().contains(newCartItem)) {
+                increaseProductQuantity(cart, product, quantity);
+            } else if(product.getStock() < quantity) {
+                newCartItem.setQuantity(product.getStock());
                 cart.getCartItems().add(newCartItem);
+            } else {
+                cart.getCartItems().add(newCartItem);
+            }
         }
+
+    private void increaseProductQuantity(Cart cart, Product product, int quantity) {
+            CartItem cartItem = cart.getCartItems().get(cart.getCartItems().indexOf(new CartItem(product, quantity)));
+            if(product.getStock() >= quantity + cartItem.getQuantity()) {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            } else {
+                cartItem.setQuantity(product.getStock());
+            }
     }
 }

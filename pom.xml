@@ -8,8 +8,8 @@
   <name>phoneshop-servlet-api Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
-    <maven.compiler.source>1.9</maven.compiler.source>
-    <maven.compiler.target>1.9</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
       <dependency>
@@ -42,11 +42,6 @@
       <version>2.21.0</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>RELEASE</version>
-      </dependency>
   </dependencies>
   <build>
     <finalName>phoneshop-servlet-api</finalName>

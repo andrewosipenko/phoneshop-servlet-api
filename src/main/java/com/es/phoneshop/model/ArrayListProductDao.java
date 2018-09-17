@@ -2,11 +2,13 @@ package com.es.phoneshop.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao{
     private static volatile ArrayListProductDao instance;
     private List<Product> productList;
+    private static long counter = 0;
 
     private ArrayListProductDao() {
         productList = new ArrayList<>();
@@ -26,15 +28,21 @@ public class ArrayListProductDao implements ProductDao{
     }
 
     @Override
-    public List<Product> findProducts() {
+    public synchronized void generateID(Product product) {
+        product.setId(counter);
+        counter++;
+    }
+
+    @Override
+    public synchronized List<Product> findProducts() {
         return productList
                 .stream()
-                .filter((p) -> p.getPrice().signum() == 1 && p.getStock() > 0)
+                .filter((p) -> p.getPrice() != null && p.getPrice().signum() == 1 && p.getStock() != null && p.getStock() > 0)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Product getProduct(Long id) {
+    public synchronized Product getProduct(Long id) throws NoSuchElementException{
         return productList
                 .stream()
                 .filter((product) -> product.getId().equals(id))
@@ -43,14 +51,17 @@ public class ArrayListProductDao implements ProductDao{
     }
 
     @Override
-    public void save(Product product) {
+    public synchronized void save(Product product) {
         if (productList.stream()
-                .noneMatch((p) -> p.equals(product)))
+                .noneMatch((p) -> p.equals(product))) {
             productList.add(product);
+        } else {
+            productList.set(productList.indexOf(getProduct(product.getId())), product);
+        }
     }
 
     @Override
-    public void remove(Long id) {
+    public synchronized void remove(Long id) {
         productList.remove(getProduct(id));
     }
 }

@@ -1,7 +1,8 @@
     <%@ page contentType="text/html;charset=UTF-8" %>
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-        <jsp:useBean id="cart" type="com.es.phoneshop.model.Cart" scope="request"/>
+        <jsp:useBean id="cart" type="com.es.phoneshop.cart.Cart" scope="request"/>
         <html>
         <head>
         </head>
@@ -10,7 +11,7 @@
         <p>
         Hello from cart!
         </p>
-        <table>
+        <table bgcolor="#32cd32" border="1px">
         <thead>
         <tr>
         <td>Code</td>
@@ -21,10 +22,11 @@
         <c:forEach var="cartItem" items="${cart.getCartItems()}">
             <tr>
             <td>
-            <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">${cartItem.product.code}</a>
+            <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">${cartItem.product.code}
+            </a>
             </td>
-            <td>${cartItem.quantity}</td>
-            <td>$ ${cartItem.product.price * cartItem.quantity}</td>
+            <td><fmt:formatNumber value = "${cartItem.quantity}" ></fmt:formatNumber></td>
+            <td><fmt:formatNumber value = "${cartItem.product.price * cartItem.quantity}"></fmt:formatNumber></td>
             </tr>
         </c:forEach>
         </table>

@@ -1,20 +1,20 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.cart;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class Cart {
     private List<CartItem> cartItems;
 
     public Cart() {
-        cartItems = new ArrayList<>();
+        cartItems = new Vector<>();
     }
 
     public List<CartItem> getCartItems() {
         return cartItems;
     }
 
-    public void setCartItems(List<CartItem> cartItems) {
+    public synchronized void  setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
 }
