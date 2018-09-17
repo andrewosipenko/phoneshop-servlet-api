@@ -42,7 +42,7 @@
         </tr>
         <tr>
         <td>
-        <input type = "text" name = "quantity" id = quantity value = "${empty param.quantity ? 1 : param.quantity}"
+        <input type = "text" name = "quantity" id = quantity value = "${empty productQuantityOnPDP ? 1 : productQuantityOnPDP}"
         style = "text-align: right">
         <c:if test="${not empty error}">
             <label for = quantity style="color: red">${error}</label>

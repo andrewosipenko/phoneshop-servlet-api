@@ -21,7 +21,7 @@ public class SampleDataServletContextListener implements ServletContextListener 
                 productDao.generateID(product);
                 product.setCode(i + "");
                 product.setDescription("description" + i);
-                product.setPrice(new BigDecimal(i));
+                product.setPrice(new BigDecimal(i*1000));
                 product.setStock(i);
                 product.setCurrency(Currency.getInstance(Locale.US));
                 productDao.save(product);

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.Enumeration;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
@@ -20,6 +19,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
     private HttpSession session;
+    private static final String  ERROR_ATTRIBUTE_NAME = "error";
+    private static final String  SUCCESS_ATTRIBUTE_NAME = "success";
+    private static final String  FORM_QUANTITY_ATTRIBUTE_NAME = "productQuantityOnPDP";
 
     @Override
     public void init() throws ServletException {
@@ -30,17 +32,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productID = Long.parseLong(request.getPathInfo().substring(1));
         session = request.getSession();
-        /*Enumeration<String> attributeNames = session.getAttributeNames();
-        String attributeName = null;
-        while (attributeNames.hasMoreElements()) {
-            attributeName = attributeNames.nextElement();
-            System.out.println(attributeName);
-            request.setAttribute(attributeName, session.getAttribute(attributeName));
-        }*/
-        getAndRemoveSessionAttribute(session, request, "error");
-        getAndRemoveSessionAttribute(session, request, "success");
+        getAndRemoveSessionAttribute(session, request, ERROR_ATTRIBUTE_NAME);
+        getAndRemoveSessionAttribute(session, request, SUCCESS_ATTRIBUTE_NAME);
+        getAndRemoveSessionAttribute(session, request, FORM_QUANTITY_ATTRIBUTE_NAME);
+        Long productID = Long.parseLong(request.getPathInfo().substring(1));
         try {
             request.setAttribute("product", productDao.getProduct(productID));
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
@@ -51,6 +47,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        session = request.getSession();
+        session.setAttribute(FORM_QUANTITY_ATTRIBUTE_NAME, request.getParameter("quantity"));
         Long productId = Long.valueOf(getLastPathParameter(request));
         Product product = productDao.getProduct(productId);
         Integer quantity;
@@ -58,18 +56,18 @@ public class ProductDetailsPageServlet extends HttpServlet {
             Locale locale = request.getLocale();
             quantity = DecimalFormat.getInstance(locale).parse(request.getParameter("quantity")).intValue();
         } catch (ParseException ex) {
-            session.setAttribute("error", "Not a number");
+            session.setAttribute(ERROR_ATTRIBUTE_NAME, "Not a number");
             setAttributeProduct(product, request, response);
             return;
         }
         if (quantity<=0) {
-            session.setAttribute("error", "Quantity must be >0");
+            session.setAttribute(ERROR_ATTRIBUTE_NAME, "Quantity must be >0");
             setAttributeProduct(product, request, response);
             return;
         }
         Cart cart = cartService.getCart(request);
         cartService.add(cart, product, quantity);
-        session.setAttribute("success", "Products were successfully added.");
+        session.setAttribute(SUCCESS_ATTRIBUTE_NAME, "Products were successfully added.");
         setAttributeProduct(product, request, response);
     }
 
@@ -81,7 +79,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     private void setAttributeProduct(Product product, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         request.setAttribute("product", product);
-        //request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         response.sendRedirect(request.getRequestURI());
     }
 
