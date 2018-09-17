@@ -61,4 +61,23 @@ public class CartServiceImplTest {
         cartService.add(cart, cartItem.getProduct(), cartItem.getQuantity());
         Mockito.verify(cart, Mockito.times(2)).getCartItems();
     }
+
+    @Test
+    public void testUpdate(){
+        Cart cart = new Cart();
+        Mockito.when(product.getStock()).thenReturn(10);
+        Mockito.when(cartItem.getProduct()).thenReturn(product);
+        cartService.update(cart, cartItem.getProduct(), 2);
+        assertEquals(2, cart.getCartItems().get(0).getQuantity());
+    }
+
+    @Test
+    public void testDelete(){
+        Cart cart = new Cart();
+        Mockito.when(cartItem.getProduct()).thenReturn(product);
+        Mockito.when(product.getStock()).thenReturn(10);
+        cartService.add(cart, cartItem.getProduct(), 2);
+        cartService.delete(cart, cartItem.getProduct());
+        assertTrue(cart.getCartItems().isEmpty());
+    }
 }
