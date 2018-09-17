@@ -64,6 +64,23 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
+    public void saveExistedProduct() {
+        Product product = spy(Product.class);
+        product.setId(3L);
+        product.setPrice(BigDecimal.ONE);
+        product.setStock(1);
+        Product updatedProduct = spy(Product.class);
+        updatedProduct.setId(3L);
+        updatedProduct.setPrice(BigDecimal.ONE);
+        updatedProduct.setStock(2);
+        List<Product> productList = new ArrayList<>();
+        productList.add(product);
+        setInternalState(productDao, "productList", productList);
+        productDao.save(updatedProduct);
+        assertEquals(product.getStock(), productDao.getProduct(3L).getStock());
+    }
+
+    @Test
     public void remove() {
         Product product = mock(Product.class);
         when(product.getId()).thenReturn(3L);

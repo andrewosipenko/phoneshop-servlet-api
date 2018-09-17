@@ -53,8 +53,11 @@ public class ArrayListProductDao implements ProductDao{
     @Override
     public synchronized void save(Product product) {
         if (productList.stream()
-                .noneMatch((p) -> p.equals(product)))
+                .noneMatch((p) -> p.equals(product))) {
             productList.add(product);
+        } else {
+            productList.set(productList.indexOf(getProduct(product.getId())), product);
+        }
     }
 
     @Override
