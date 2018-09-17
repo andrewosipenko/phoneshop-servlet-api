@@ -1,7 +1,9 @@
     <%@ page contentType="text/html;charset=UTF-8" %>
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
         <jsp:useBean id="product" type="com.es.phoneshop.model.Product" scope="request"/>
+        <fmt:setBundle basename = "com.es.phoneshop.resources.MyResources" var = "lang"/>
         <html>
         <head></head>
         <body>
@@ -10,7 +12,7 @@
         PDP
         </p>
         <c:if test="${not empty success}">
-            <label style="color: green">${success}</label>
+            <label style="color: green"><fmt:message key = "${success}" bundle = "${lang}"/></label>
         </c:if>
         <form method=post>
         <table bgcolor="#32cd32" border="1px">
@@ -45,7 +47,7 @@
         <input type = "text" name = "quantity" id = quantity value = "${empty productQuantityOnPDP ? 1 : productQuantityOnPDP}"
         style = "text-align: right">
         <c:if test="${not empty error}">
-            <label for = quantity style="color: red">${error}</label>
+            <label for = quantity style="color: red"><fmt:message key = "${error}" bundle = "${lang}"/></label>
         </c:if>
         </td>
         <td>

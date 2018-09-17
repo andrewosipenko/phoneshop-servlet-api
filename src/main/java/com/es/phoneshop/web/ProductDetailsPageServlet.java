@@ -56,18 +56,18 @@ public class ProductDetailsPageServlet extends HttpServlet {
             Locale locale = request.getLocale();
             quantity = DecimalFormat.getInstance(locale).parse(request.getParameter("quantity")).intValue();
         } catch (ParseException ex) {
-            session.setAttribute(ERROR_ATTRIBUTE_NAME, "Not a number");
+            session.setAttribute(ERROR_ATTRIBUTE_NAME, "notNumberError");
             setAttributeProduct(product, request, response);
             return;
         }
         if (quantity<=0) {
-            session.setAttribute(ERROR_ATTRIBUTE_NAME, "Quantity must be >0");
+            session.setAttribute(ERROR_ATTRIBUTE_NAME, "notPositiveNumberError");
             setAttributeProduct(product, request, response);
             return;
         }
         Cart cart = cartService.getCart(request);
         cartService.add(cart, product, quantity);
-        session.setAttribute(SUCCESS_ATTRIBUTE_NAME, "Products were successfully added.");
+        session.setAttribute(SUCCESS_ATTRIBUTE_NAME, "success");
         setAttributeProduct(product, request, response);
     }
 
