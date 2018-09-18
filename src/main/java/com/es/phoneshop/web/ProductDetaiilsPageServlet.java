@@ -45,6 +45,9 @@ public class ProductDetaiilsPageServlet extends HttpServlet {
         try {
             quantity = DecimalFormat.getInstance(locale).parse(request.getParameter("quantity")).intValue();
             if(quantity < 0){
+                throw new NumberFormatException();
+            }
+            if(quantity > product.getStock()){
                 throw new IllegalArgumentException();
             }
         } catch (NumberFormatException ex) {

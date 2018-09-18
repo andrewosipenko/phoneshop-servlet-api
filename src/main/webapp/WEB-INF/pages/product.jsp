@@ -45,7 +45,7 @@
                        style="text-align: right">
                 <c:if test="${error}">
                     <label for = "quantity">
-                        <fmt:message key="error.${errorText}" />
+                        <fmt:message key="${errorText}" />
                     </label>
                 </c:if>
             </td>
