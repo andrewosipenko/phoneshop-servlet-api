@@ -70,7 +70,7 @@ public class CartServiceImpl implements CartService {
     public void delete(Cart cart, Product product, int id) {
         synchronized (cart) {
             List<CartItem> cartItems = cart.getCartItems();
-            cartItems.remove(id);
+            cartItems.remove(cartItems.get(id));
         }
     }
 }
