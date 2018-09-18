@@ -1,11 +1,22 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
-<jsp:include page ="/WEB-INF/common/header.jsp"/>
+<jsp:include page="/WEB-INF/common/header.jsp"/>
+<html>
 
+<head>
+    <style>
+        <%@include file="/WEB-INF/style/productListStyles.css"%>
+    </style>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/productListStyles.css">
+    <title>ProductList</title>
+</head>
+
+<body>
 <p>
-    Hello from product list!
+    Product List
 </p>
 <table>
     <thead>
@@ -30,6 +41,8 @@
     </c:forEach>
 </table>
 
-<jsp:include page ="/WEB-INF/common/footer.jsp"/>
+</body>
+</html>
 
-<jsp:include page ="/WEB-INF/common/footer.jsp"/>
+<jsp:include page="/WEB-INF/common/footer.jsp"/>
+

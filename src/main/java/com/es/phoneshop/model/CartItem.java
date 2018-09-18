@@ -1,14 +1,28 @@
 package com.es.phoneshop.model;
 
+import java.util.Objects;
+
 public class CartItem {
     private Product product;
+    private int quantity;
 
     public CartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    private int quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItem item = (CartItem) o;
+        return product.equals(item.product)&&(quantity == item.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product.getId(), quantity);
+    }
 
     public Product getProduct() {
         return product;

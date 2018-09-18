@@ -6,7 +6,7 @@
 <jsp:include page ="/WEB-INF/common/header.jsp"/>
 <html>
 <head>
-    <title>Title</title>
+    <title>Cart</title>
 </head>
 <body>
 <p>
@@ -21,6 +21,7 @@
     <td>Price</td>
     <td>Currency</td>
     <td>Stock</td>
+    <td>Quantity</td>
 </tr>
 </thead>
 <c:forEach var="cartItem" items="${cart.getCartItems()}">
@@ -31,6 +32,7 @@
         <td>${cartItem.product.price}</td>
         <td>${cartItem.product.currency}</td>
         <td>${cartItem.product.stock}</td>
+        <td>${cartItem.quantity}</td>
     </tr>
 </c:forEach>
 </table>

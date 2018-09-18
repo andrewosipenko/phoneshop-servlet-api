@@ -10,20 +10,39 @@
     z-index: 2;
 }
 
-.newPhoto {
-   /* background-color: transparent;
-    background-position: center;
-    background-repeat: no-repeat;*/
-    background: url(/mainIkon.png) 100% 100% no-repeat;
-    background-size: cover;
-    border: none;
-    margin: 15px 30px;
-    width: 54px;
-    height: 43px;
+html, body {
+    font-family: /*gabriola*/ mv boli,Bradley Hand, cursive;
+    min-width: 750px;
 }
 
+.ikon button{
+    outline: none;
+    background-color: black;
+    border: none;
+    width: 40px;
+    height: 40px;
+}
+
+.ikon {
+    margin: auto 0em auto 1em;
+    width: 3.5em;
+    height: 3.5em;
+}
+
+
+.nativeLink{
+    text-decoration: none;
+    color: black;
+}
 
 .title {
     font-size: 3em;
     margin: auto;
 }
+
+.cartIkon{
+    margin: auto 1em auto 0em;
+    width: 3.5em;
+    height: 3.5em;
+}
+
