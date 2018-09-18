@@ -67,10 +67,10 @@ public class CartServiceImpl implements CartService {
         addOrUpdate(cart, product, quantity, false);
     }
 
-    public void delete(Cart cart, Product product) {
+    public void delete(Cart cart, Product product, int id) {
         synchronized (cart) {
             List<CartItem> cartItems = cart.getCartItems();
-            cartItems.remove(new CartItem(product, 0));
+            cartItems.remove(id);
         }
     }
 }

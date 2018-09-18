@@ -13,12 +13,12 @@
 </div>
 <div>
     <form method="post">
-        <c:if test = "${not empty successUpdate}">
+        <c:if test = "${not empty param.successUpdate}">
             <label>
-                Update successfully
+                Update ${param.successUpdate} items successfully
             </label>
         </c:if>
-        <c:if test = "${not empty successDelete}">
+        <c:if test = "${not empty param.successDelete}">
             <label>
                 Delete successfully
             </label>

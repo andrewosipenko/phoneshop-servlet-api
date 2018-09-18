@@ -34,44 +34,21 @@ public class CartPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        /*String[] productIds = request.getParameterValues("productId");
-        String[] quantities = request.getParameterValues("quantity");
-        String[] errors = new String[productIds.length];
-        for(int i=0; i<productIds.length; i++){
-            Product product = productDAO.getProduct(Long.valueOf(productIds[i]));
-            Locale locale = request.getLocale();
-            try{
-                int quantity = DecimalFormat.getInstance(locale).parse(quantities[i]).intValue();
-                if (quantity < 0)
-                    throw new UnderZeroException(UnderZeroException.UNDER_ZERO_MESSAGE);
-                if (quantity > product.getStock())
-                    throw new NotEnoughException(NotEnoughException.NOT_ENOUGH_MESSAGE);
-                cartService.update(cartService.getCart(request), product, quantity);
-                response.sendRedirect("cart");
-                return;
-            }catch (ParseException e){
-                errors[i] = "not a number";
-            }catch (UnderZeroException e){
-                errors[i] = UnderZeroException.UNDER_ZERO_MESSAGE;
-            }catch (NotEnoughException e){
-                errors[i] = NotEnoughException.NOT_ENOUGH_MESSAGE;
-            }
-        }
-        request.setAttribute("errors", errors);
-        doGet(request, response);*/
         boolean ifAnError = false;
         String[] productIds = request.getParameterValues("productId");
         String[] quantities = request.getParameterValues("quantity");
         String[] errors = new String[productIds.length];
-        String[] deletesValue = request.getParameterValues("delete");
+        String deleteValue = request.getParameter("delete");
         Locale locale = request.getLocale();
         ResourceBundle res = ResourceBundle.getBundle("messages", locale);
         Cart cart = cartService.getCart(request);
         int quantity;
-        if (deletesValue != null) {
-            int deletedProductId = Integer.valueOf(deletesValue[0]);
+        if (deleteValue != null) {
+            int deletedProductId = Integer.valueOf(deleteValue);
+            Product product = cartService.getCart(request).getCartItems().get(deletedProductId).getProduct();
+            cartService.delete(cart, product, deletedProductId);
             request.setAttribute("successDelete", true);
-            cartService.delete(cart, cartService.getCart(request).getCartItems().get(deletedProductId).getProduct());
+            //response.sendRedirect(request.getRequestURI() + "?successDelete");
         } else {
             for (int i = 0; i < productIds.length; i++) {
                 Product product = productDAO.getProduct(Long.valueOf(productIds[i]));
@@ -81,7 +58,9 @@ public class CartPageServlet extends HttpServlet {
                         throw new UnderZeroException(UnderZeroException.UNDER_ZERO_MESSAGE);
                     }
                     cartService.update(cartService.getCart(request), product, quantity);
-                    request.setAttribute("successUpdate", true);
+                    request.setAttribute("successUpdate", quantity);
+                    response.sendRedirect(request.getRequestURI() + "?successUpdate=" + quantity);
+                    return;
                 } catch (ParseException e) {
                     errors[i] = res.getString("error.number.format");
                     ifAnError = true;
@@ -94,12 +73,13 @@ public class CartPageServlet extends HttpServlet {
                 }
             }
         }
-        if (!ifAnError) {
-            response.sendRedirect(request.getRequestURL().toString());
-        } else {
+        if (ifAnError) {
             request.setAttribute("quantities", quantities);
             request.setAttribute("error", true);
             request.setAttribute("errors", errors);
+            doGet(request, response);
+        }
+        else {
             doGet(request, response);
         }
     }
