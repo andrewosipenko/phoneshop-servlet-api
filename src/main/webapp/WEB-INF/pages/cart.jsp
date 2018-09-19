@@ -13,12 +13,12 @@
 </div>
 <div>
     <form method="post">
-        <c:if test = "${not empty param.successUpdate}">
+        <c:if test = "${param.successUpdate != null}">
             <label>
-                Update ${param.successUpdate} items successfully
+                Update items successfully
             </label>
         </c:if>
-        <c:if test = "${not empty param.successDelete}">
+        <c:if test = "${param.successDelete != null}">
             <label>
                 Delete successfully
             </label>
@@ -45,7 +45,7 @@
                         <input type="hidden" name="productId" value="${cartItems.product.id}">
                         <input type="text" id="quantity${status.index}" name="quantity"
                                value="${quantities[status.index] != null ? quantities[status.index] : cartItems.quantity}">
-                        <c:if test="${not empty errors}">
+                        <c:if test="${errors[status.index] != null}">
                             <label for="quantity${status.index}">${errors[status.index]}</label>
                         </c:if>
                     </td>

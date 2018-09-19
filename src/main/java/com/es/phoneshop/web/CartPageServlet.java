@@ -48,7 +48,8 @@ public class CartPageServlet extends HttpServlet {
             Product product = cartService.getCart(request).getCartItems().get(deletedProductId).getProduct();
             cartService.delete(cart, product, deletedProductId);
             request.setAttribute("successDelete", true);
-            //response.sendRedirect(request.getRequestURI() + "?successDelete");
+            response.sendRedirect(request.getRequestURI() + "?successDelete");
+            return;
         } else {
             for (int i = 0; i < productIds.length; i++) {
                 Product product = productDAO.getProduct(Long.valueOf(productIds[i]));
@@ -58,9 +59,9 @@ public class CartPageServlet extends HttpServlet {
                         throw new UnderZeroException(UnderZeroException.UNDER_ZERO_MESSAGE);
                     }
                     cartService.update(cartService.getCart(request), product, quantity);
-                    request.setAttribute("successUpdate", quantity);
+                    /*request.setAttribute("successUpdate", quantity);
                     response.sendRedirect(request.getRequestURI() + "?successUpdate=" + quantity);
-                    return;
+                    return;*/
                 } catch (ParseException e) {
                     errors[i] = res.getString("error.number.format");
                     ifAnError = true;
@@ -80,7 +81,9 @@ public class CartPageServlet extends HttpServlet {
             doGet(request, response);
         }
         else {
-            doGet(request, response);
+            request.setAttribute("successUpdate", true);
+            response.sendRedirect(request.getRequestURI() + "?successUpdate");
+
         }
     }
 }
