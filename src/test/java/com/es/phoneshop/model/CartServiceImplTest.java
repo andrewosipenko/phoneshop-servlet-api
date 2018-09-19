@@ -9,7 +9,10 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -55,10 +58,28 @@ public class CartServiceImplTest {
     @Test
     public void testAdd() {
         //Cart cart = new Cart();
-        Mockito.when(product.getStock()).thenReturn(10);
-        Mockito.when(cartItem.getProduct()).thenReturn(product);
-
-        cartService.add(cart, cartItem.getProduct(), cartItem.getQuantity());
+        Product product = new Product(1L, "code", "desc", new BigDecimal(10),
+                Currency.getInstance(Locale.UK), 10);
+        cartService.add(cart, product, cartItem.getQuantity());
         Mockito.verify(cart, Mockito.times(2)).getCartItems();
+    }
+
+    @Test
+    public void testUpdate(){
+        Cart cart = new Cart();
+        Product product = new Product(1L, "code", "desc", new BigDecimal(10),
+                Currency.getInstance(Locale.UK), 10);
+        cartService.update(cart, product, 2);
+        assertEquals(2, cart.getCartItems().get(0).getQuantity());
+    }
+
+    @Test
+    public void testDelete(){
+        Cart cart = new Cart();
+        Product product = new Product(1L, "code", "desc", new BigDecimal(10),
+                Currency.getInstance(Locale.UK), 10);
+        cartService.add(cart, product, 2);
+        cartService.delete(cart, product, 0);
+        assertTrue(cart.getCartItems().isEmpty());
     }
 }
