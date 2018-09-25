@@ -39,6 +39,11 @@ public class CartService implements Serializable{
         }
     }
 
+    public void clearCart(Cart cart){
+        List<CartItem> list = cart.getCartItems();
+        list.clear();
+    }
+
 
     public void add(Cart cart, Product product, int quantity){
         addOrUpdate(cart, product, quantity, true);

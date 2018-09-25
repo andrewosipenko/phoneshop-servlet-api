@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DosFilter implements Filter {
-    private final int MAX_COUNT = 100;
+    private final int MAX_COUNT = 10;
     private final int INTERVAL_SECONDS = 5000;
 
     private Map<String, Integer> requestCountMap = Collections.synchronizedMap(new HashMap());
