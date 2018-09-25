@@ -15,6 +15,17 @@
     <location>/WEB-INF/pages/errorPage404.jsp</location>
   </error-page>
 
+  <filter>
+    <filter-name>dosFilter</filter-name>
+    <filter-class>com.es.phoneshop.web.filters.DosFilter</filter-class>
+  </filter>
+
+
+  <filter-mapping>
+    <filter-name>dosFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <listener>
     <listener-class>com.es.phoneshop.web.SampleDataServletContextListener</listener-class>
   </listener>
@@ -56,6 +67,27 @@
   <servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>*.png</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>checkoutPage</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>checkoutPage</servlet-name>
+    <url-pattern>/checkout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>orderOverview</servlet-name>
+    <servlet-class>com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>orderOverview</servlet-name>
+    <url-pattern>/orderOverview/*</url-pattern>
   </servlet-mapping>
 
 </web-app>

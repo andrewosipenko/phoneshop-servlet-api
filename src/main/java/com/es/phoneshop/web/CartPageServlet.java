@@ -38,7 +38,6 @@ public class CartPageServlet extends HttpServlet {
         String[] quantities = request.getParameterValues("quantity");
         String[] errors = new String[productIds.length];
         if(request.getParameter("delete") != null){
-            System.out.println("delete id true");
             deleteItem(request);
             doGet(request, response);
             return;

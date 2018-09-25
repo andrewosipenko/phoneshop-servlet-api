@@ -27,6 +27,7 @@ public class Product implements Serializable{
         return id;
     }
 
+    public Product(){}
     public Product(Long id ,String code, String description, BigDecimal price,Currency currency, int stock) {
         this.id = id;
         this.code = code;
@@ -35,7 +36,6 @@ public class Product implements Serializable{
         this.currency = currency;
         this.stock = stock;
     }
-
     public void setId(Long id) {
         this.id = id;
     }

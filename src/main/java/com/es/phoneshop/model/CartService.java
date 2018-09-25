@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class CartService{
+public class CartService implements Serializable{
     private static final String CART_ATTRIBUTE_NAME = "cart";
     private static CartService instance = new CartService();
 
@@ -34,7 +34,6 @@ public class CartService{
         for(int i = 0; i < list.size(); i++){
             if(product.equals(list.get(i).getProduct())){
                 list.remove(i);
-                System.out.println("remove");
                 break;
             }
         }
