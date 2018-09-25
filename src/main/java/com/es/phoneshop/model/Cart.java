@@ -1,9 +1,10 @@
 package com.es.phoneshop.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cart {
+public class Cart implements Serializable{
     private List<CartItem> cartItems = new ArrayList<>();
 
 
