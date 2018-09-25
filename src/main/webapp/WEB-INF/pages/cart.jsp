@@ -54,9 +54,9 @@
     </table>
     <input type="submit" value="Update">
 </form>
-<%--<form method="post" action="<c:url value="/cart/delete"/>">
-    <input type="hidden" name="productId">
-</form>--%>
+<form action="<c:url value="/checkout"/> ">
+    <button>Checkout</button>
+</form>
 </body>
 </html>
 <jsp:include page="/WEB-INF/common/footer.jsp"/>
