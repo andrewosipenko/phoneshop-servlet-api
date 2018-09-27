@@ -38,10 +38,40 @@
     <servlet-name>Cart</servlet-name>
     <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
   </servlet>
+
   <servlet-mapping>
     <servlet-name>Cart</servlet-name>
     <url-pattern>/cart</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Checkout</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Checkout</servlet-name>
+    <url-pattern>/checkout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>OverviewPage</servlet-name>
+    <servlet-class>com.es.phoneshop.web.OverviewPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>OverviewPage</servlet-name>
+    <url-pattern>/checkout/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>DosFilter</filter-name>
+    <filter-class>com.es.phoneshop.web.filters.DosFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>DosFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <error-page>
     <error-code>404</error-code>

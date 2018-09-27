@@ -57,6 +57,9 @@
         </table>
         <input type="submit" value="Update">
     </form>
+    <form action="<c:url value="/checkout"/> ">
+        <button>Checkout</button>
+    </form>
 </div>
 <div class="footer">
     <jsp:include page="/WEB-INF/pages/footer.jsp"/>
