@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class CheckoutPageServlet extends HttpServlet {
     private CartService cartService = CartServiceImpl.getInstance();
@@ -39,10 +40,8 @@ public class CheckoutPageServlet extends HttpServlet {
     }
 
     private int sumTotalCost(HttpServletRequest request) {
-        int totalCost = 0;
-        for(CartItem cartItem : cartService.getCart(request).getCartItems()) {
-            totalCost += cartItem.getQuantity() * cartItem.getProduct().getPrice().intValue();
-        }
-        return totalCost;
+        List<CartItem> cartItems = cartService.getCart(request).getCartItems();
+        return cartItems.stream()
+                .mapToInt(x -> x.getQuantity()*x.getProduct().getPrice().intValue()).sum();
     }
 }
