@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:useBean id="cart" type="com.es.phoneshop.model.Cart" scope="request"/>
 
 <jsp:include page="/WEB-INF/common/header.jsp"/>
+
+<fmt:setBundle basename="i18n.msg"/>
+<fmt:setLocale value="en"/>
 <html>
 <head>
     <title>Cart</title>
@@ -26,7 +28,7 @@
             <td>Quantity</td>
         </tr>
         </thead>
-        <c:forEach var="cartItems" items="${cart.getCartItems()}">
+        <c:forEach var="cartItems" items="${cart.cartItems}" varStatus="status">
             <tr>
                 <td>${cartItems.product.id}</td>
                 <td>${cartItems.product.code}</td>
@@ -34,15 +36,15 @@
                 <td>${cartItems.product.price}</td>
                 <td>${cartItems.product.currency}</td>
                 <td>${cartItems.product.stock}</td>
+                ${status.index}
                 <td>
                     <input type="hidden" name="productId" value="${cartItems.product.id}">
-                    <input type="text" name="quantity" id="quantity${status.index}"
-                           value="${cartItems.quantity}"
-                           class="number">
-                    <c:if test="${not empty errors[status.index]}">
-                        <br>
-                        <label for="quantity${status.index}" class="error">
-                            <fmt:message key="${errors[status.index]}"/>
+                    <input type="text" id="quantity${status.index}" name="quantity"
+                           value="${quantities[status.index] != null ? quantities[status.index] : cartItems.quantity}">
+
+                    <c:if test="${not empty errors && not empty errors[status.index]}">
+                        <label for="quantity${status.index}">
+                            <fmt:message key="${errors[status.index]}" />
                         </label>
                     </c:if>
                 </td>

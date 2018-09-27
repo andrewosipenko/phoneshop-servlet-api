@@ -35,6 +35,7 @@ public class CheckoutPageServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/orderOverview/" + order.getOrderId());
     }
 
+
     private Integer getSum(HttpServletRequest request){
         Integer orderSum = 0;
         for(CartItem cartItem : cartService.getCart(request).getCartItems()){

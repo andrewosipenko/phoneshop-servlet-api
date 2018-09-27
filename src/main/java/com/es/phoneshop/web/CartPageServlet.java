@@ -49,6 +49,9 @@ public class CartPageServlet extends HttpServlet {
             try {
                 int quantity = DecimalFormat.getInstance(locale).parse(quantities[i]).intValue();
                 if (quantity < 0) {
+                    throw new NumberFormatException();
+                }
+                if (quantity > product.getStock()){
                     throw new IllegalArgumentException();
                 }
                 cartService.update(cartService.getCart(request), product, quantity);
@@ -56,7 +59,7 @@ public class CartPageServlet extends HttpServlet {
                 errors[i] = "error";
                 hasErrors = true;
             } catch (ParseException ex) {
-                errors[i] = "error";
+                errors[i] = "NaN";
                 hasErrors = true;
             } catch (IllegalArgumentException ex) {
                 errors[i] = "toMuch";
@@ -64,6 +67,7 @@ public class CartPageServlet extends HttpServlet {
             }
         }
         if (hasErrors) {
+            request.setAttribute("error", true);
             request.setAttribute("errors", errors);
             request.setAttribute("quantities", quantities);
             doGet(request, response);
