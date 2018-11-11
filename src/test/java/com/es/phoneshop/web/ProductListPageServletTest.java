@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ArrayListProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ public class ProductListPageServletTest {
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
+    @Mock
+    private ArrayListProductDao arrayListProductDao;
 
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
@@ -38,4 +41,11 @@ public class ProductListPageServletTest {
 
         verify(requestDispatcher).forward(request, response);
     }
+
+//    @Test
+//    public void testALPDFindProducts() throws ServletException, IOException{
+//        servlet.doGet(request, response);
+//
+//        verify(arrayListProductDao).findProducts();
+//    }
 }
