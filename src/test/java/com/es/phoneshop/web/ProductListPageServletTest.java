@@ -28,7 +28,7 @@ public class ProductListPageServletTest {
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
-    public void setup(){
+    public void setup() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
