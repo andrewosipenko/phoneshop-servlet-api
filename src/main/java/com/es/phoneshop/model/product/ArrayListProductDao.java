@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -16,21 +15,21 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) {
+    public synchronized Product getProduct(Long id) {
         return list.stream()
                 .filter((product) -> product.getId().equals(id))
                 .findFirst().get();
     }
 
     @Override
-    public List<Product> findProducts() {
+    public synchronized List<Product> findProducts() {
         return list.stream()
                 .filter(product -> product.getPrice() != null && product.getStock() > 0)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void save(Product product) {
+    public synchronized void save(Product product) {
 
         for(Product pr:list){
             if(pr.equals(product)) throw new RuntimeException();
@@ -40,7 +39,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public synchronized void delete(Long id) {
         for(Product pr : list){
             if(pr.getId().equals(id)){
                 list.remove(pr);
@@ -50,7 +49,7 @@ public class ArrayListProductDao implements ProductDao {
         throw new RuntimeException();
     }
 
-    public void addDefaultProducts(){
+    public synchronized void addDefaultProducts(){
         Currency usd = Currency.getInstance("USD");
         list.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         list.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
