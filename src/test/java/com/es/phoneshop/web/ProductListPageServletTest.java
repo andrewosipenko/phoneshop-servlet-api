@@ -23,9 +23,7 @@ public class ProductListPageServletTest {
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
-
     private ProductListPageServlet servlet = new ProductListPageServlet();
-
     private final String path = "/WEB-INF/pages/productList.jsp";
     @Before
     public void setup(){
