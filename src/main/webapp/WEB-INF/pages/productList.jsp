@@ -20,6 +20,10 @@
       <p>
         Welcome to Expert-Soft training!
       </p>
+        <form>
+            <input type="search" name="query" value="${param.query}" class="input">
+            <button type="submit">Search</button>
+        </form>
       <table>
         <thead>
           <tr>

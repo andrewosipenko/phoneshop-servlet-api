@@ -40,7 +40,7 @@ public class ProductListPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //  productDao.delete(20L);
         //productDao.save(new Product(12L, "simsxg75", "Siemens SXG75", new BigDecimal(150), Currency.getInstance("USD"), 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-        request.setAttribute("products", productDao.findProducts());
+        request.setAttribute("products", productDao.findProducts(request.getParameter("query")));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

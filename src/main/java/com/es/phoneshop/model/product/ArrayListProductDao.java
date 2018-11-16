@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static List<Product> products = new ArrayList<>() ;
+    private static List<Product> products = new ArrayList<>();
 
     private static volatile ArrayListProductDao instance /*= new ArrayListProductDao()*/;
 
@@ -12,9 +12,9 @@ public class ArrayListProductDao implements ProductDao {
 
     }
     public static ArrayListProductDao getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             synchronized (ArrayListProductDao.class) {
-                if(instance == null) {
+                if (instance == null) {
                     instance = new ArrayListProductDao();
                 }
             }
@@ -35,11 +35,18 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized List<Product> findProducts() {
-        List<Product> result = products.stream().
+    public synchronized List<Product> findProducts(String query) {
+        /*String string = query.toLowerCase();
+        String str = string.replaceAll("\\s","|");
+        String string1 = ".*("+str+").*";*/
+
+        Set<String> querySet = stringToSet(query.toLowerCase());
+        return products.stream().
                 filter(product -> product.getPrice() != null && product.getStock() > 0).
-                collect(Collectors.toCollection(ArrayList::new));
-        return result;
+               // filter(product -> str == null || product.getDescription().matches(string1)).
+                filter(product -> (query == "") || stringToSet(product.getDescription().toLowerCase()).removeAll(querySet)).
+                sorted(new ProductComparator(querySet)).
+                collect(Collectors.toList());
     }
 
     @Override
@@ -58,8 +65,38 @@ public class ArrayListProductDao implements ProductDao {
         Product product = getProduct(id);
         if (product != null) {
             products.remove(product);
-        } else throw new NoSuchElementException("Does not contain such product");
+        } else {
+            throw new NoSuchElementException("Does not contain such product");
+        }
     }
 
+    private Set<String> stringToSet(String string) {
+        Set<String> stringSet = new HashSet<>();
+        StringTokenizer st = new StringTokenizer(string, "  \t\n\r,:-");
+        while (st.hasMoreTokens()) {
+            stringSet.add(st.nextToken());
+        }
+        return stringSet;
+    }
+
+    class ProductComparator implements Comparator<Product> {
+        private Set<String> querySet;
+
+        @Override
+        public int compare(Product o1, Product o2) {
+            Set<String> firstSet = stringToSet(o1.getDescription().toLowerCase());
+            firstSet.retainAll(querySet);
+            Set<String> secondSet = stringToSet(o2.getDescription().toLowerCase());
+            secondSet.retainAll(querySet);
+
+            return (-firstSet.size() + secondSet.size());
+
+        }
+
+        public ProductComparator(Set<String> querySet){
+            this.querySet = querySet;
+
+        }
+    }
 
 }
