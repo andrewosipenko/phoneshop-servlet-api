@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ProductListPageServlet extends HttpServlet {
+public class ProductDetailsPageServlet extends HttpServlet {
     ProductDao productDao;
 
     @Override
@@ -19,11 +19,10 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.findProducts(
-                request.getParameter("query"),
-                request.getParameter("sort"),
-                request.getParameter("order")
-        ));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        String id = request.getRequestURI().substring((request.getContextPath() + request.getServletPath()).length() + 1);
+        request.setAttribute("product", productDao.getProduct(Long.valueOf(id)));
+        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
+
+
 }

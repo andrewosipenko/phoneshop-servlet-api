@@ -21,15 +21,21 @@
         Welcome to Expert-Soft training!
       </p>
         <form>
-            <input type="search" name="query" value="${param.query}" class="input">
+            <input type="search" name="query" value="${param.query}" >
             <button type="submit">Search</button>
         </form>
       <table>
         <thead>
           <tr>
             <td>Image</td>
-            <td>Description</td>
-            <td class="price">Price</td>
+            <td>Description
+             <a href="${pageContext.servletContext.contextPath}/products?sort=description&order=asc&query=${param.query}">asc</a>
+              <a href="${pageContext.servletContext.contextPath}/products?sort=description&order=desc&query=${param.query}">desc</a>
+            </td>
+            <td class="price">Price
+              <a href="${pageContext.servletContext.contextPath}/products?sort=price&order=asc&query=${param.query}">asc</a>
+              <a href="${pageContext.servletContext.contextPath}/products?sort=price&order=desc&query=${param.query}">desc</a>
+            </td>
           </tr>
         </thead>
         <c:forEach var="product" items="${products}">
@@ -37,7 +43,9 @@
             <td>
               <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
             </td>
-            <td>${product.description}</td>
+            <td>
+              <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
+            </td>
             <td class="price">
               <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
             </td>

@@ -1,6 +1,5 @@
 package com.es.phoneshop.model.product;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,18 +27,20 @@ public class ArrayListProductDaoTest {
     @Test
     public void testFindProductsNoResults() {
 
-        assertTrue(productDao.findProducts().isEmpty());
+        assertTrue(productDao.findProducts("", null, null).isEmpty());
     }
 
     @Test
     public void testFindProductsResults() {
         Currency usd = Currency.getInstance("USD");
-        productDao.save(new Product(1L, "sgs", "Samsung Galaxy S II", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
+       /* productDao.save(new Product(1L, "sgs", "Samsung Galaxy S II", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         productDao.save(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
         productDao.save(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
-        productDao.save(new Product(4L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
+        */productDao.save(new Product(4L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
         productDao.save(new Product(5L, "iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg"));
         productDao.save(new Product(6L, "htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));
+        productDao.save(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
+
 
         products.add(new Product(1L, "sgs", "Samsung Galaxy S II", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         products.add(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
@@ -47,7 +48,7 @@ public class ArrayListProductDaoTest {
         products.add(new Product(5L, "iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg"));
         products.add(new Product(6L, "htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));
 
-        assertEquals(productDao.findProducts(), products);
+        assertEquals(productDao.findProducts("Apple c56", null, null), products);
     }
 
 
@@ -55,7 +56,7 @@ public class ArrayListProductDaoTest {
     public void testSafe() {
         products.add(PRODUCT);
         productDao.save(PRODUCT);
-        assertEquals(productDao.findProducts(), products);
+        assertEquals(productDao.findProducts("", null, null), products);
     }
 
     @Test(expected = NullPointerException.class)
@@ -70,7 +71,7 @@ public class ArrayListProductDaoTest {
         Long id = PRODUCT.getId();
         productDao.delete(id);
 
-        assertTrue(productDao.findProducts().isEmpty());
+        assertTrue(productDao.findProducts("", null, null).isEmpty());
     }
 
     @Test
