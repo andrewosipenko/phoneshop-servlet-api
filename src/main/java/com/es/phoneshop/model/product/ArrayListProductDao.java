@@ -66,6 +66,7 @@ public class ArrayListProductDao implements ProductDao {
     public void delete(Long id) {
         boolean flagId = false;
         synchronized (this) {
+           //products.removeIf(x->x.getId().equals(id));
             for (Product product : products) {
                 if (product.getId().equals(id)) {
                     products.remove(product);
@@ -73,7 +74,6 @@ public class ArrayListProductDao implements ProductDao {
                 }
             }
         }
-
         if(!flagId){
             throw new RuntimeException("Product with id: " + id + " was not founded");
         }
