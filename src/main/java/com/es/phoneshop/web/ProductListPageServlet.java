@@ -21,7 +21,7 @@ public class ProductListPageServlet extends HttpServlet {
     }
 
     private List<Product> getSampleProducts(){
-        ArrayListProductDao products = new ArrayListProductDao();
+        ArrayListProductDao products = ArrayListProductDao.getObject();
         List<Product> result = products.findProducts();
 
         return result;

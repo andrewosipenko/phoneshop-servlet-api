@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Currency;
 
 public class ArrayListProductDao implements ProductDao {
+    private static ArrayListProductDao object;
     private List<Product> products;
     private Currency usd = Currency.getInstance("USD");
-
-    public ArrayListProductDao() {
+    private ArrayListProductDao() {
         products = new ArrayList<>(13);
         products.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         products.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
@@ -25,6 +25,18 @@ public class ArrayListProductDao implements ProductDao {
         products.add(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         products.add(new Product(12L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
         products.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
+    }
+
+    public static ArrayListProductDao getObject(){
+        if(object == null){
+            synchronized(ArrayListProductDao.class){
+                if(object == null){
+                    object = new ArrayListProductDao();
+                }
+            }
+
+        }
+        return object;
     }
 
     @Override
