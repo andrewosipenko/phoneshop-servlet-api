@@ -10,6 +10,7 @@ public class ArrayListProductDao implements ProductDao {
     private static ArrayListProductDao object;
     private List<Product> products;
     private Currency usd = Currency.getInstance("USD");
+
     private ArrayListProductDao() {
         products = new ArrayList<>(13);
         products.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
@@ -27,10 +28,10 @@ public class ArrayListProductDao implements ProductDao {
         products.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
     }
 
-    public static ArrayListProductDao getObject(){
-        if(object == null){
-            synchronized(ArrayListProductDao.class){
-                if(object == null){
+    public static ArrayListProductDao getObject() {
+        if (object == null) {
+            synchronized (ArrayListProductDao.class) {
+                if (object == null) {
                     object = new ArrayListProductDao();
                 }
             }
@@ -41,7 +42,11 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Product getProduct(Long id) {
-        throw new RuntimeException("Not implemented");
+        for (Product product : products) {
+            if (product.getId().equals(id))
+                return product;
+        }
+        throw new RuntimeException("Product with " + id + " was not founded!");
     }
 
     @Override
@@ -52,13 +57,28 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product) {
-        if(product.getStock() > 0 && product.getPrice() != null){
+        if (product.getStock() > 0 && product.getPrice() != null) {
             products.add(product);
         }
     }
 
     @Override
     public void delete(Long id) {
-        throw new RuntimeException("Not implemented");
+        boolean flagId = false;
+        synchronized (this) {
+            for (Product product : products) {
+                if (product.getId().equals(id)) {
+                    products.remove(product);
+                    flagId = true;
+                }
+            }
+        }
+
+        if(!flagId){
+            throw new RuntimeException("Product with id: " + id + " was not founded");
+        }
     }
+
 }
+
+
