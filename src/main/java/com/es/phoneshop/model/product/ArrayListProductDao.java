@@ -31,10 +31,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized List<Product> findProducts(String query) {
-        /*return products.stream()
-                .filter(product -> product.getPrice() != null && product.getStock() > 0)
-                .collect(Collectors.toList());*/
+    public synchronized List<Product> findProducts(String query, String sortField, String order) {
 
         List<Product> shownProducts;
         if(query!= null) {
@@ -70,7 +67,26 @@ public class ArrayListProductDao implements ProductDao {
             Collections.reverse(shownProducts);
 
         }else shownProducts = products;
-        return shownProducts;
+
+        if(sortField != null && order != null){
+            if(sortField.equals("description")) {
+                if (order.equals("asc")) {
+                    shownProducts.sort(Comparator.comparing(Product::getDescription));
+                } else if (order.equals("desc")) {
+                    shownProducts.sort(Comparator.comparing(Product::getDescription).reversed());
+                }
+            }else if(sortField.equals("price")){
+                if (order.equals("asc")) {
+                    shownProducts.sort(Comparator.comparing(Product::getPrice));
+                } else if (order.equals("desc")) {
+                    shownProducts.sort(Comparator.comparing(Product::getPrice).reversed());
+                }
+            }
+        }
+
+        return shownProducts.stream()
+                .filter(product -> product.getPrice() != null && product.getStock() > 0)
+                .collect(Collectors.toList());
     }
 
     @Override
