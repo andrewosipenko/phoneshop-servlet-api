@@ -9,7 +9,7 @@ public class ArrayListProductDao implements ProductDao {
     private static volatile ArrayListProductDao instance;
     private ArrayList<Product> products;
 
-    public ArrayListProductDao() {
+    private ArrayListProductDao() {
         products = new ArrayList<>();
     }
 
@@ -37,13 +37,11 @@ public class ArrayListProductDao implements ProductDao {
         if(query!= null) {
             String queryInLowerCase = query.toLowerCase();
             Map<Product, Integer> mapOfProducts = new HashMap<>();
-            products.stream()
-                    .forEach(product -> mapOfProducts.put(product, 0));
+            products.forEach(product -> mapOfProducts.put(product, 0));
 
             String[] words = queryInLowerCase.split("\\s");
             for(String word : words) {
-                products.stream().forEach(
-                        product -> {
+                products.forEach(product -> {
                             if (product.getDescription() != null && product.getDescription().toLowerCase().contains(word)){
                                 mapOfProducts.put(product, mapOfProducts.get(product) + 1);
                             }
@@ -58,29 +56,24 @@ public class ArrayListProductDao implements ProductDao {
                             Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
 
             shownProducts = new ArrayList<>();
-            sortedMap.entrySet().stream().forEach(
-                    elemOfMap -> {
-                        if(elemOfMap.getValue() > 0)
-                        shownProducts.add(elemOfMap.getKey());
-                    });
+            sortedMap.forEach((key, value) -> {
+                if (value > 0)
+                    shownProducts.add(key);
+            });
 
             Collections.reverse(shownProducts);
 
         }else shownProducts = products;
 
+        Map<String, Comparator<Product>> mapForComparing = new HashMap<>();
+        mapForComparing.put("description", Comparator.comparing(Product::getDescription));
+        mapForComparing.put("price", Comparator.comparing(Product::getPrice));
+
         if(sortField != null && order != null){
-            if(sortField.equals("description")) {
-                if (order.equals("asc")) {
-                    shownProducts.sort(Comparator.comparing(Product::getDescription));
-                } else if (order.equals("desc")) {
-                    shownProducts.sort(Comparator.comparing(Product::getDescription).reversed());
-                }
-            }else if(sortField.equals("price")){
-                if (order.equals("asc")) {
-                    shownProducts.sort(Comparator.comparing(Product::getPrice));
-                } else if (order.equals("desc")) {
-                    shownProducts.sort(Comparator.comparing(Product::getPrice).reversed());
-                }
+            if (order.equals("asc")){
+                shownProducts.sort(mapForComparing.get(sortField));
+            }else if (order.equals("desc")) {
+                shownProducts.sort(mapForComparing.get(sortField).reversed());
             }
         }
 
