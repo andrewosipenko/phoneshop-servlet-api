@@ -8,9 +8,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Sorry!</title>
+    <title></title>
 </head>
 <body>
-    Product with such code not found
+<h1 style="background: #fff4f0; color: #570022" >
+    Sorry!
+</h1>
+   <h2>
+       <img src="https://pro-wordpress.ru/wp-content/uploads/2014/04/er5.jpg">
+    Product with such code is not found
+   </h2>
 </body>
 </html>

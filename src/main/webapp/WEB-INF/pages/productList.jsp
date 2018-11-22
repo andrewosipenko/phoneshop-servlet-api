@@ -21,9 +21,15 @@
         Welcome to Expert-Soft training!
       </p>
         <form>
-            <input type="search" name="query" value="${param.query}" >
-            <button type="submit">Search</button>
+          <input type="hidden" name="sort" value="${param.sort}">
+          <input type="hidden" name="order" value="${param.order}">
+          <input type="search" name="query" value="${param.query}" >
+          <button type="submit">Search</button>
         </form>
+      <form>
+        <input type="hidden" name="query" value="${param.query}">
+        <button type="submit">Skip Sort Parametrs</button>
+      </form>
       <table>
         <thead>
           <tr>
