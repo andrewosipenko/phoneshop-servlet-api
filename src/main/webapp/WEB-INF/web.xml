@@ -19,6 +19,11 @@
     <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
   </servlet>
 
+  <servlet-mapping>
+    <servlet-name>productList</servlet-name>
+    <url-pattern>/products</url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>productDetails</servlet-name>
     <servlet-class> com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
@@ -28,11 +33,6 @@
     <servlet-name>productDetails</servlet-name>
     <url-pattern>/products/*</url-pattern>
   </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>productList</servlet-name>
-    <url-pattern>/products</url-pattern>
-  </servlet-mapping>
 
   <error-page>
     <error-code>404</error-code>
@@ -40,7 +40,7 @@
   </error-page>
 
   <error-page>
-  <exception-type>java.util.NoSuchElementException</exception-type>
+    <exception-type>java.util.NoSuchElementException</exception-type>
     <location>/WEB-INF/pages/404.jsp</location>
   </error-page>
 

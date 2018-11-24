@@ -27,7 +27,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         int prefixWithSlashLength = (request.getContextPath() + request.getServletPath()).length() + 1;
         String id = request.getRequestURI().substring(prefixWithSlashLength);
         request.setAttribute("product", productDao.getProduct(Long.valueOf(id)));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
 
 }
