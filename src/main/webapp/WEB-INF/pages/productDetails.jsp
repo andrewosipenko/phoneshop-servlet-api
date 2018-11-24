@@ -19,17 +19,17 @@
     </a>
 </header>
 <main>
-    <p>
-        Welcome to Expert-Soft training!
-    </p>
-    <form>
-        <input type = "search" name = "query" value="${param.query}" class="input">
-        <button type = "submit">Search</button>
-    </form>
+    <h1>
+        Details
+    </h1>
 
     <p>${product.code}</p>
     <p>${product.description}</p>
 
 </main>
+
 </body>
+<div>
+    <jsp:include page="footer.jsp"/>
+</div>
 </html>

@@ -56,4 +56,7 @@
       </table>
     </main>
   </body>
+  <div>
+      <jsp:include page="footer.jsp"/>
+  </div>
 </html>

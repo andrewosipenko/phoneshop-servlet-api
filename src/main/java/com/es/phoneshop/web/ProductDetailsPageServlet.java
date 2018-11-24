@@ -26,8 +26,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int prefixWithSlashLength = (request.getContextPath() + request.getServletPath()).length() + 1;
         String id = request.getRequestURI().substring(prefixWithSlashLength);
-        request.setAttribute("product", productDao.getProduct(Long.valueOf(id)));
-        request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+
+        try {
+            request.setAttribute("product", productDao.getProduct(Long.valueOf(id)));
+            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+        } catch (RuntimeException e){
+            request.getRequestDispatcher("/WEB-INF/pages/404.jsp").forward(request, response);
+        }
     }
 
 }
