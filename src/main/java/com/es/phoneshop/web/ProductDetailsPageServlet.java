@@ -10,11 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Currency;
-import java.util.List;
 
-public class ProductListPageServlet extends HttpServlet {
+public class ProductDetailsPageServlet extends HttpServlet {
     ProductDao productDao;
 
     @Override
@@ -26,11 +24,9 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.findProducts(
-                request.getParameter("query"),
-                request.getParameter("sort"),
-                request.getParameter("order")
-        ));
+        int prefixWithSlashLength = (request.getContextPath() + request.getServletPath()).length() + 1;
+        String id = request.getRequestURI().substring(prefixWithSlashLength);
+        request.setAttribute("product", productDao.getProduct(Long.valueOf(id)));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 
