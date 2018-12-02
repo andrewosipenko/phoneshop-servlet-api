@@ -12,6 +12,11 @@ header img {
   max-width: 64px;
 }
 
+footer {
+  padding-bottom: 20px;
+  background-color: aquamarine;
+}
+
 table {
   border-collapse: collapse;
   border : 1px solid gray;
@@ -21,14 +26,26 @@ td {
   border : 1px solid gray;
   vertical-align: top;
 }
-.price {
+.price, .number {
   text-align: right;
 }
 img.product-tile {
   max-width: 64px;
 }
 
-/* Page specific styles */
-body.product-list {
+body main {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
 
+.success {
+  color: green;
+}
+.error {
+  color: red;
+}
+
+/* Page specific styles */
+body.product-details td {
+  border: 1px solid lightgray;
 }

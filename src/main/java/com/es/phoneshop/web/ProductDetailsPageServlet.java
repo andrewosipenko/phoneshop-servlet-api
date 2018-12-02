@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -9,30 +11,60 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Currency;
 
 public class ProductDetailsPageServlet extends HttpServlet {
-    ProductDao productDao;
+    private ProductDao productDao;
+    private CartService cartService;
+
 
     @Override
     public void init() throws ServletException {
         super.init();
 
         productDao = ArrayListProductDao.getInstance();
+        cartService = CartServiceImpl.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int prefixWithSlashLength = (request.getContextPath() + request.getServletPath()).length() + 1;
-        String id = request.getRequestURI().substring(prefixWithSlashLength);
-
         try {
-            request.setAttribute("product", productDao.getProduct(Long.valueOf(id)));
-            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
-        } catch (RuntimeException e){
-            request.getRequestDispatcher("/WEB-INF/pages/404.jsp").forward(request, response);
+            Product product = loadProduct(request);
+            request.setAttribute("product", product);
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        } catch (ClassCastException | IllegalArgumentException e) {
+            response.sendError(404, "Incorrect format of quantity");
         }
     }
 
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Product product = loadProduct(request);
+
+        request.setAttribute("product", product);
+        request.setAttribute("cart", cartService.getCart().getCartItems());
+
+        Integer quantity = null;
+        try {
+            String quantityString = request.getParameter("quantity");
+            quantity = Integer.valueOf(quantityString);
+        } catch (NumberFormatException e) {
+            request.setAttribute("quantityError", "Not a number");
+        }
+        if (quantity != null) {
+            cartService.addToCart(product, quantity);
+            request.setAttribute("message", "Product added successfully");
+            response.sendRedirect(request.getRequestURL() + "?message=Product added successfully");
+        } else {
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        }
+
+    }
+
+    private Product loadProduct(HttpServletRequest request) {
+        StringBuffer url = request.getRequestURL();
+        String stringId = url.substring(url.lastIndexOf("/") + 1);
+        Long id = Long.parseLong(stringId);
+        return productDao.getProduct(id);
+    }
 }

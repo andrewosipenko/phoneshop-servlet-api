@@ -1,6 +1,5 @@
 package com.es.phoneshop.model.product;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,9 +7,16 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
     private static volatile ArrayListProductDao instance;
     private ArrayList<Product> products;
+    private boolean isSorted = false;
+    private Map<String, Comparator<Product>> mapForComparing;
 
     private ArrayListProductDao() {
+
         products = new ArrayList<>();
+
+        mapForComparing = new HashMap<>();
+        mapForComparing.put("description", Comparator.comparing(Product::getDescription));
+        mapForComparing.put("price", Comparator.comparing(Product::getPrice));
     }
 
     public static ArrayListProductDao getInstance(){
@@ -64,10 +70,6 @@ public class ArrayListProductDao implements ProductDao {
             Collections.reverse(shownProducts);
 
         }else shownProducts = products;
-
-        Map<String, Comparator<Product>> mapForComparing = new HashMap<>();
-        mapForComparing.put("description", Comparator.comparing(Product::getDescription));
-        mapForComparing.put("price", Comparator.comparing(Product::getPrice));
 
         if(sortField != null && order != null){
             if (order.equals("asc")){

@@ -1,44 +1,31 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%--<%@ taglib prefix="tags" uri="urn:jsptagdir:/WEB-INF/tags" %>--%>
-
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
-<html>
-  <head>
-    <title>Product List</title>
-    <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
-  </head>
-  <body class="product-list">
-    <header>
-      <a href="${pageContext.servletContext.contextPath}">
-        <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-        PhoneShop
-      </a>
-    </header>
-    <main>
-      <p>
-        Welcome to Expert-Soft training!
-      </p>
-      <form>
-        <input type = "search" name = "query" value="${param.query}" class="input">
+<tags:master pageStyleClass="product-list">
+    <br>
+    <form>
+        <input type="hidden" name="sort" value="${param.sort}"> <%--Now after searching sorting doesn't disappear --%>
+        <input type="hidden" name="order" value="${param.order}">
+        <input type = "search" name = "query" value="${param.query}">
         <button type = "submit">Search</button>
-      </form>
-      <table>
+    </form>
+
+    <table>
         <thead>
-          <tr>
+        <tr>
             <td>Image</td>
             <td>Description
-              <a href="${pageContext.servletContext.contextPath}/products?sort=description&order=asc&query=${param.query}">asc</a>
-              <a href="${pageContext.servletContext.contextPath}/products?sort=description&order=desc&query=${param.query}">desc</a>
+                <tags:sortLink sort="description" order="asc" query="${param.query}" contentOftags="asc"/>
+                <tags:sortLink sort="description" order="desc" query="${param.query}" contentOftags="desc"/>
             </td>
             <td class="price">Price
-              <a href="${pageContext.servletContext.contextPath}/products?sort=price&order=asc&query=${param.query}">asc</a>
-              <a href="${pageContext.servletContext.contextPath}/products?sort=price&order=desc&query=${param.query}">desc</a>
+                <tags:sortLink sort="price" order="asc" query="${param.query}" contentOftags="asc"/>
+                <tags:sortLink sort="price" order="desc" query="${param.query}" contentOftags="desc"/>
             </td>
-          </tr>
+        </tr>
         </thead>
         <c:forEach var="product" items="${products}">
             <tr>
@@ -53,10 +40,5 @@
                 </td>
             </tr>
         </c:forEach>
-      </table>
-    </main>
-  </body>
-  <div>
-      <jsp:include page="footer.jsp"/>
-  </div>
-</html>
+    </table>
+</tags:master>
