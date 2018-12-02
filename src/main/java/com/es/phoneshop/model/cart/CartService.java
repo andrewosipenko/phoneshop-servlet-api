@@ -5,8 +5,7 @@ import com.es.phoneshop.model.product.Product;
 import javax.servlet.http.HttpSession;
 
 public interface CartService {
-    //Cart getCart(HttpSession session);
-    Cart getCart();
+    Cart getCart(HttpSession session);
 
-    void addToCart(Product product, Integer quantity);
+    void addToCart(Cart cart, Product product, Integer quantity);
 }

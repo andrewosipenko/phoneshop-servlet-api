@@ -9,7 +9,6 @@ public class CartServiceImpl implements CartService  {
 
     private static final String CART_ATTRIBUTE = "cart";
     private static volatile CartService cartService;
-    private Cart cart = new Cart();
 
     private CartServiceImpl(){}
 
@@ -22,7 +21,7 @@ public class CartServiceImpl implements CartService  {
         return cartService;
     }
 
-   /* @Override
+    @Override
     public Cart getCart(HttpSession session) {
         Cart cart = (Cart)session.getAttribute(CART_ATTRIBUTE);
         if(cart == null){
@@ -30,17 +29,15 @@ public class CartServiceImpl implements CartService  {
             session.setAttribute(CART_ATTRIBUTE, cart);
         }
         return cart;
-    }*/
-
-    @Override
-    public Cart getCart() {
-        return cart;
     }
 
+
     @Override
-    public void addToCart(Product product, Integer quantity) {
+    public void addToCart(Cart cart, Product product, Integer quantity) {
         Long productId = product.getId();
-        Optional<CartItem> cartItemOptional = cart.getCartItems().stream().filter(cartItem -> productId.equals(cartItem.getProduct().getId())).findAny();
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
+                .findAny();
 
         if(cartItemOptional.isPresent()){
             CartItem cartItem = cartItemOptional.get();

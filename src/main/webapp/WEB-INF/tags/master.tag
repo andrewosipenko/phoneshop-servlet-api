@@ -16,6 +16,18 @@
 
         <main>
             <jsp:doBody/>
+
+            <table>
+                <tr>
+                    <c:forEach var="viewedProduct" items="${viewedProducts}">
+                        <td>
+                            <img class="product-title" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${viewedProduct.imageUrl}">
+                            <p><a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">${viewedProduct.description}</a></p>
+                            <p>Price: <fmt:formatNumber value="${viewedProduct.price}" type="currency" currencySymbol="${product.currency.symbol}"/> </p>
+                        </td>
+                    </c:forEach>
+                </tr>
+            </table>
         </main>
 
         <div>

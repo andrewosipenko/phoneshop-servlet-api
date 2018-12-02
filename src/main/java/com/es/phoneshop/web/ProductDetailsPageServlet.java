@@ -11,10 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private Queue<Product> viewedProducts = new LinkedList<>();
 
 
     @Override
@@ -40,9 +43,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = loadProduct(request);
+        addViewedProduct(product);
 
         request.setAttribute("product", product);
-        request.setAttribute("cart", cartService.getCart().getCartItems());
+        request.setAttribute("cart", cartService.getCart(request.getSession()).getCartItems());
 
         Integer quantity = null;
         try {
@@ -52,7 +56,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             request.setAttribute("quantityError", "Not a number");
         }
         if (quantity != null) {
-            cartService.addToCart(product, quantity);
+            cartService.addToCart(cartService.getCart(request.getSession()), product, quantity);
             request.setAttribute("message", "Product added successfully");
             response.sendRedirect(request.getRequestURL() + "?message=Product added successfully");
         } else {
@@ -66,5 +70,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String stringId = url.substring(url.lastIndexOf("/") + 1);
         Long id = Long.parseLong(stringId);
         return productDao.getProduct(id);
+    }
+
+    private void addViewedProduct(Product product){
+        if(viewedProducts.size() == 3){
+            viewedProducts.poll();
+        }else{
+            viewedProducts.add(product);
+        }
     }
 }
