@@ -86,7 +86,6 @@ public class ArrayListProductDaoTest {
 
         Long id = PRODUCT.getId();
         Product product = productDao.getProduct(id);
-
         assertEquals(product, PRODUCT);
     }
 

@@ -18,21 +18,41 @@
 </head>
 <body class="product-list">
 <header>
-    <a href="${pageContext.servletContext.contextPath}">
+    <c:url var="contextLink" context="${pageContext.servletContext.contextPath}" value="/products" />
+    <a href="${contextLink}">
         <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
         PhoneShop
     </a>
 </header>
 <main>
     <p>Welcome to Expert-Soft training!</p>
-            <br>
-                <a>${product.description}</a>
-            <br>
-                <a class="price">
-                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-                </a>
-            <br>
+    cart: ${cart}
+    <c:if test="${not empty param.message}">
+        <p class="success">${param.message}</p>
+    </c:if>
+    <table>
+        <tr>
+            <td>
                 <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}"  >
+            </td>
+            <td>
+                <h1>${product.description}</h1>
+                <p>Code: ${product.code}</p>
+                <p>Stock: ${product.stock}</p>
+                <p>Price:  <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/> </p>
+                <form method="post" action="${contextLink}/${product.id}">
+                    Quantity: <input name="quantity" value="${not empty param.quantity ? param.quantity : 1}" class="number">
+                    <button>Add to cart</button>
+                    <c:if test="${not empty quantityError}">
+                        <p class="error">${quantityError}</p>
+                    </c:if>
+                </form>
+            </td>
+        </tr>
+    </table>
 </main>
+<div>
+    <jsp:include page="/WEB-INF/pages/footer.jsp"/>
+</div>
 </body>
 </html>

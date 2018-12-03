@@ -11,8 +11,9 @@
   </head>
   <body class="product-list">
     <header>
-      <a href="${pageContext.servletContext.contextPath}">
-        <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
+       <c:url var="contextLink" context="${pageContext.servletContext.contextPath}" value="/products" />
+      <a href="${contextLink}">
+       <%-- <img src="${contextLink}/images/logo.svg"/>--%>
         PhoneShop
       </a>
     </header>
@@ -35,12 +36,12 @@
           <tr>
             <td>Image</td>
             <td>Description
-             <a href="${pageContext.servletContext.contextPath}/products?sort=description&order=asc&query=${param.query}">asc</a>
-              <a href="${pageContext.servletContext.contextPath}/products?sort=description&order=desc&query=${param.query}">desc</a>
+             <a href="${contextLink}?sort=description&order=asc&query=${param.query}">asc</a>
+              <a href="${contextLink}?sort=description&order=desc&query=${param.query}">desc</a>
             </td>
             <td class="price">Price
-              <a href="${pageContext.servletContext.contextPath}/products?sort=price&order=asc&query=${param.query}">asc</a>
-              <a href="${pageContext.servletContext.contextPath}/products?sort=price&order=desc&query=${param.query}">desc</a>
+              <a href="${contextLink}?sort=price&order=asc&query=${param.query}">asc</a>
+              <a href="${contextLink}?sort=price&order=desc&query=${param.query}">desc</a>
             </td>
           </tr>
         </thead>
@@ -50,7 +51,7 @@
               <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
             </td>
             <td>
-              <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
+              <a href="${contextLink}/${product.id}">${product.description}</a>
             </td>
             <td class="price">
               <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
