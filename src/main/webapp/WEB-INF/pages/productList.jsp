@@ -11,8 +11,9 @@
   </head>
   <body class="product-list">
     <header>
-      <a href="${pageContext.servletContext.contextPath}">
-        <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
+       <c:url var="contextLink" context="${pageContext.servletContext.contextPath}" value="/products" />
+      <a href="${contextLink}">
+       <%-- <img src="${contextLink}/images/logo.svg"/>--%>
         PhoneShop
       </a>
     </header>
@@ -20,12 +21,28 @@
       <p>
         Welcome to Expert-Soft training!
       </p>
+        <form>
+          <input type="hidden" name="sort" value="${param.sort}">
+          <input type="hidden" name="order" value="${param.order}">
+          <input type="search" name="query" value="${param.query}" >
+          <button type="submit">Search</button>
+        </form>
+      <form>
+        <input type="hidden" name="query" value="${param.query}">
+        <button type="submit">Skip Sort Parametrs</button>
+      </form>
       <table>
         <thead>
           <tr>
             <td>Image</td>
-            <td>Description</td>
-            <td class="price">Price</td>
+            <td>Description
+             <a href="${contextLink}?sort=description&order=asc&query=${param.query}">asc</a>
+              <a href="${contextLink}?sort=description&order=desc&query=${param.query}">desc</a>
+            </td>
+            <td class="price">Price
+              <a href="${contextLink}?sort=price&order=asc&query=${param.query}">asc</a>
+              <a href="${contextLink}?sort=price&order=desc&query=${param.query}">desc</a>
+            </td>
           </tr>
         </thead>
         <c:forEach var="product" items="${products}">
@@ -33,7 +50,9 @@
             <td>
               <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
             </td>
-            <td>${product.description}</td>
+            <td>
+              <a href="${contextLink}/${product.id}">${product.description}</a>
+            </td>
             <td class="price">
               <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
             </td>
