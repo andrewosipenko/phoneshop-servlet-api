@@ -50,6 +50,20 @@
             </td>
         </tr>
     </table>
+    <p>
+        Viewed products:
+    </p>
+    <table border="1">
+        <tr>
+            <c:forEach var="viewed" items="${viewed}">
+                <td>
+                    <img class="product-title" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ex..${viewed.imageUrl}">
+                    <p><a href="${pageContext.servletContext.contextPath}/products/${viewed.id}">${viewed.description}</a></p>
+                    <p>Price: <fmt:formatNumber value="${viewed.price}" type="currency" currencySymbol="${product.currency.symbol}"></fmt:formatNumber> </p>
+                </td>
+            </c:forEach>
+        </tr>
+    </table>
 </main>
 <div>
     <jsp:include page="/WEB-INF/pages/footer.jsp"/>

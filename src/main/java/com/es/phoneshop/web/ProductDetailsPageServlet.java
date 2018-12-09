@@ -2,9 +2,14 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.CartServiceImpl;
+
+import com.es.phoneshop.model.cart.NotEnoughStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.viewedProducts.ViewedProductsService;
+import com.es.phoneshop.model.viewedProducts.ViwedProductsImpl;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,24 +20,29 @@ import java.util.NoSuchElementException;
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private ViewedProductsService viewedProductsService;
+
 
     @Override
     public void init() throws ServletException {
         super.init();
         productDao = ArrayListProductDao.getInstance();
         cartService = CartServiceImpl.getInstance();
+        viewedProductsService = ViwedProductsImpl.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Product product = loadProduct(request);
+            request.setAttribute("viewed", viewedProductsService.getViewedProducts(request.getSession()));
+            request.setAttribute("cart", cartService.getCart(request.getSession()).getCartItems().toString());
             request.setAttribute("product", product);
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+            viewedProductsService.addToViewedProducts(viewedProductsService.getViewedProducts(request.getSession()), product);
         }
         catch (NoSuchElementException e ) {
            request.getRequestDispatcher("/WEB-INF/pages/404.jsp").forward(request, response);
-            /*response.sendError(404);*/
         }
 
     }
@@ -54,7 +64,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
                 cartService.addToCart(cartService.getCart(req.getSession()), product, quantity);
                 req.setAttribute("message", "Product added successfully");
                 resp.sendRedirect(req.getRequestURI() + "?message=Product added successfully");
-            } catch (NoSuchElementException e) {
+            } catch (NotEnoughStockException ex) {
                 req.setAttribute("quantityError", "Not enough stock");
                 req.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(req, resp);
             }

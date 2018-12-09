@@ -30,7 +30,7 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Product getProduct(Long id) {
-        return  products
+        return products
                 .stream()
                 .filter(product1 -> product1.getId().equals(id))
                 .findFirst()
@@ -85,7 +85,7 @@ public class ArrayListProductDao implements ProductDao {
                     .sorted(comparator)
                     .collect(Collectors.toList());
         }
-}
+    }
 
     @Override
     public void save(Product product) {
