@@ -54,6 +54,23 @@ public class CartServiceImpl implements CartService {
             }
         }
     }
+
+    @Override
+    public void updateCart(Cart cart, Product product, int quantity) throws NotEnoughStockException {
+        Long productId =product.getId();
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
+                .findAny();
+        if (cartItemOptional.isPresent()) {
+            if (quantity <= product.getStock()) {
+                cartItemOptional.get().setQuantity(quantity);
+            } else {
+                throw new NotEnoughStockException("");
+            }
+        } else {
+            throw new NotEnoughStockException("");
+        }
+    }
 }
 
 
