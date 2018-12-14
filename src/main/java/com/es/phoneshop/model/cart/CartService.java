@@ -8,4 +8,6 @@ public interface CartService {
     Cart getCart(HttpSession session);
 
     void addToCart(Cart cart, Product product, Integer quantity);
+    void updateCart(Cart cart, Product product, int quantity);
+    void delete(Cart cart, Product product);
 }

@@ -4,8 +4,9 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
-<tags:master pageStyleClass="product-list">
+<tags:master pageTitle="Product List" pageStyleClass="product-list">
     <br>
+
     <form>
         <input type="hidden" name="sort" value="${param.sort}"> <%--Now after searching sorting doesn't disappear --%>
         <input type="hidden" name="order" value="${param.order}">

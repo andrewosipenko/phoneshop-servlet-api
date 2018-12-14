@@ -3,6 +3,7 @@ package com.es.phoneshop.model.cart;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class CartServiceImpl implements CartService  {
@@ -41,9 +42,37 @@ public class CartServiceImpl implements CartService  {
 
         if(cartItemOptional.isPresent()){
             CartItem cartItem = cartItemOptional.get();
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            if(quantity <= product.getStock()) {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                product.setStock(product.getStock() - quantity);
+            }else{
+                throw new NoSuchElementException();
+            }
         }else{
-            cart.getCartItems().add(new CartItem(product, quantity));
+            if(quantity <= product.getStock()){
+                cart.getCartItems().add(new CartItem(product, quantity));
+                product.setStock(product.getStock() - quantity);
+            }else{
+                throw new NoSuchElementException();
+            }
         }
+    }
+
+    @Override
+    public void updateCart(Cart cart, Product product, int quantity){
+        Long productId = product.getId();
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
+                .findAny();
+        if(cartItemOptional.isPresent()){
+            cartItemOptional.get().setQuantity(quantity);
+        }else{
+            throw new NoSuchElementException();
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Product product) {
+        cart.getCartItems().removeIf(cartItem -> product.equals(cartItem.getProduct()));
     }
 }

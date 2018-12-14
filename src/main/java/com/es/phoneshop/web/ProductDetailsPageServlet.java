@@ -32,6 +32,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Product product = loadProduct(request);
+            addViewedProduct(product);
             request.setAttribute("product", product);
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         } catch (ClassCastException | IllegalArgumentException e) {
@@ -43,7 +44,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = loadProduct(request);
-        addViewedProduct(product);
 
         request.setAttribute("product", product);
         request.setAttribute("cart", cartService.getCart(request.getSession()).getCartItems());
