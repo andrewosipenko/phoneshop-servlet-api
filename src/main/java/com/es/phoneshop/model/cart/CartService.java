@@ -11,4 +11,7 @@ public interface CartService {
 
     void updateCart(Cart cart, Product product, int quantity) throws NotEnoughStockException;
 
+    void delete(Cart cart, Product product);
+
+
 }

@@ -13,11 +13,13 @@
 <tags:master pageTitle="Cart">
     <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 
+    <c:url var="contextLinkCart" context="${pageContext.servletContext.contextPath}" value="/cart" />
+
     <c:if test="${not empty param.message}">
         <p class="success">${param.message}</p>
     </c:if>
 
-    <form method="post" action="${pageContext.servletContext.contextPath}/cart">
+    <form method="post" action="${contextLinkCart}">
         <p>
             <button>Update cart</button>
         </p>
@@ -53,11 +55,16 @@
                         <p class="error">${quantityErrors[item.product.id]}</p>
                     </c:if>
                 </td>
+                <td>
+                    <button formaction="${contextLinkCart}/${item.product.id}">Delete</button>
+                </td>
             </tr>
         </c:forEach>
     </table>
 
-
+        <p>
+            <button>Update cart</button>
+        </p>
 
     </form>
 </tags:master>

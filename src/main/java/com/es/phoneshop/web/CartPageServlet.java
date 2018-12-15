@@ -45,17 +45,14 @@ public class CartPageServlet extends HttpServlet {
             Product product = productDao.getProduct(productId);
             Integer quantity = null;
             try {
-                String quantityString = req.getParameter("quantity");
-                quantity = Integer.valueOf(quantityString);
+                quantity = Integer.valueOf(quantities[i]);
             } catch (NumberFormatException ex) {
-               /* req.setAttribute("quantityError", "Not a number");*/
                 quantityErrors.put(product, "Not a number");
             }
             if(quantity != null) {
                 try {
                     cartService.updateCart(cart, product, quantity);
                 } catch (NotEnoughStockException e) {
-                   /* req.setAttribute("quantityError", "Not enough stock");*/
                     quantityErrors.put(product, "Not enough stock");
                 }
             }

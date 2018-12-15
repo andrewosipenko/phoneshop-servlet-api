@@ -11,8 +11,8 @@
   </head>
   <body class="product-list">
     <header>
-       <c:url var="contextLink" context="${pageContext.servletContext.contextPath}" value="/products" />
-      <a href="${contextLink}">
+       <c:url var="contextLinkProducts" context="${pageContext.servletContext.contextPath}" value="/products" />
+      <a href="${contextLinkProducts}">
        <%-- <img src="${contextLink}/images/logo.svg"/>--%>
         PhoneShop
       </a>
@@ -36,12 +36,12 @@
           <tr>
             <td>Image</td>
             <td>Description
-             <a href="${contextLink}?sort=description&order=asc&query=${param.query}">asc</a>
-              <a href="${contextLink}?sort=description&order=desc&query=${param.query}">desc</a>
+             <a href="${contextLinkProducts}?sort=description&order=asc&query=${param.query}">asc</a>
+              <a href="${contextLinkProducts}?sort=description&order=desc&query=${param.query}">desc</a>
             </td>
             <td class="price">Price
-              <a href="${contextLink}?sort=price&order=asc&query=${param.query}">asc</a>
-              <a href="${contextLink}?sort=price&order=desc&query=${param.query}">desc</a>
+              <a href="${contextLinkProducts}?sort=price&order=asc&query=${param.query}">asc</a>
+              <a href="${contextLinkProducts}?sort=price&order=desc&query=${param.query}">desc</a>
             </td>
           </tr>
         </thead>
@@ -51,7 +51,7 @@
               <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
             </td>
             <td>
-              <a href="${contextLink}/${product.id}">${product.description}</a>
+              <a href="${contextLinkProducts}/${product.id}">${product.description}</a>
             </td>
             <td class="price">
               <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
