@@ -1,22 +1,24 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Anna
-  Date: 13.12.2018
-  Time: 0:38
+  Date: 15.12.2018
+  Time: 22:09
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-
 <tags:master pageTitle="Cart">
-    <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="session"/>
+    <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 
-    <form method="post" action="${pageContext.servletContext.contextPath}/cart">
+    <form method="post" action="${pageContext.servletContext.contextPath}/checkout">
 
-        <br>
+        <c:if test="${not empty cart.cartItems}">
+            <button>Place order</button>
+        </c:if>
+
         <table>
             <thead>
             <tr>
@@ -51,11 +53,6 @@
                             <p class="error">${quantityError[item.product.id]}</p>
                         </c:if>
                     </td>
-                    <td>
-                        <button formaction="${pageContext.servletContext.contextPath}/cart/delete/${item.product.id}">
-                            Delete
-                        </button>
-                    </td>
                 </tr>
             </c:forEach>
             <tr>
@@ -64,10 +61,15 @@
                 <td>${cart.totalPrice}</td>
             </tr>
         </table>
-
+        <br>
+        <input name = "name" placeholder="name">
+        <br><br>
+        <input name = "deliveryAddress" placeholder="deliveryAddress">
+        <br><br>
+        <input name = "phone" placeholder="phone">
+        <br><br>
         <c:if test="${not empty cart.cartItems}">
-            <button>Update cart</button>
-            <a href="<c:url value="/checkout"/>">Checkout</a>
+            <button>Place order</button>
         </c:if>
     </form>
 </tags:master>

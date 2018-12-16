@@ -1,12 +1,16 @@
-package com.es.phoneshop.model.cart;
+package com.es.phoneshop.service.impl;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.CartService;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class CartServiceImpl implements CartService  {
+public class CartServiceImpl implements CartService {
 
     private static final String CART_ATTRIBUTE = "cart";
     private static volatile CartService cartService;
@@ -56,6 +60,7 @@ public class CartServiceImpl implements CartService  {
                 throw new NoSuchElementException();
             }
         }
+        recalculateCart(cart);
     }
 
     @Override
@@ -69,10 +74,25 @@ public class CartServiceImpl implements CartService  {
         }else{
             throw new NoSuchElementException();
         }
+        recalculateCart(cart);
     }
 
     @Override
     public void delete(Cart cart, Product product) {
         cart.getCartItems().removeIf(cartItem -> product.equals(cartItem.getProduct()));
+        recalculateCart(cart);
+    }
+
+    private void recalculateCart(Cart cart){
+        BigDecimal totalPrice = cart.getCartItems().stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, (x,y) -> x.add(y));
+        cart.setTotalPrice(totalPrice);
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getCartItems().clear();
+        recalculateCart(cart);
     }
 }

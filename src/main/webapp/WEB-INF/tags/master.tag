@@ -1,6 +1,8 @@
 <%@ tag body-content="scriptless" trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%@attribute name="pageStyleClass" required="false" type="java.lang.String" %>
+<%@attribute name="pageClass" required="false" type="java.lang.String" %>
 <%@attribute name="pageTitle" required="true" type="java.lang.String" %>
 
 
@@ -11,7 +13,7 @@
         <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
     </head>
 
-    <body class = "${pageStyleClass}">
+    <body class = "${pageClass}">
         <div>
             <jsp:include page="/WEB-INF/pages/header.jsp"/>
         </div>
@@ -25,18 +27,20 @@
             <jsp:doBody/>
 
             <div class="viewedProduct">
-                <strong>Recently viewed</strong>
+                <c:if test="${not empty sessionScope.viewedProducts}">
+                    <br>
+                    <strong>Recently viewed</strong>
+                </c:if>
             <table>
                 <tr>
                     <c:forEach var="viewedProduct" items="${sessionScope.viewedProducts.viewedProducts}">
                         <td>
                             <p><img class="product-tile"
-                                    src="${viewedProduct.imageUrl}">
+                                    src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${viewedProduct.imageUrl}">
                             </p>
-                            <p><a href="${pageContext.servletContext.contextPath}/products/${viewedProduct.id}">${viewedProduct.description}</a></p>
-                            <p>Price: <fmt:formatNumber value="${viewedProduct.price}"
-                                                        type="currency"
-                                                        currencySymbol="${viewedProduct.currency.symbol}"/> </p>
+                            <a href="<c:url value="/products/${viewedProduct.id}"/>">${viewedProduct.description}</a>
+                            <p><fmt:formatNumber value="${viewedProduct.price}" type="currency"
+                                                 currencySymbol="${viewedProduct.currency.symbol}"/></p>
                         </td>
                     </c:forEach>
                 </tr>

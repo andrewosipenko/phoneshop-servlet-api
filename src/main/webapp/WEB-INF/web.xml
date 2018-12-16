@@ -44,6 +44,46 @@
     <url-pattern>/cart</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>cartItemDelete</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CartItemDeleteServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>cartItemDelete</servlet-name>
+    <url-pattern>/cart/delete/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>cartFilter</filter-name>
+    <filter-class>com.es.phoneshop.web.CartFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>cartFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>checkout</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>checkout</servlet-name>
+    <url-pattern>/checkout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>orderOverview</servlet-name>
+    <servlet-class>com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>orderOverview</servlet-name>
+    <url-pattern>/orderOverview/*</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <error-code>404</error-code>
     <location>/WEB-INF/pages/error.jsp/</location>

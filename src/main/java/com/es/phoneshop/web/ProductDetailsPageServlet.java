@@ -1,10 +1,13 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.CartServiceImpl;
+import com.es.phoneshop.model.product.ViewedProductsList;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.ViewedProductsService;
+import com.es.phoneshop.service.impl.CartServiceImpl;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.service.impl.ViewedProductsServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +20,7 @@ import java.util.Queue;
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private ViewedProductsService viewedProductsService;
     private Queue<Product> viewedProducts = new LinkedList<>();
 
 
@@ -26,13 +30,21 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
         productDao = ArrayListProductDao.getInstance();
         cartService = CartServiceImpl.getInstance();
+        viewedProductsService = ViewedProductsServiceImpl.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Product product = loadProduct(request);
-            addViewedProduct(product);
+
+            ViewedProductsList viewedProducts = (ViewedProductsList) request.getSession().getAttribute("viewedProducts");
+            if (viewedProducts == null) {
+                viewedProducts = new ViewedProductsList();
+            }
+            viewedProductsService.addToViewed(product, viewedProducts);
+            request.getSession().setAttribute("viewedProducts", viewedProducts);
+
             request.setAttribute("product", product);
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         } catch (ClassCastException | IllegalArgumentException e) {
@@ -72,11 +84,5 @@ public class ProductDetailsPageServlet extends HttpServlet {
         return productDao.getProduct(id);
     }
 
-    private void addViewedProduct(Product product){
-        if(viewedProducts.size() == 3){
-            viewedProducts.poll();
-        }else{
-            viewedProducts.add(product);
-        }
-    }
+
 }

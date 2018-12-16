@@ -49,3 +49,7 @@ body main {
 body.product-details td {
   border: 1px solid lightgray;
 }
+
+.cart-in-header{
+  float: right;
+}

@@ -4,11 +4,8 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
-<tags:master pageTitle="${product.description}" pageStyleClass="product-details">
+<tags:master pageTitle="${product.description}" pageClass="product-details">
     <br>
-    <c:if test="${not empty param.message}">
-        <p class="success">${param.message}</p>
-    </c:if>
     <table>
         <tr>
             <td>
