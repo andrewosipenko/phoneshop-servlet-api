@@ -3,6 +3,7 @@ package com.es.phoneshop.model.cart;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
@@ -53,7 +54,37 @@ public class CartServiceImpl implements CartService {
                 throw new NotEnoughStockException("");
             }
         }
+        /*recalculateCart(mCart);*/
     }
+
+    @Override
+    public void updateCart(Cart cart, Product product, int quantity) throws NotEnoughStockException {
+        Long productId =product.getId();
+        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+                .filter(cartItem -> productId.equals(cartItem.getProduct().getId()))
+                .findAny();
+        if (cartItemOptional.isPresent()) {
+            if (quantity <= product.getStock()) {
+                cartItemOptional.get().setQuantity(quantity);
+            } else {
+                throw new NotEnoughStockException("");
+            }
+        } else {
+            throw new NotEnoughStockException("");
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Product product) {
+        cart.getCartItems().removeIf(cartItem -> product.equals(cartItem.getProduct()));
+    }
+
+   /* private void recalculateCart(Cart cart) {
+        BigDecimal totalPice = cart.getCartItems().stream()
+                .map(item-> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
+        cart.setTotalPrice(totalPice);
+    }*/
 }
 
 

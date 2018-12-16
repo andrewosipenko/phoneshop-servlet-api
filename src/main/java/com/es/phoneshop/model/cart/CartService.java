@@ -9,4 +9,9 @@ public interface CartService {
 
     void addToCart(Cart cart, Product product, int quantity) throws NotEnoughStockException;
 
+    void updateCart(Cart cart, Product product, int quantity) throws NotEnoughStockException;
+
+    void delete(Cart cart, Product product);
+
+
 }
