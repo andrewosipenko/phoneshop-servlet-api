@@ -45,3 +45,7 @@ td {
 .product-list img {
   max-width: 64px;
 }
+
+.total-price {
+    font-weight: 900
+}

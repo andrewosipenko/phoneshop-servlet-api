@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class CartPageServlet extends HttpServlet {
     private ProductDao productDao;
@@ -40,6 +41,7 @@ public class CartPageServlet extends HttpServlet {
         String[] quantities = req.getParameterValues("quantity");
         Cart cart = cartService.getCart(req.getSession());
         Map<Product, String> quantityErrors = new HashMap<>();
+
         for (int i = 0; i < productsId.length; i++) {
             Long productId = Long.valueOf(productsId[i]);
             Product product = productDao.getProduct(productId);

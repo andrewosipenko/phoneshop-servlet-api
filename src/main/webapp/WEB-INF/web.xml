@@ -39,6 +39,11 @@
     <servlet-class> com.es.phoneshop.web.CartPageServlet</servlet-class>
   </servlet>
 
+  <servlet-mapping>
+    <servlet-name>cart</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+
 
   <servlet-mapping>
     <servlet-name>cartItemDeleteServlet</servlet-name>
@@ -52,19 +57,44 @@
 
 
   <servlet-mapping>
-    <servlet-name>cart</servlet-name>
-    <url-pattern>/cart</url-pattern>
+    <servlet-name>checkout</servlet-name>
+    <url-pattern>/checkout</url-pattern>
   </servlet-mapping>
 
+
+  <servlet>
+  <servlet-name>checkout</servlet-name>
+  <servlet-class> com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+</servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>orderOverview</servlet-name>
+    <url-pattern>/orderOverview/*</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>orderOverview</servlet-name>
+    <servlet-class> com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+  </servlet>
+
+
+  <filter>
+    <filter-name>cartFilter</filter-name>
+    <filter-class>com.es.phoneshop.web.CartFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>cartFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <error-page>
     <error-code>404</error-code>
     <location>/WEB-INF/pages/404.jsp/</location>
   </error-page>
 
-   <!-- <error-page>
-        <exception-type>java.util.NoSuchElementException</exception-type>
-        <location>/WEB-INF/pages/404.jsp/</location>
-    </error-page>-->
+
 
 </web-app>

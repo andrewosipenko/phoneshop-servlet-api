@@ -54,7 +54,7 @@ public class CartServiceImpl implements CartService {
                 throw new NotEnoughStockException("");
             }
         }
-        /*recalculateCart(mCart);*/
+        recalculateCart(mCart);
     }
 
     @Override
@@ -72,19 +72,28 @@ public class CartServiceImpl implements CartService {
         } else {
             throw new NotEnoughStockException("");
         }
+        recalculateCart(cart);
     }
 
     @Override
     public void delete(Cart cart, Product product) {
         cart.getCartItems().removeIf(cartItem -> product.equals(cartItem.getProduct()));
+        recalculateCart(cart);
     }
 
-   /* private void recalculateCart(Cart cart) {
-        BigDecimal totalPice = cart.getCartItems().stream()
+    private void recalculateCart(Cart cart) {
+        BigDecimal totalPrice = cart.getCartItems().stream()
                 .map(item-> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
-        cart.setTotalPrice(totalPice);
-    }*/
+        cart.setTotalPrice(totalPrice);
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getCartItems().clear();
+        recalculateCart(cart);
+
+    }
 }
 
 
