@@ -12,10 +12,13 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 
-<tags:master pageTitle="${product.description}">
+<tags:master pageTitle="${product.description}" pageClass="product-detail">
     <c:url var="contextLinkCart" context="${pageContext.servletContext.contextPath}" value="/cart" />
     <c:url var="contextLinkProducts" context="${pageContext.servletContext.contextPath}" value="/products" />
-    <a href="${contextLinkCart}">cart</a> ${cart}
+    <main>
+    <form method="get" action="${contextLinkCart}">
+        <button> Cart </button>
+    </form>
 
     <c:if test="${not empty param.message}">
         <p class="success">${param.message}</p>
@@ -23,7 +26,7 @@
     <table>
         <tr>
             <td>
-                <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}"  >
+                <img class="product-list" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}"  >
             </td>
             <td>
                 <h1>${product.description}</h1>
@@ -54,5 +57,6 @@
             </c:forEach>
         </tr>
     </table>
+    </main>
 </tags:master>
 

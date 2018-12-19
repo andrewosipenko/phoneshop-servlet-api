@@ -1,9 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
-<html>
+<tags:master pageTitle="${product.description}" pageClass="product-detail">
+
+<%--<html>
   <head>
     <title>Product List</title>
     <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
@@ -12,15 +15,23 @@
   <body class="product-list">
     <header>
        <c:url var="contextLinkProducts" context="${pageContext.servletContext.contextPath}" value="/products" />
+      <c:url var="contextLinkCart" context="${pageContext.servletContext.contextPath}" value="/cart" />
       <a href="${contextLinkProducts}">
-       <%-- <img src="${contextLink}/images/logo.svg"/>--%>
+       &lt;%&ndash; <img src="${contextLink}/images/logo.svg"/>&ndash;%&gt;
         PhoneShop
       </a>
-    </header>
+
+    </header>--%>
+  <c:url var="contextLinkProducts" context="${pageContext.servletContext.contextPath}" value="/products" />
+  <c:url var="contextLinkCart" context="${pageContext.servletContext.contextPath}" value="/cart" />
     <main>
       <p>
         Welcome to Expert-Soft training!
       </p>
+      <p class="total-price">
+      <a href="${contextLinkCart}" >Total Price : ${cart.totalPrice}</a>
+      </p>
+
         <form>
           <input type="hidden" name="sort" value="${param.sort}">
           <input type="hidden" name="order" value="${param.order}">
@@ -48,7 +59,7 @@
         <c:forEach var="product" items="${products}">
           <tr>
             <td>
-              <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+              <img class="product-list" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
             </td>
             <td>
               <a href="${contextLinkProducts}/${product.id}">${product.description}</a>
@@ -60,5 +71,6 @@
         </c:forEach>
       </table>
     </main>
-  </body>
-</html>
+ <%-- </body>
+</html>--%>
+</tags:master>

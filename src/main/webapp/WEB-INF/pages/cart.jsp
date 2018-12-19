@@ -14,6 +14,8 @@
     <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 
     <c:url var="contextLinkCart" context="${pageContext.servletContext.contextPath}" value="/cart" />
+    <c:url var="contextLinkCheckout" context="${pageContext.servletContext.contextPath}" value="/checkout" />
+    <span class="total-price"> Total Price: ${cart.totalPrice}</span>
 
     <c:if test="${not empty param.message}">
         <p class="success">${param.message}</p>
@@ -41,7 +43,7 @@
         <c:forEach var="item" items="${cart.cartItems}">
             <tr>
             <td>
-                <img class="product-title" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ex..${item.product.imageUrl}"></td>
+                <img class="product-list" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ex..${item.product.imageUrl}"></td>
             </td>
                 <td>
                     ${item.product.code}
@@ -60,10 +62,19 @@
                 </td>
             </tr>
         </c:forEach>
+        <tr>
+            <td></td>
+            <td>Total:</td>
+            <td>${cart.totalPrice}</td>
+        </tr>
     </table>
 
         <p>
             <button>Update cart</button>
+        </p>
+
+        <p>
+            <a href="${contextLinkCheckout}" >Checkout</a>
         </p>
 
     </form>
