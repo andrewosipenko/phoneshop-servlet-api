@@ -1,6 +1,6 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.logic.ProductLogic;
+import com.es.phoneshop.logic.ProductService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 
@@ -10,15 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 
 public class ProductListPageServlet extends HttpServlet {
     private ArrayListProductDao products;
-    private ProductLogic productLogic = ProductLogic.getInstance();
+    private ProductService productLogic = ProductService.getInstance();
 
    @Override
    public void init(ServletConfig config) throws ServletException{
@@ -32,10 +29,5 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute("products", productLogic.findProducts(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
 
-    }
-
-    private List<Product> getSampleProducts(){
-        List<Product> result = products.findProducts();
-        return result;
     }
 }

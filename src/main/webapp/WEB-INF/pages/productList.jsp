@@ -10,12 +10,7 @@
   <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
 </head>
 <body class="product-list">
-<header>
-  <a href="${pageContext.servletContext.contextPath}">
-    <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-    PhoneShop
-  </a>
-</header>
+<jsp:include page="header.jsp"/>
 <main>
   <p>
     Welcome to Expert-Soft training!
@@ -55,6 +50,21 @@
         <td class="price">
           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
         </td>
+      </tr>
+    </c:forEach>
+  </table>
+  <h2> Most popular</h2>
+  <table>
+    <c:forEach var="product" items="${sessionScope.mostViewed.mostViewedProducts}">
+      <tr>
+        <td>
+          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+        </td>
+        <td><a href="<c:url value="/products/${product.id}"/>">${product.description}</a></td>
+        <td class="price">
+          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+        </td>
+        <td><h4> Views : ${product.ammountOfViews}</h4></td>
       </tr>
     </c:forEach>
   </table>

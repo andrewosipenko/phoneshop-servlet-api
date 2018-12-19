@@ -1,4 +1,4 @@
-package com.es.phoneshop.ProjectConstants;
+package com.es.phoneshop.projectConstants;
 
 public class Constants {
     public static final String UP_DESCRIPTION = "upDescription";
@@ -13,6 +13,12 @@ public class Constants {
     public static final String QUANTITY_ANSWER = "quantityAnswer";
     public static final String VIEWED_PRODUCTS = "viewedProducts";
     public static final String CART = "cart";
-
-
+    public static final String SUCCESSFUL_ADD = "products were succesfully added";
+    public static final String SUCCESSFUL_UPDATE = "Successful cart update";
+    public static final String UNSUCCESSFUL_UPDATE = "unsuccessful cart update";
+    public static final String NOT_A_NUMBER = "Unsuccessful cart update, ammount of products is not a number";
+    public static final String OUT_OF_STOCK  = "Unsuccessful cart update. Out of stock";
+    public static final String NO_ELEMENT_IN_CART = "Delete error, the product doesn't exist";
+    public static final String DELETE_ANSWER = "deleteAnswer";
+    public static final String SUCCESSFUL_DELETE = "successfully deleted";
 }

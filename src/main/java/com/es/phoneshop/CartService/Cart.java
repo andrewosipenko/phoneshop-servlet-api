@@ -2,6 +2,7 @@ package com.es.phoneshop.CartService;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -9,11 +10,21 @@ import java.util.Optional;
 public class Cart {
     private List<CartItem> cartList;
 
+    private BigDecimal totalPrice;
+
 
     public Cart() {
         cartList = new ArrayList<>();
     }
 
+    public Cart(Cart cart){
+        this.cartList = new ArrayList<>(cart.cartList);
+        this.totalPrice = cart.totalPrice;
+    }
+
+    public boolean isEmpty(){
+        return cartList.isEmpty();
+    }
     public void save(CartItem cartItem) {
         if(cartItem == null)
             throw new IllegalArgumentException("Invalid product to add");
@@ -54,4 +65,20 @@ public class Cart {
         if(cartItemList != null)
         this.cartList = cartItemList;
     }
+
+    public void countTotalPrice(){
+        BigDecimal totalAmmount = BigDecimal.ZERO;
+
+        for(CartItem cartItem : cartList){
+           totalAmmount = totalAmmount.add(cartItem.getProduct().getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
+        }
+
+        totalPrice = totalAmmount;
+    }
+
+    public BigDecimal getTotalPrice(){
+        return totalPrice;
+    }
+
+
 }

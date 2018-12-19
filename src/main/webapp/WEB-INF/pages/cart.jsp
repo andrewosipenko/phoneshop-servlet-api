@@ -3,17 +3,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Phoneshop cart</title>
     <link href="http://fonts.googleapis.com/css?family=Lobster+Two" rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<c:url value="/styles/main.css"/>">
     <title>Title</title>
 </head>
 <body class="product-list">
+<jsp:include page="header.jsp"/>
 <h2>Cart</h2>
+<form method="post" action="<c:url value="/cart"/>">
 <table>
     <c:forEach var="cartItem" items="${sessionScope.cart.cartList}">
     <tr>
@@ -27,10 +26,18 @@
         <td>
             <input name="quantity" value = "${cartItem.quantity}" class = "number"/>
         </td>
+        <td>
+            <button formaction="<c:url value = "cart/${cartItem.product.id}/delete" />">delete</button>
+        </td>
     </tr>
     </c:forEach>
-    <p>
-    </p>
 </table>
+    <p> ${quantityAnswer}</p>
+    <p><input type="submit" value="Update"></p>
+    <p>${adress}</p>
+    <form action="<c:url value="/checkout"/>">
+        <input type="submit" value="Checkout">
+    </form>
+</form>
 </body>
 </html>

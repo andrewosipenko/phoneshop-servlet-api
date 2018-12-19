@@ -28,6 +28,11 @@ public class ArrayListProductDao implements ProductDao {
         products.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
     }
 
+    @Override
+    public List<Product> getList(){
+        return new ArrayList<>(products);
+    }
+
     public static ArrayListProductDao getInstance() {
         if (object == null) {
             synchronized (ArrayListProductDao.class) {

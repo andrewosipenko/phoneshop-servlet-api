@@ -35,9 +35,40 @@
     <url-pattern>/cart</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>cartDelete</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CartDeletePageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>cartDelete</servlet-name>
+    <url-pattern>/cart/*</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <exception-type>java.lang.RuntimeException</exception-type>
     <location>/Error.jsp</location>
   </error-page>
+
+  <filter>
+    <filter-name>CartFilter</filter-name>
+    <filter-class>com.es.phoneshop.web.CartFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CartFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>checkOut</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CheckOutServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>checkOut</servlet-name>
+    <url-pattern>/checkout</url-pattern>
+  </servlet-mapping>
+
 
 </web-app>

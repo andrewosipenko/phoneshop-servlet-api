@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+
+import com.es.phoneshop.logic.MostViewedProducts;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -15,7 +17,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
-import static com.es.phoneshop.ProjectConstants.Constants.*;
+import static com.es.phoneshop.projectConstants.Constants.*;
 
 public class ProductListPageDetailsServlet extends HttpServlet {
     private ProductDao productDao;
@@ -25,6 +27,7 @@ public class ProductListPageDetailsServlet extends HttpServlet {
     public void init(ServletConfig config) {
         this.productDao = ArrayListProductDao.getInstance();
         this.cartService = CartService.getInstance();
+
     }
 
     @Override
@@ -35,7 +38,21 @@ public class ProductListPageDetailsServlet extends HttpServlet {
         request.setAttribute("product", product);
         request.setAttribute(QUANTITY_ANSWER, request.getParameter(QUANTITY_ANSWER));
         request.setAttribute(QUANTITY, request.getParameter(QUANTITY));
+        productDao.getProduct(Long.parseLong(productCode)).incrementAmmountOfViews();
+
         HttpSession session = request.getSession();
+        MostViewedProducts mostPopularProducts = (MostViewedProducts) session.getAttribute("mostViewed");
+        if(mostPopularProducts == null){
+            mostPopularProducts = new MostViewedProducts();
+            mostPopularProducts.update();
+            session.setAttribute("mostViewed", mostPopularProducts);
+        }
+        else{
+            mostPopularProducts.update();
+            session.setAttribute("mostViewed", mostPopularProducts);
+        }
+
+
         ViewedProducts viewedProducts = (ViewedProducts) session.getAttribute(VIEWED_PRODUCTS);
         if (viewedProducts == null) {
             viewedProducts = new ViewedProducts();
@@ -43,38 +60,23 @@ public class ProductListPageDetailsServlet extends HttpServlet {
             session.setAttribute(VIEWED_PRODUCTS, viewedProducts);
         } else {
             viewedProducts.add(product);
-            session.removeAttribute(VIEWED_PRODUCTS);
             session.setAttribute(VIEWED_PRODUCTS, viewedProducts);
         }
 
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, responce);
     }
 
-  @Override
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse responce) throws ServletException, IOException {
-        HttpSession session = request.getSession();
         Product product = productDao.getProduct(Long.parseLong(request.getParameter(PROUDUCT_ID)));
-        try {
-            int quantity = Integer.parseInt(request.getParameter(QUANTITY));
 
-            if(cartService.addToCart(session,product, quantity)){
-                String path = request.getContextPath() + "/products/" + request.getParameter(PROUDUCT_ID) + "?quantityAnswer=" + "Product was added!" + "&quantity=" + quantity;
-                responce.sendRedirect(path);
-            }
-            else{
-                String path = request.getContextPath() + "/products/" + request.getParameter(PROUDUCT_ID) + "?quantityAnswer=" + "Not enough stock" + "&quantity=" + quantity;
-                responce.sendRedirect(path);
-            }
+        if (cartService.addToCart(request, product, request.getParameter(QUANTITY))) {
+            String path = request.getContextPath() + "/products/" + request.getParameter(PROUDUCT_ID) + "?quantityAnswer=" + "Product was added!" + "&quantity=" + request.getParameter(QUANTITY);
+            responce.sendRedirect(path);
+        } else {
+            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, responce);
         }
-            catch(RuntimeException ex){
-            request.setAttribute(QUANTITY_ANSWER, "Not a number");
-            request.setAttribute("product", product);
-            request.setAttribute(QUANTITY, request.getParameter(QUANTITY));
-            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request , responce);
-            }
-
-        }
-
     }
 
+}
 

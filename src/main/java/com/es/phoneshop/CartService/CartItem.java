@@ -2,6 +2,8 @@ package com.es.phoneshop.CartService;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.util.Objects;
+
 public class CartItem {
 
     private Product product;
@@ -42,12 +44,17 @@ public class CartItem {
     public boolean equals(Object object) {
         if (this == object)
             return true;
-        if (this.getClass() != object.getClass() || object == null)
+        if (object == null || this.getClass() != object.getClass())
             return false;
         CartItem cartItem = (CartItem) object;
         return this.getQuantity() == cartItem.getQuantity() &&
                 this.getProduct().equals(cartItem.getProduct());
 
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(this.product, this.quantity);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Product {
     private Long id;
@@ -11,6 +12,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private int ammountOfViews;
 
     public Product() {
     }
@@ -79,5 +81,35 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+   public void incrementAmmountOfViews(){
+       ammountOfViews++;
+  }
+
+    public int getAmmountOfViews(){
+       return ammountOfViews;
+   }
+
+    @Override
+    public boolean equals(Object object){
+        if (this == object)
+            return true;
+        if (object == null || this.getClass() != object.getClass())
+            return false;
+        Product product = (Product) object;
+        return this.getStock() == product.getStock() &&
+               this.getDescription().equals(product.getDescription()) &&
+                this.getPrice().equals(product.getPrice()) &&
+                this.getId().equals(product.getId())  &&
+                this.getCode().equals(product.getCode()) &&
+                this.getCurrency().equals(product.getCurrency()) &&
+                this.getImageUrl().equals(product.getImageUrl());
+
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(this.code, this.stock, this.id, this.description);
     }
 }

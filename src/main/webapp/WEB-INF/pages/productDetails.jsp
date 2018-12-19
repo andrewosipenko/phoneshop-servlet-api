@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="<c:url value="/styles/main.css"/>">
 </head>
 <body class="product-list">
+<jsp:include page="header.jsp"/>
 <main>
     <p>
         Welcome to Expert-Soft training!
