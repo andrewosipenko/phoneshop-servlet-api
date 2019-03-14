@@ -28,15 +28,15 @@ public class ProductListPageServletTest {
     private ProductListPageServlet servlet;
 
     @Before
-    public void setup(){
-    	servlet = new ProductListPageServlet();
-        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+    public void setup() {
+	servlet = new ProductListPageServlet();
+	when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-    	servlet.init();
-        servlet.doGet(request, response);
-        verify(requestDispatcher).forward(request, response);
+	servlet.init();
+	servlet.doGet(request, response);
+	verify(requestDispatcher).forward(request, response);
     }
 }
