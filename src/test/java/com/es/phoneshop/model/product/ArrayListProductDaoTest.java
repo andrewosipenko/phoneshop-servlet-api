@@ -3,6 +3,8 @@ package com.es.phoneshop.model.product;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -62,6 +64,8 @@ public class ArrayListProductDaoTest {
     @Test
     public void testSaveProduct() {
         Product product = new Product();
+        product.setStock(2);
+        product.setPrice(new BigDecimal(1.0));
         productDao.save(product);
         assertEquals(1, productDao.findProducts().size());
     }
@@ -70,5 +74,18 @@ public class ArrayListProductDaoTest {
     @Test
     public void testFindProductsNoResults() {
         assertTrue(productDao.findProducts().isEmpty());
+    }
+
+    @Test
+    public void testFindProductWithCondition() {
+        Product negativeStockProduct = new Product();
+        negativeStockProduct.setStock(-5);
+        negativeStockProduct.setId(1L);
+        Product nullPriceProduct = new Product();
+        nullPriceProduct.setPrice(null);
+        nullPriceProduct.setId(2L);
+        productDao.save(negativeStockProduct);
+        productDao.save(nullPriceProduct);
+        assertEquals(0, productDao.findProducts().size());
     }
 }
