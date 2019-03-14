@@ -25,17 +25,18 @@ public class ProductListPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private ProductListPageServlet servlet;
 
     @Before
     public void setup(){
+    	servlet = new ProductListPageServlet();
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+    	servlet.init();
         servlet.doGet(request, response);
-
         verify(requestDispatcher).forward(request, response);
     }
 }
