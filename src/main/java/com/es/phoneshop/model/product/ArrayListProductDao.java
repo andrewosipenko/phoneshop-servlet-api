@@ -22,7 +22,7 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized List<Product> findProducts() {
-	return products.stream().filter((product) -> {
+	return products.parallelStream().filter((product) -> {
 	    boolean isValid = false;
 	    if (product.getPrice() != null && product.getStock() > 0) {
 		isValid = true;
