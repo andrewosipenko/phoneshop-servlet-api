@@ -1,25 +1,35 @@
 package com.es.phoneshop.model.product;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
+    private List<Product> products;
+    public ArrayListProductDao()
+    {
+        products = new ArrayList<>();
+    }
     @Override
     public Product getProduct(Long id) {
-        throw new RuntimeException("Not implemented");
+        return products.stream().filter(product -> product.getId().equals(id)).findFirst().orElse(null);
     }
 
     @Override
     public List<Product> findProducts() {
-        throw new RuntimeException("Not implemented");
+        return products.stream().filter(product -> product.getPrice() != null && product.getStock() > 0).collect(Collectors.toList());
     }
 
     @Override
     public void save(Product product) {
-        throw new RuntimeException("Not implemented");
+        if(product != null && products.stream().noneMatch(element->element.getId().equals(product.getId())))
+        {
+            products.add(product);
+        }
     }
 
     @Override
     public void delete(Long id) {
-        throw new RuntimeException("Not implemented");
+        products.removeIf(product -> product.getId().equals(id));
     }
 }
