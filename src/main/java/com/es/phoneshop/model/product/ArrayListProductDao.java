@@ -28,7 +28,9 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized void save(Product product) {
         if (product == null) throw new NullPointerException("Product cant be null!");
-        if (products.stream().anyMatch(p -> p.getId().equals(product.getId()))) {
+        if (products
+                .stream()
+                .anyMatch(p -> p.getId().equals(product.getId()))) {
             throw new IllegalArgumentException("Product with this id already exist!");
         }
         products.add(product);
