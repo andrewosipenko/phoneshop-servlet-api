@@ -38,11 +38,6 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void delete(Long id) {
-        if (id == null) throw new NullPointerException("Id cant be null!");
-        if (id < 0) throw new IllegalArgumentException("Id cant be negative!");
-        products.remove(products.stream()
-                .filter(p -> p.getId().equals(id))
-                .findAny()
-                .get());
+        products.remove(getProduct(id));
     }
 }
