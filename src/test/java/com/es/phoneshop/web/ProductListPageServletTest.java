@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
@@ -34,8 +33,15 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        servlet.init();
         servlet.doGet(request, response);
-
         verify(requestDispatcher).forward(request, response);
+    }
+    @Test
+    public void testDoGet2() throws ServletException, IOException
+    {
+        servlet.init();
+        servlet.doGet(request, response);
+        verify(request).setAttribute(anyString(), any());
     }
 }
