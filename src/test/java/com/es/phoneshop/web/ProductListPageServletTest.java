@@ -40,7 +40,6 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-        when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
         servlet.doGet(request, response);
         verify(request, times(1)).getRequestDispatcher(path);
         verify(request).setAttribute("products", products);
