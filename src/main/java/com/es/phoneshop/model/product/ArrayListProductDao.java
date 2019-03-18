@@ -6,10 +6,11 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
-    public ArrayListProductDao()
-    {
+
+    public ArrayListProductDao() {
         products = new ArrayList<>();
     }
+
     @Override
     public Product getProduct(Long id) {
         return products.stream().filter(product -> product.getId().equals(id)).findFirst().orElse(null);
@@ -22,8 +23,7 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product) {
-        if(product != null && products.stream().noneMatch(element->element.getId().equals(product.getId())))
-        {
+        if (product != null && products.stream().noneMatch(element -> element.getId().equals(product.getId()))) {
             products.add(product);
         }
     }
