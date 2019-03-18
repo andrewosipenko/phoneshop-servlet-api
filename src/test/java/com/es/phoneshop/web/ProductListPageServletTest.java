@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
@@ -33,6 +32,8 @@ public class ProductListPageServletTest {
 
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
+    private final String path = "/WEB-INF/pages/productList.jsp";
+
     @Before
     public void setup() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
@@ -40,7 +41,9 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        when(request.getRequestDispatcher(path)).thenReturn(requestDispatcher);
         servlet.doGet(request, response);
+        verify(request, times(1)).getRequestDispatcher(path);
         verify(request).setAttribute("products", products);
         verify(requestDispatcher).forward(request, response);
     }
