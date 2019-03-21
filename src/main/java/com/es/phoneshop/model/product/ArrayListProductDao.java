@@ -1,21 +1,37 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private List<Product> products = new ArrayList<>();
+    private final static ArrayListProductDao instance = new ArrayListProductDao();
+    private List<Product> products;
+
+    private ArrayListProductDao() {
+        products = new ArrayList<>();
+    }
+
 
     @Override
-    public Product getProduct(Long id) {
+    public Product getProduct(Long id) throws ProductNotFoundException {
         if (id == null) throw new NullPointerException("Id cant be null!");
         if (id < 0) throw new IllegalArgumentException("Id cant be negative!");
         return products.stream()
                 .filter(p -> p.getId().equals(id))
                 .findAny()
-                .get();
+                .orElseThrow(ProductNotFoundException::new);
+    }
+
+    @Override
+    public Product getProduct(String code) throws ProductNotFoundException {
+        return products.stream()
+                .filter(product -> product.getCode().toLowerCase().equals(code))
+                .findFirst()
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     @Override
@@ -45,7 +61,11 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void delete(Long id) {
+    public synchronized void delete(Long id) throws ProductNotFoundException {
         products.remove(getProduct(id));
+    }
+
+    public static ArrayListProductDao getInstance() {
+        return instance;
     }
 }
