@@ -1,6 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,14 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts() {
         return products.stream()
                 .filter(product -> product.getPrice() != null && product.getStock() > 0)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> findProductsByDescription(String description) {
+        String formattedDescription = description.trim().replaceAll("\\s{2,}", " ").toLowerCase();
+        return products.stream()
+                .filter(product -> product.getDescription().toLowerCase().contains(formattedDescription))
                 .collect(Collectors.toList());
     }
 
