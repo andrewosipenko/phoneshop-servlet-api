@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductListPageServlet extends HttpServlet {
+    protected static final String QUERY = "query";
+    protected static final String ORDER = "order";
+    protected static final String SORT = "sort";
+    protected static final String PRODUCTS = "products";
 
     private ArrayListProductDao productDao = new ArrayListProductDao();
 
@@ -25,11 +28,40 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String query = request.getParameter("query");
+        String query = request.getParameter(QUERY);
+        String order = request.getParameter(ORDER);
+        String sortBy = request.getParameter(SORT);
+
+        List<Product> products;
         if (query != null) {
-            request.setAttribute("products", productDao.findProductsByDescription(query));
-        } else request.setAttribute("products", productDao.findProducts());
+            products = productDao.findProductsByDescription(query);
+        } else {
+            products = productDao.findProducts();
+        }
+        request.setAttribute(PRODUCTS, checkReadyToSort(products, sortBy, order));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+    }
+
+    private List<Product> checkReadyToSort(List<Product> products, String sortBy, String order) {
+        boolean readyToSort = order != null && sortBy != null;
+        if (readyToSort) {
+            boolean asc = order.equals("asc");
+            switch (sortBy) {
+                case "description":
+                    products = products.stream()
+                            .sorted(Comparator.comparing(Product::getDescription))
+                            .collect(Collectors.toList());
+                    break;
+                case "price":
+                    products = products.stream()
+                            .sorted(Comparator.comparing(Product::getPrice))
+                            .collect(Collectors.toList());
+                    break;
+            }
+
+            if (!asc) Collections.reverse(products);
+        }
+        return products;
     }
 
     private List<Product> getSampleProducts() {
