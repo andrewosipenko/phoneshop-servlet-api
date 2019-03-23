@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ProductDemodataServletContextListener implements ServletContextListener {
 
-    private ProductDao productDao = ArrayListProductDao.getInstance();
+    protected ProductDao productDao = ArrayListProductDao.getInstance();
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -36,7 +36,5 @@ public class ProductDemodataServletContextListener implements ServletContextList
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
-    }
+    public void contextDestroyed(ServletContextEvent servletContextEvent) { }
 }

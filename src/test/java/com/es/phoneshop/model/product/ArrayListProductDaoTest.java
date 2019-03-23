@@ -1,33 +1,33 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ArrayListProductDaoTest {
     private ProductDao productDao;
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
     }
 
     @Test(expected = NullPointerException.class)
-    public void testGetProductNullPointer() {
+    public void testGetProductNullPointer() throws ProductNotFoundException {
         productDao.getProduct(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetProductIllegalArgument() {
+    public void testGetProductIllegalArgument() throws ProductNotFoundException {
         productDao.getProduct(-5L);
     }
 
-    @Test
-    public void testGetProduct() {
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetProduct() throws ProductNotFoundException {
         Product product = new Product();
         product.setId(1L);
         productDao.save(product);
@@ -36,12 +36,12 @@ public class ArrayListProductDaoTest {
 
 
     @Test(expected = NullPointerException.class)
-    public void testDeleteProductNullPointer() {
+    public void testDeleteProductNullPointer() throws ProductNotFoundException {
         productDao.delete(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testDeleteProductIllegalArgument() {
+    public void testDeleteProductIllegalArgument() throws ProductNotFoundException {
         productDao.delete(-5L);
     }
 
@@ -68,12 +68,6 @@ public class ArrayListProductDaoTest {
         product.setPrice(new BigDecimal(1.0));
         productDao.save(product);
         assertEquals(1, productDao.findProducts().size());
-    }
-
-
-    @Test
-    public void testFindProductsNoResults() {
-        assertTrue(productDao.findProducts().isEmpty());
     }
 
     @Test

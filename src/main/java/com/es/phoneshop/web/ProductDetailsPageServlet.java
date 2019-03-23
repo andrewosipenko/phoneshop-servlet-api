@@ -21,7 +21,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String productCode = requestURI.substring(index + req.getServletPath().length() + 1);
 
         try {
-            Long productId = productDao.getProduct(productCode).getId();
+            Long productId = productDao.getProductByCode(productCode).getId();
             req.setAttribute("product", productDao.getProduct(productId));
             req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
         } catch (ProductNotFoundException e) {

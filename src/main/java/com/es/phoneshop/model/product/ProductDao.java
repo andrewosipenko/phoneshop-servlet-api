@@ -5,9 +5,10 @@ import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 import java.util.List;
 
 public interface ProductDao {
+
     Product getProduct(Long id) throws ProductNotFoundException;
 
-    Product getProduct(String code) throws ProductNotFoundException;
+    Product getProductByCode(String code) throws ProductNotFoundException;
 
     List<Product> findProducts();
 

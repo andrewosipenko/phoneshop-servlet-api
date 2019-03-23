@@ -27,7 +27,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(String code) throws ProductNotFoundException {
+    public Product getProductByCode(String code) throws ProductNotFoundException {
         return products.stream()
                 .filter(product -> product.getCode().toLowerCase().equals(code))
                 .findFirst()
