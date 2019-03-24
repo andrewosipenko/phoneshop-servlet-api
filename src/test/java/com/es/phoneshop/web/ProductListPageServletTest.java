@@ -41,7 +41,7 @@ public class ProductListPageServletTest {
         servlet.doGet(request, response);
         String PATH = "/WEB-INF/pages/productList.jsp";
         verify(request, times(1)).getRequestDispatcher(PATH);
-        verify(request).setAttribute(ProductDetailsPageServlet.PRODUCT, products);
+        verify(request).setAttribute(ProductListPageServlet.PRODUCTS, products);
         verify(requestDispatcher).forward(request, response);
     }
 }
