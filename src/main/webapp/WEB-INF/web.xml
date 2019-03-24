@@ -25,6 +25,11 @@
         <url-pattern>/products/*</url-pattern>
     </servlet-mapping>
 
+    <error-page>
+        <exception-type>com.es.phoneshop.model.product.exceptions.ProductNotFoundException</exception-type>
+        <location>/WEB-INF/pages/productNotFounded.jsp</location>
+    </error-page>
+
     <listener>
         <listener-class>com.es.phoneshop.web.ProductDemodataServletContextListener</listener-class>
     </listener>

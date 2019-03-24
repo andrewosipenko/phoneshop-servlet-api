@@ -1,4 +1,6 @@
 package com.es.phoneshop.model.product.exceptions;
 
-public class ProductNotFoundException extends Exception {
+import javax.servlet.ServletException;
+
+public class ProductNotFoundException extends ServletException {
 }

@@ -3,9 +3,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="code" type="java.lang.String" scope="request"/>
+<jsp:useBean id="id" type="java.lang.Long" scope="request"/>
 <tags:master pageTitle="Product List">
     <br/>
-    <h1 align="center">Product with code '${code}' not found</h1>
+    <h1 align="center">Product with id ${id} not found!</h1>
+    <h2 align="center">
+        <a href="${pageContext.request.contextPath}/products">Back</a>
+    </h2>
 </tags:master>
 

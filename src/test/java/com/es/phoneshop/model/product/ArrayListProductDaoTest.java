@@ -1,12 +1,15 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.enums.SortBy;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ArrayListProductDaoTest {
     private ProductDao productDao;
@@ -82,4 +85,74 @@ public class ArrayListProductDaoTest {
         productDao.save(nullPriceProduct);
         assertEquals(0, productDao.findProducts().size());
     }
+
+    @Test
+    public void testFindProductByQuery() {
+        long samsungCount = productDao.findProducts().stream()
+                .filter(product -> product.getDescription().toLowerCase().contains("samsung"))
+                .count();
+        long iphoneCount = productDao.findProducts().stream()
+                .filter(product -> product.getDescription().toLowerCase().contains("iphone"))
+                .count();
+
+        String query = " samsung   iphone  ";
+        assertEquals(productDao.findProducts(query).size(), (samsungCount + iphoneCount));
+    }
+
+    @Test
+    public void testSortProductsByDescriptionAsc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setDescription("a");
+        Product productB = new Product();
+        productB.setDescription("b");
+        products.add(productB);
+        products.add(productA);
+        productDao.sort(products, SortBy.DESCRIPTION, true);
+        assertEquals(2, products.size());
+        assertArrayEquals(products.toArray(), new Object[]{productA, productB});
+    }
+
+    @Test
+    public void testSortProductsByDescriptionDesc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setDescription("a");
+        Product productB = new Product();
+        productB.setDescription("b");
+        products.add(productA);
+        products.add(productB);
+        productDao.sort(products, SortBy.DESCRIPTION, false);
+        assertEquals(2, products.size());
+        assertArrayEquals(products.toArray(), new Object[]{productB, productA});
+    }
+
+    @Test
+    public void testSortProductsByPriceAsc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setPrice(BigDecimal.ONE);
+        Product productB = new Product();
+        productB.setPrice(BigDecimal.TEN);
+        products.add(productB);
+        products.add(productA);
+        productDao.sort(products, SortBy.PRICE, true);
+        assertEquals(2, products.size());
+        assertArrayEquals(products.toArray(), new Object[]{productA, productB});
+    }
+
+    @Test
+    public void testSortProductsByPriceDesc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setPrice(BigDecimal.ONE);
+        Product productB = new Product();
+        productB.setPrice(BigDecimal.TEN);
+        products.add(productA);
+        products.add(productB);
+        productDao.sort(products, SortBy.PRICE, false);
+        assertEquals(2, products.size());
+        assertArrayEquals(products.toArray(), new Object[]{productB, productA});
+    }
+
 }

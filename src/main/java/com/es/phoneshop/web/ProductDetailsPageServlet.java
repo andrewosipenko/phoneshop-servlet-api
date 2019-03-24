@@ -2,7 +2,6 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,21 +12,16 @@ import java.io.IOException;
 public class ProductDetailsPageServlet extends HttpServlet {
 
     private ProductDao productDao = ArrayListProductDao.getInstance();
+    protected static final String ID = "id";
+    protected static final String PRODUCT = "product";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String requestURI = req.getRequestURI();
-        int index = requestURI.indexOf(req.getServletPath());
-        String productCode = requestURI.substring(index + req.getServletPath().length() + 1);
+        String pathInfo = req.getPathInfo();
+        Long productId = Long.valueOf(pathInfo.substring(1));
 
-        try {
-            Long productId = productDao.getProductByCode(productCode).getId();
-            req.setAttribute("product", productDao.getProduct(productId));
-            req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
-        } catch (ProductNotFoundException e) {
-            req.setAttribute("code", productCode);
-            req.getRequestDispatcher("/WEB-INF/pages/productNotFounded.jsp").forward(req, resp);
-        }
-
+        req.setAttribute(ID, productId);
+        req.setAttribute(PRODUCT, productDao.getProduct(productId));
+        req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
     }
 }

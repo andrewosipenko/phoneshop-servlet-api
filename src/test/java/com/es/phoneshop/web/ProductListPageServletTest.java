@@ -31,8 +31,6 @@ public class ProductListPageServletTest {
 
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
-    private final String path = "/WEB-INF/pages/productList.jsp";
-
     @Before
     public void setup() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
@@ -41,8 +39,9 @@ public class ProductListPageServletTest {
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
-        verify(request, times(1)).getRequestDispatcher(path);
-        verify(request).setAttribute("products", products);
+        String PATH = "/WEB-INF/pages/productList.jsp";
+        verify(request, times(1)).getRequestDispatcher(PATH);
+        verify(request).setAttribute(ProductDetailsPageServlet.PRODUCT, products);
         verify(requestDispatcher).forward(request, response);
     }
 }

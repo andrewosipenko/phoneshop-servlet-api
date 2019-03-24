@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ArrayListProductDao;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -17,6 +18,6 @@ public class ProductDemodataServletContextListenerTest {
     @Test
     public void testContextInitialized() {
         productDemodataServletContextListener.contextInitialized(servletContextEvent);
-        assertNotEquals(productDemodataServletContextListener.productDao.findProducts().size(), 0);
+        assertNotEquals(ArrayListProductDao.getInstance().findProducts().size(), 0);
     }
 }

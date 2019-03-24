@@ -18,13 +18,13 @@
             <td>Image</td>
             <td>
                 Description
-                <a href="?query=${param.query}&order=desc&sort=description">desc</a>
-                <a href="?query=${param.query}&order=asc&sort=description">asc</a>
+                <tags:sort sortBy="description" order="desc"/>
+                <tags:sort sortBy="description" order="asc"/>
             </td>
             <td class="price">
                 Price
-                <a href="?query=${param.query}&order=desc&sort=price">desc</a>
-                <a href="?query=${param.query}&order=asc&sort=price">asc</a>
+                <tags:sort sortBy="price" order="desc"/>
+                <tags:sort sortBy="price" order="asc"/>
             </td>
         </tr>
         </thead>
@@ -34,7 +34,9 @@
                     <img class="product-tile" title="${product.code}"
                          src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
                 </td>
-                <td>${product.description}</td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/products/${product.id}">${product.description}</a>
+                </td>
                 <td class="price">
                     <fmt:formatNumber value="${product.price}" type="currency"
                                       currencySymbol="${product.currency.symbol}"/>

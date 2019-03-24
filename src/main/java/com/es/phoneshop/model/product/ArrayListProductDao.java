@@ -1,14 +1,17 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.enums.SortBy;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private final static ArrayListProductDao instance = new ArrayListProductDao();
+    private final static ArrayListProductDao INSTANCE = new ArrayListProductDao();
     private List<Product> products;
 
     private ArrayListProductDao() {
@@ -18,19 +21,15 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Product getProduct(Long id) throws ProductNotFoundException {
-        if (id == null) throw new NullPointerException("Id cant be null!");
-        if (id < 0) throw new IllegalArgumentException("Id cant be negative!");
+        if (id == null) {
+            throw new NullPointerException("Id cant be null!");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("Id cant be negative!");
+        }
         return products.stream()
                 .filter(p -> p.getId().equals(id))
                 .findAny()
-                .orElseThrow(ProductNotFoundException::new);
-    }
-
-    @Override
-    public Product getProductByCode(String code) throws ProductNotFoundException {
-        return products.stream()
-                .filter(product -> product.getCode().toLowerCase().equals(code))
-                .findFirst()
                 .orElseThrow(ProductNotFoundException::new);
     }
 
@@ -42,16 +41,25 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProductsByDescription(String description) {
-        String formattedDescription = description.trim().replaceAll("\\s{2,}", " ").toLowerCase();
+    public List<Product> findProducts(String query) {
+        String[] searchWords = query
+                .trim()
+                .replaceAll("\\s{2,}", " ")
+                .toLowerCase()
+                .split(" ");
+
         return products.stream()
-                .filter(product -> product.getDescription().toLowerCase().contains(formattedDescription))
+                .filter(product -> product.getDescription() != null)
+                .filter(product -> Arrays.stream(searchWords)
+                        .anyMatch(product.getDescription().toLowerCase()::contains))
                 .collect(Collectors.toList());
     }
 
     @Override
     public synchronized void save(Product product) {
-        if (product == null) throw new NullPointerException("Product cant be null!");
+        if (product == null) {
+            throw new NullPointerException("Product cant be null!");
+        }
         if (products
                 .stream()
                 .anyMatch(p -> p.getId().equals(product.getId()))) {
@@ -66,6 +74,34 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public static ArrayListProductDao getInstance() {
-        return instance;
+        return INSTANCE;
+    }
+
+    /**
+     * @param products
+     * @param field     (if null, return {@param products} without any sorting)
+     * @param ascending
+     * @return sorted by some field products
+     */
+    public List<Product> sort(List<Product> products, SortBy field, boolean ascending) {
+        boolean readyToSort = field != null;
+        Comparator<Product> productComparator = null;
+        if (readyToSort && products.size() > 1) {
+            switch (field) {
+                case DESCRIPTION:
+                    productComparator = Comparator.comparing(Product::getDescription, Comparator.comparing(String::toLowerCase));
+                    break;
+                case PRICE:
+                    productComparator = Comparator.comparing(Product::getPrice);
+                    break;
+            }
+
+            if (productComparator == null)
+                return products;
+
+            if (!ascending) productComparator = productComparator.reversed();
+            products.sort(productComparator);
+        }
+        return products;
     }
 }

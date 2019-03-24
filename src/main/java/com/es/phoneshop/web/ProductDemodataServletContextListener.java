@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ProductDemodataServletContextListener implements ServletContextListener {
 
-    protected ProductDao productDao = ArrayListProductDao.getInstance();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -32,9 +32,10 @@ public class ProductDemodataServletContextListener implements ServletContextList
         result.add(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         result.add(new Product(12L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
         result.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-        result.forEach(product -> productDao.save(product));
+        result.forEach(productDao::save);
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) { }
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    }
 }
