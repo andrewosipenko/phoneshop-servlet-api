@@ -27,7 +27,7 @@
 
     <error-page>
         <exception-type>com.es.phoneshop.model.product.exceptions.ProductNotFoundException</exception-type>
-        <location>/WEB-INF/pages/productNotFounded.jsp</location>
+        <location>/WEB-INF/pages/productNotFound.jsp</location>
     </error-page>
 
     <listener>

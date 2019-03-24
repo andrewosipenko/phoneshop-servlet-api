@@ -64,5 +64,8 @@ public class ProductDetailsPageServletTest {
         when((request.getPathInfo())).thenReturn("/" + INVALID_ID);
         servlet.doGet(request, response);
         verify(request).setAttribute(ProductDetailsPageServlet.ID, INVALID_ID);
+        String PATH = "/WEB-INF/pages/productNotFound.jsp";
+        verify(request).getRequestDispatcher(PATH);
+        verify(requestDispatcher).forward(request, response);
     }
 }
