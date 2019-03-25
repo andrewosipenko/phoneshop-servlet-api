@@ -17,5 +17,5 @@ public interface ProductDao {
 
     void delete(Long id) throws ProductNotFoundException;
 
-    List<Product> sort(List<Product> products, SortBy field, boolean ascending);
+    List<Product> findProducts(String query, SortBy field, boolean ascending);
 }

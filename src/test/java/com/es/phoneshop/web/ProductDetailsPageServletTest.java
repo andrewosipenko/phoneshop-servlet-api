@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -38,6 +39,7 @@ public class ProductDetailsPageServletTest {
 
     @BeforeClass
     public static void start() {
+        ArrayListProductDao.getInstance().setProducts(new ArrayList<>());
         productDemodataServletContextListener.contextInitialized(servletContextEvent);
     }
 

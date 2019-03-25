@@ -11,11 +11,22 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private final static ArrayListProductDao INSTANCE = new ArrayListProductDao();
+    private static ArrayListProductDao INSTANCE;
     private List<Product> products;
 
     private ArrayListProductDao() {
         products = new ArrayList<>();
+    }
+
+    public static ArrayListProductDao getInstance() {
+        if (INSTANCE == null) {
+            synchronized (ArrayListProductDao.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ArrayListProductDao();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
 
@@ -73,17 +84,13 @@ public class ArrayListProductDao implements ProductDao {
         products.remove(getProduct(id));
     }
 
-    public static ArrayListProductDao getInstance() {
-        return INSTANCE;
-    }
-
     /**
-     * @param products
      * @param field     (if null, return {@param products} without any sorting)
      * @param ascending
      * @return sorted by some field products
      */
-    public List<Product> sort(List<Product> products, SortBy field, boolean ascending) {
+    public List<Product> findProducts(String query, SortBy field, boolean ascending) {
+        List<Product> products = query == null ? findProducts() : findProducts(query);
         boolean readyToSort = field != null;
         Comparator<Product> productComparator = null;
         if (readyToSort && products.size() > 1) {
@@ -96,12 +103,19 @@ public class ArrayListProductDao implements ProductDao {
                     break;
             }
 
-            if (productComparator == null)
+            if (productComparator == null) {
                 return products;
+            }
 
-            if (!ascending) productComparator = productComparator.reversed();
+            if (!ascending) {
+                productComparator = productComparator.reversed();
+            }
             products.sort(productComparator);
         }
         return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

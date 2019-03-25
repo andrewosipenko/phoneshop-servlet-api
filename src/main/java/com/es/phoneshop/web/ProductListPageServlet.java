@@ -1,7 +1,6 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.enums.SortBy;
 
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 public class ProductListPageServlet extends HttpServlet {
     protected static final String QUERY = "query";
@@ -32,13 +30,7 @@ public class ProductListPageServlet extends HttpServlet {
             field = SortBy.valueOf(request.getParameter(SORT).toUpperCase());
         }
 
-        List<Product> products;
-        if (query != null) {
-            products = productDao.findProducts(query);
-        } else {
-            products = productDao.findProducts();
-        }
-        request.setAttribute(PRODUCTS, productDao.sort(products, field, ascending));
+        request.setAttribute(PRODUCTS, productDao.findProducts(query, field, ascending));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }
