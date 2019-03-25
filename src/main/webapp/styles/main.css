@@ -28,6 +28,10 @@ img.product-tile {
   max-width: 64px;
 }
 
+img.big-product-tile {
+  max-width: 256px;
+}
+
 /* Page specific styles */
 body.product-list {
 

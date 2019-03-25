@@ -1,33 +1,38 @@
 package com.es.phoneshop.model.product;
 
-import org.junit.Before;
+import com.es.phoneshop.model.product.enums.SortBy;
+import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ArrayListProductDaoTest {
-    private ProductDao productDao;
+    private static ProductDao productDao;
 
-    @Before
-    public void setup() {
-        productDao = new ArrayListProductDao();
+    @BeforeClass
+    public static void start() {
+        ArrayListProductDao.getInstance().setProducts(new ArrayList<>());
+        productDao = ArrayListProductDao.getInstance();
     }
 
+
     @Test(expected = NullPointerException.class)
-    public void testGetProductNullPointer() {
+    public void testGetProductNullPointer() throws ProductNotFoundException {
         productDao.getProduct(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetProductIllegalArgument() {
+    public void testGetProductIllegalArgument() throws ProductNotFoundException {
         productDao.getProduct(-5L);
     }
 
-    @Test
-    public void testGetProduct() {
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetProduct() throws ProductNotFoundException {
         Product product = new Product();
         product.setId(1L);
         productDao.save(product);
@@ -36,12 +41,12 @@ public class ArrayListProductDaoTest {
 
 
     @Test(expected = NullPointerException.class)
-    public void testDeleteProductNullPointer() {
+    public void testDeleteProductNullPointer() throws ProductNotFoundException {
         productDao.delete(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testDeleteProductIllegalArgument() {
+    public void testDeleteProductIllegalArgument() throws ProductNotFoundException {
         productDao.delete(-5L);
     }
 
@@ -70,12 +75,6 @@ public class ArrayListProductDaoTest {
         assertEquals(1, productDao.findProducts().size());
     }
 
-
-    @Test
-    public void testFindProductsNoResults() {
-        assertTrue(productDao.findProducts().isEmpty());
-    }
-
     @Test
     public void testFindProductWithCondition() {
         Product negativeStockProduct = new Product();
@@ -88,4 +87,78 @@ public class ArrayListProductDaoTest {
         productDao.save(nullPriceProduct);
         assertEquals(0, productDao.findProducts().size());
     }
+
+    @Test
+    public void testFindProductByQuery() {
+        long samsungCount = productDao.findProducts().stream()
+                .filter(product -> product.getDescription().toLowerCase().contains("samsung"))
+                .count();
+        long iphoneCount = productDao.findProducts().stream()
+                .filter(product -> product.getDescription().toLowerCase().contains("iphone"))
+                .count();
+
+        String query = " samsung   iphone  ";
+        assertEquals(productDao.findProducts(query).size(), (samsungCount + iphoneCount));
+    }
+
+    @Test
+    public void testSortProductsByDescriptionAsc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setDescription("a");
+        Product productB = new Product();
+        productB.setDescription("b");
+        products.add(productB);
+        products.add(productA);
+        String query = "a b";
+        productDao.findProducts(query, SortBy.DESCRIPTION, true);
+        assertEquals(2, products.size());
+    }
+
+    @Test
+    public void testSortProductsByDescriptionDesc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setDescription("a");
+        Product productB = new Product();
+        productB.setDescription("b");
+        products.add(productA);
+        products.add(productB);
+        String query = "a b";
+        productDao.findProducts(query, SortBy.DESCRIPTION, false);
+        assertEquals(2, products.size());
+    }
+
+    @Test
+    public void testSortProductsByPriceAsc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setPrice(BigDecimal.ONE);
+        productA.setDescription("a");
+        Product productB = new Product();
+        productB.setPrice(BigDecimal.TEN);
+        productB.setDescription("b");
+        products.add(productB);
+        products.add(productA);
+        String query = "a b";
+        productDao.findProducts(query, SortBy.PRICE, true);
+        assertEquals(2, products.size());
+    }
+
+    @Test
+    public void testSortProductsByPriceDesc() {
+        List<Product> products = new ArrayList<>();
+        Product productA = new Product();
+        productA.setPrice(BigDecimal.ONE);
+        productA.setDescription("a");
+        Product productB = new Product();
+        productB.setPrice(BigDecimal.TEN);
+        productB.setDescription("b");
+        products.add(productA);
+        products.add(productB);
+        String query = "a b";
+        productDao.findProducts(query, SortBy.PRICE, false);
+        assertEquals(2, products.size());
+    }
+
 }
