@@ -1,5 +1,6 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ attribute name="pageTitle" required="true" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <html>
 <head>
@@ -14,6 +15,7 @@
         PhoneShop
     </a>
 </header>
+<tags:cart/>
 <main>
     <jsp:doBody/>
 </main>
