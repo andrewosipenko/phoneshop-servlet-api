@@ -18,7 +18,6 @@ public class ProductDemodataServletContextListener implements ServletContextList
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        servletContextEvent.getServletContext().setAttribute("cart", Cart.EMPTY);
         if (productDao.findProducts().isEmpty()) {
             List<Product> result = new ArrayList<>();
             Currency usd = Currency.getInstance("USD");

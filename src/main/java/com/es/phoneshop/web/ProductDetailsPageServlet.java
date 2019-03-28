@@ -56,7 +56,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         } else if (req.getParameter("err") != null) {
             String errorType = req.getParameter("err");
             Optional<Error> error;
-            if((error = Error.indentify(errorType)).isPresent()) {
+            if ((error = Error.indentify(errorType)).isPresent()) {
                 switch (error.get()) {
                     case PARSE_ERROR:
                         req.setAttribute("error", "Not a number!");

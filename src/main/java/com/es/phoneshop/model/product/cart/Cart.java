@@ -6,8 +6,6 @@ import java.util.List;
 public class Cart {
     private List<CartItem> cartItems;
 
-    public static final Cart EMPTY = new Cart();
-
     public Cart() {
         cartItems = new ArrayList<>();
     }
