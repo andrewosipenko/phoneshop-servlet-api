@@ -16,8 +16,11 @@
     </a>
 </header>
 <tags:cart/>
+<hr>
 <main>
     <jsp:doBody/>
 </main>
+<hr>
+<tags:history dispayedNumber="3"/>
 </body>
 </html>

@@ -1,11 +1,15 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.exceptions.OutOfStockException;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
+import com.es.phoneshop.model.product.history.History;
+import com.es.phoneshop.model.product.history.HistoryService;
+import com.es.phoneshop.model.product.history.HttpHistoryService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +26,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     protected static final String ID = "id";
     protected static final String PRODUCT = "product";
+    protected static final String HTTP_SESSION_CART_KEY = "httpCart";
+    protected static final String HTTP_SESSION_HISTORY_KEY = "httpHistory";
 
     protected enum Error {
         PARSE_ERROR("nfe"),
@@ -47,7 +53,20 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long productId = getProductId(req);
         req.setAttribute(ID, productId);
         req.setAttribute(PRODUCT, productDao.getProduct(productId));
+        checkHistory(req, productId);
         req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
+    }
+
+    private void checkHistory(HttpServletRequest req, Long productId) throws ProductNotFoundException {
+        HttpSession session = req.getSession();
+        if(session.getAttribute(HTTP_SESSION_HISTORY_KEY) == null) {
+            History history = new History();
+            session.setAttribute(HTTP_SESSION_HISTORY_KEY, history);
+        }
+        History customerHistory = (History) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
+        HistoryService historyService = HttpHistoryService.getInstance();
+        historyService.add(customerHistory, productId);
+        req.getServletContext().setAttribute("history", customerHistory);
     }
 
     private void checkOnErrors(HttpServletRequest req) {
@@ -81,14 +100,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
         if (quantity != null) {
             HttpSession session = req.getSession();
-            if (session.getAttribute("httpCart") == null) {
+            if (session.getAttribute(HTTP_SESSION_CART_KEY) == null) {
                 Cart cart = new Cart();
-                session.setAttribute("httpCart", cart);
+                session.setAttribute(HTTP_SESSION_CART_KEY, cart);
             }
 
             Long productId = getProductId(req);
-            Cart customerCart = (Cart) session.getAttribute("httpCart");
-            HttpSessionCartService httpSessionCartService = HttpSessionCartService.getInstance();
+            Cart customerCart = (Cart) session.getAttribute(HTTP_SESSION_CART_KEY);
+            CartService httpSessionCartService = HttpSessionCartService.getInstance();
 
             try {
                 httpSessionCartService.add(customerCart, productId, quantity);
