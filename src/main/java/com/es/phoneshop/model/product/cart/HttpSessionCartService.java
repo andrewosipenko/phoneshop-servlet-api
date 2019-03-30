@@ -14,7 +14,6 @@ public class HttpSessionCartService implements CartService {
     private static HttpSessionCartService INSTANCE;
     protected static final String HTTP_SESSION_CART_KEY = "httpCart";
 
-
     @Override
     public void add(Cart customerCart, Long productId, Integer quantity) throws ProductNotFoundException, OutOfStockException {
         Product product = ArrayListProductDao.getInstance().getProduct(productId);
@@ -57,5 +56,7 @@ public class HttpSessionCartService implements CartService {
         }
         return INSTANCE;
     }
+
+    private HttpSessionCartService() {}
 
 }
