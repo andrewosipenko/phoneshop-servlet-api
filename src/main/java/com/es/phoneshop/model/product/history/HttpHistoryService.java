@@ -4,13 +4,15 @@ import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.Product;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public class HttpHistoryService implements HistoryService {
     private static HttpHistoryService INSTANCE;
+    protected static final String HTTP_SESSION_HISTORY_KEY = "httpHistory";
 
-    @Override
-    public void add(History customerHistory, Long productId) throws ProductNotFoundException {
+    private void add(History customerHistory, Long productId) throws ProductNotFoundException {
         Product product = ArrayListProductDao.getInstance().getProduct(productId);
         List<Product> historyProducts = customerHistory.getHistoryProducts();
         int i;
@@ -30,6 +32,18 @@ public class HttpHistoryService implements HistoryService {
         }
     }
 
+    @Override
+    public void update(HttpServletRequest req, Long productId) throws ProductNotFoundException {
+        HttpSession session = req.getSession();
+        if (session.getAttribute(HTTP_SESSION_HISTORY_KEY) == null) {
+            History history = new History();
+            session.setAttribute(HTTP_SESSION_HISTORY_KEY, history);
+        }
+        History customerHistory = (History) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
+        add(customerHistory, productId);
+        req.getServletContext().setAttribute("history", customerHistory);
+    }
+
     public static HttpHistoryService getInstance() {
         if (INSTANCE == null) {
             synchronized (HttpHistoryService.class) {
@@ -40,4 +54,6 @@ public class HttpHistoryService implements HistoryService {
         }
         return INSTANCE;
     }
+
+    private HttpHistoryService() {}
 }

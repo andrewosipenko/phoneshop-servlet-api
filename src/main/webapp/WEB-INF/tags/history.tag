@@ -17,9 +17,7 @@
                     <a href="${pageContext.request.contextPath}/products/${historyProduct.id}">${historyProduct.description}</a>
                 </div>
                 <div>${historyProduct.price}${historyProduct.currency.symbol}</div>
-
             </div>
         </c:if>
     </c:forEach>
-
 </c:if>
