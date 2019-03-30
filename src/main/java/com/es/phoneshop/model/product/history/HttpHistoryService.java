@@ -10,7 +10,7 @@ import java.util.List;
 
 public class HttpHistoryService implements HistoryService {
     private static HttpHistoryService INSTANCE;
-    protected static final String HTTP_SESSION_HISTORY_KEY = "httpHistory";
+    public static final String HTTP_SESSION_HISTORY_KEY = "httpHistory";
 
     private void add(History customerHistory, Long productId) throws ProductNotFoundException {
         Product product = ArrayListProductDao.getInstance().getProduct(productId);
@@ -40,8 +40,10 @@ public class HttpHistoryService implements HistoryService {
             session.setAttribute(HTTP_SESSION_HISTORY_KEY, history);
         }
         History customerHistory = (History) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
-        add(customerHistory, productId);
-        req.getServletContext().setAttribute("history", customerHistory);
+        if(customerHistory != null) {
+            add(customerHistory, productId);
+            req.getServletContext().setAttribute("history", customerHistory);
+        }
     }
 
     public static HttpHistoryService getInstance() {

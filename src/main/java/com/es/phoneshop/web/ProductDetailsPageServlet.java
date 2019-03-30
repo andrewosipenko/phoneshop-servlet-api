@@ -1,7 +1,6 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.ProductDao;
@@ -22,15 +21,18 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao = ArrayListProductDao.getInstance();
     private ProductDetailsErrorHandler errorHandler;
     private HttpHistoryService historyService;
+    private HttpSessionCartService httpSessionCartService;
 
     protected static final String ID = "id";
     protected static final String PRODUCT = "product";
     protected static final String QUANTITY = "quantity";
+    private Error errorType = Error.UNKNOWN; // by default
 
     @Override
     public void init(ServletConfig config) {
         errorHandler = new ProductDetailsErrorHandler();
         historyService = HttpHistoryService.getInstance();
+        httpSessionCartService = HttpSessionCartService.getInstance();
     }
 
     @Override
@@ -45,7 +47,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Error errorType = null;
         Integer quantity = null;
         try {
             quantity = Integer.valueOf(req.getParameter(QUANTITY));
@@ -54,7 +55,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
         if (quantity != null) {
             Long productId = getProductId(req);
-            CartService httpSessionCartService = HttpSessionCartService.getInstance();
             Cart customerCart = httpSessionCartService.getCart(req);
 
             try {
@@ -74,4 +74,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         return Long.valueOf(pathInfo.substring(1));
     }
+
+    protected Error getErrorType() {
+        return errorType;
+    }
 }
+

@@ -5,7 +5,8 @@ import java.util.Optional;
 
 public enum Error {
     PARSE_ERROR("nfe"),
-    OUT_OF_STOCK("oos");
+    OUT_OF_STOCK("oos"),
+    UNKNOWN("unkn");
 
     private final String errorCode;
 
@@ -13,10 +14,11 @@ public enum Error {
         this.errorCode = errorCode;
     }
 
-    static Optional<Error> indentify(String errorCode) {
-        return Arrays.stream(Error.values())
+    static Error identify(String errorCode) {
+        Optional<Error> optionalError = Arrays.stream(Error.values())
                 .filter(error -> error.errorCode.equals(errorCode))
                 .findFirst();
+        return optionalError.orElse(Error.UNKNOWN);
     }
 
     public String getErrorCode() {
