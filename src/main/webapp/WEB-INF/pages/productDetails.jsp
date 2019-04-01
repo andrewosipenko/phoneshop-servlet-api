@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
+<jsp:useBean id="product" type="com.es.phoneshop.model.product.dao.Product" scope="request"/>
 <tags:master pageTitle="Product List">
     <br>
     <div title="${product.code}">
@@ -26,5 +26,18 @@
             <td>${product.stock}</td>
         </tr>
     </table>
+    <br>
+    <form method="post">
+        <input id="cartQuantity" name="quantity" value="${not empty param.quantity ? param.quantity : 1}">
+        <button>Add to cart</button>
+
+        <c:if test="${not empty requestScope['error']}">
+            <span style="color:red">${requestScope['error']}</span>
+        </c:if>
+
+        <c:if test="${not empty requestScope['productAdded']}">
+            <span style="color:green">${requestScope['productAdded']}</span>
+        </c:if>
+    </form>
 </tags:master>
 
