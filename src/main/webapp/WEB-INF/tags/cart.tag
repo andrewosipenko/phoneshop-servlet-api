@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ tag trimDirectiveWhitespaces="true" %>
 
-<c:if test="${not empty applicationScope['cart'].cartItems}">
+<c:if test="${not empty requestScope['cart'].cartItems}">
     <br>
     <h2>Your cart</h2>
     <br>
@@ -13,7 +13,7 @@
             <td>Quantity</td>
         </tr>
 
-        <c:forEach items="${applicationScope['cart'].cartItems}" var="cartItem">
+        <c:forEach items="${requestScope['cart'].cartItems}" var="cartItem">
             <tr>
                 <td>
                     <img class="product-tile" src="${cartItem.product.imageUrl}" alt="cart.product.code">

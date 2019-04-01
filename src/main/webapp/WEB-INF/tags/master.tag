@@ -21,6 +21,6 @@
     <jsp:doBody/>
 </main>
 <hr>
-<tags:history dispayedNumber="3"/>
+<tags:history/>
 </body>
 </html>

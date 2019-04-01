@@ -1,6 +1,5 @@
 package com.es.phoneshop.web.helper;
 
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,8 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.ArrayList;
 
 import static com.es.phoneshop.web.helper.ProductDetailsErrorHandler.*;
 import static org.mockito.Mockito.verify;
@@ -39,7 +36,7 @@ public class ProductDetailsErrorHandlerTest {
         when(request.getParameter(PRODUCT_ADDED_KEY)).thenReturn(null);
         when(request.getParameter(ERROR_KEY)).thenReturn(Error.PARSE_ERROR.getErrorCode());
         productDetailsErrorHandler.handle(request);
-        verify(request).setAttribute(ERROR, PARSE_ERROR_MESSAGE);
+        verify(request).setAttribute(ERROR, Error.PARSE_ERROR.getErrorMessage());
     }
 
     @Test
@@ -47,7 +44,7 @@ public class ProductDetailsErrorHandlerTest {
         when(request.getParameter(PRODUCT_ADDED_KEY)).thenReturn(null);
         when(request.getParameter(ERROR_KEY)).thenReturn(Error.OUT_OF_STOCK.getErrorCode());
         productDetailsErrorHandler.handle(request);
-        verify(request).setAttribute(ERROR, OUT_OF_STOCK_ERROR_MESSAGE);
+        verify(request).setAttribute(ERROR, Error.OUT_OF_STOCK.getErrorMessage());
     }
 
     @Test
@@ -55,6 +52,6 @@ public class ProductDetailsErrorHandlerTest {
         when(request.getParameter(PRODUCT_ADDED_KEY)).thenReturn(null);
         when(request.getParameter(ERROR_KEY)).thenReturn(Error.UNKNOWN.getErrorCode());
         productDetailsErrorHandler.handle(request);
-        verify(request).setAttribute(ERROR, UNKNOWN_ERROR_MESSAGE);
+        verify(request).setAttribute(ERROR, Error.UNKNOWN.getErrorMessage());
     }
 }

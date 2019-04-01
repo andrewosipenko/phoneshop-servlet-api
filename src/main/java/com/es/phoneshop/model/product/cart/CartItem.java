@@ -6,8 +6,14 @@ public class CartItem {
     private Product product;
     private Integer quantity;
 
-    CartItem(Product product, Integer quantity) {
+    public CartItem(Product product, Integer quantity) {
         this.product = product;
+        this.quantity = quantity;
+    }
+
+    public CartItem(Long productId, Integer quantity) {
+        product = new Product();
+        product.setId(productId);
         this.quantity = quantity;
     }
 

@@ -11,26 +11,43 @@ import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
 
-    private static HttpSessionCartService INSTANCE;
-    protected static final String HTTP_SESSION_CART_KEY = "httpCart";
+    public static final String HTTP_SESSION_CART_KEY = "httpCart";
+    private static HttpSessionCartService instance;
+
+    private HttpSessionCartService() {
+    }
+
+    public static HttpSessionCartService getInstance() {
+        if (instance == null) {
+            synchronized (HttpSessionCartService.class) {
+                if (instance == null) {
+                    instance = new HttpSessionCartService();
+                }
+            }
+        }
+        return instance;
+    }
 
     @Override
-    public void add(Cart customerCart, Long productId, Integer quantity) throws ProductNotFoundException, OutOfStockException {
-        Product product = ArrayListProductDao.getInstance().getProduct(productId);
-        if (quantity > product.getStock()) {
+    public void add(HttpServletRequest request, Cart customerCart, CartItem newItem) throws ProductNotFoundException, OutOfStockException {
+        Product product = ArrayListProductDao.getInstance().getProduct(newItem.getProduct().getId());
+        if (newItem.getQuantity() > product.getStock()) {
             throw new OutOfStockException("Not enough stock!");
         }
         Optional<CartItem> itemOptional = customerCart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .filter(item -> newItem.getProduct().getId().equals(item.getProduct().getId()))
                 .findAny();
 
         if (itemOptional.isPresent()) {
             CartItem sameCartItem = itemOptional.get();
-            sameCartItem.setQuantity(sameCartItem.getQuantity() + quantity);
+            if (sameCartItem.getQuantity() + newItem.getQuantity() > product.getStock()) {
+                throw new OutOfStockException("Not enough stock!");
+            }
+            sameCartItem.setQuantity(sameCartItem.getQuantity() + newItem.getQuantity());
         } else {
-            customerCart.getCartItems().add(new CartItem(product, quantity));
+            customerCart.getCartItems().add(new CartItem(product, newItem.getQuantity()));
         }
-
+        save(customerCart, request);
     }
 
     @Override
@@ -46,17 +63,14 @@ public class HttpSessionCartService implements CartService {
         return cart;
     }
 
-    public static HttpSessionCartService getInstance() {
-        if (INSTANCE == null) {
-            synchronized (HttpSessionCartService.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new HttpSessionCartService();
-                }
-            }
-        }
-        return INSTANCE;
+    private void save(Cart customerCart, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        session.setAttribute(HTTP_SESSION_CART_KEY, customerCart);
     }
 
-    private HttpSessionCartService() {}
+    @Override
+    public void update(HttpServletRequest request) {
+        request.setAttribute("cart", request.getSession().getAttribute(HTTP_SESSION_CART_KEY));
+    }
 
 }

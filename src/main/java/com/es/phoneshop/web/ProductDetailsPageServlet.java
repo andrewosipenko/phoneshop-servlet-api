@@ -1,11 +1,12 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.cart.CartItem;
 import com.es.phoneshop.model.product.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.exceptions.OutOfStockException;
-import com.es.phoneshop.model.product.history.HttpHistoryService;
+import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
 import com.es.phoneshop.web.helper.Error;
 import com.es.phoneshop.web.helper.ProductDetailsErrorHandler;
 
@@ -18,20 +19,19 @@ import java.io.IOException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
 
-    private ProductDao productDao = ArrayListProductDao.getInstance();
-    private ProductDetailsErrorHandler errorHandler;
-    private HttpHistoryService historyService;
-    private HttpSessionCartService httpSessionCartService;
-
     protected static final String ID = "id";
     protected static final String PRODUCT = "product";
     protected static final String QUANTITY = "quantity";
-    private Error errorType = Error.UNKNOWN; // by default
+    private ProductDao productDao = ArrayListProductDao.getInstance();
+    private ProductDetailsErrorHandler errorHandler;
+    private HttpSessionHistoryService historyService;
+    private HttpSessionCartService httpSessionCartService;
+
 
     @Override
     public void init(ServletConfig config) {
         errorHandler = new ProductDetailsErrorHandler();
-        historyService = HttpHistoryService.getInstance();
+        historyService = HttpSessionHistoryService.getInstance();
         httpSessionCartService = HttpSessionCartService.getInstance();
     }
 
@@ -42,41 +42,37 @@ public class ProductDetailsPageServlet extends HttpServlet {
         req.setAttribute(ID, productId);
         req.setAttribute(PRODUCT, productDao.getProduct(productId));
         historyService.update(req, productId);
+        httpSessionCartService.update(req);
         req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Integer quantity = null;
+        Error errorType;
         try {
-            quantity = Integer.valueOf(req.getParameter(QUANTITY));
-        } catch (NumberFormatException e) {
-            errorType = Error.PARSE_ERROR;
-        }
-        if (quantity != null) {
+            Integer quantity = Integer.valueOf(req.getParameter(QUANTITY));
+            if (quantity < 1) {
+                throw new IllegalArgumentException();
+            }
             Long productId = getProductId(req);
             Cart customerCart = httpSessionCartService.getCart(req);
-
             try {
-                httpSessionCartService.add(customerCart, productId, quantity);
-                req.getServletContext().setAttribute("cart", customerCart);
+                httpSessionCartService.add(req, customerCart, new CartItem(productId, quantity));
                 resp.sendRedirect(req.getRequestURI() + "?productAdded=ok");
                 return;
             } catch (OutOfStockException e) {
                 errorType = Error.OUT_OF_STOCK;
             }
-
+        } catch (IllegalArgumentException e) {
+            errorType = Error.PARSE_ERROR;
         }
+
         resp.sendRedirect(req.getRequestURI() + ("?err=" + errorType.getErrorCode()));
     }
 
     private Long getProductId(HttpServletRequest req) {
         String pathInfo = req.getPathInfo();
         return Long.valueOf(pathInfo.substring(1));
-    }
-
-    protected Error getErrorType() {
-        return errorType;
     }
 }
 

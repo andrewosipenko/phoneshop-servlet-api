@@ -11,9 +11,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +25,10 @@ import static org.mockito.Mockito.when;
 public class HttpSessionCartServiceTest {
     @Mock
     private Cart customerCart;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpSession httpSession;
 
     private HttpSessionCartService httpSessionCartService;
     private List<CartItem> items = new ArrayList<>();
@@ -30,6 +38,7 @@ public class HttpSessionCartServiceTest {
         ArrayListProductDao.getInstance().setProducts(new ArrayList<>());
         httpSessionCartService = HttpSessionCartService.getInstance();
         when(customerCart.getCartItems()).thenReturn(items);
+        when(request.getSession()).thenReturn(httpSession);
     }
 
     @Test
@@ -40,7 +49,8 @@ public class HttpSessionCartServiceTest {
         product.setId(1L);
         product.setStock(2);
         ArrayListProductDao.getInstance().save(product);
-        httpSessionCartService.add(customerCart, CORRECT_ID, QUANTITY);
+        httpSessionCartService.add(request, customerCart, new CartItem(CORRECT_ID, QUANTITY));
         verify(customerCart, Mockito.atLeast(2)).getCartItems();
+        verify(httpSession, Mockito.times(1)).setAttribute(anyString(), any(Cart.class));
     }
 }

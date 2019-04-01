@@ -1,10 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 import com.es.phoneshop.web.helper.Error;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,14 +10,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.servlet.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +27,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsPageServletTest {
+    private static final ProductDemodataServletContextListener productDemodataServletContextListener
+            = new ProductDemodataServletContextListener();
+    @Mock
+    private static ServletContextEvent servletContextEvent;
+    private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -34,17 +39,9 @@ public class ProductDetailsPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private ServletContext servletContext;
-    @Mock
-    private static ServletContextEvent servletContextEvent;
-    @Mock
     private ServletConfig servletConfig;
     @Mock
     private HttpSession httpSession;
-
-    private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
-    private static final ProductDemodataServletContextListener productDemodataServletContextListener
-            = new ProductDemodataServletContextListener();
 
     @BeforeClass
     public static void start() {
@@ -57,6 +54,7 @@ public class ProductDetailsPageServletTest {
         servlet.init(servletConfig);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(httpSession);
+        when(request.getRequestURI()).thenReturn("");
     }
 
     @Test
@@ -65,7 +63,10 @@ public class ProductDetailsPageServletTest {
         when(request.getPathInfo()).thenReturn("/" + CORRECT_ID);
         servlet.doGet(request, response);
         verify(request).setAttribute(ProductDetailsPageServlet.ID, CORRECT_ID);
-        verify(request).setAttribute(ProductDetailsPageServlet.PRODUCT, ArrayListProductDao.getInstance().getProduct(CORRECT_ID));
+        verify(request).setAttribute(
+                ProductDetailsPageServlet.PRODUCT,
+                ArrayListProductDao.getInstance().getProduct(CORRECT_ID)
+        );
         String PATH = "/WEB-INF/pages/productDetails.jsp";
         verify(request).getRequestDispatcher(PATH);
         verify(requestDispatcher).forward(request, response);
@@ -86,7 +87,7 @@ public class ProductDetailsPageServletTest {
     public void testParseError() throws ServletException, IOException {
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn("asd");
         servlet.doPost(request, response);
-        Assert.assertEquals(servlet.getErrorType().getErrorCode(), Error.PARSE_ERROR.getErrorCode());
+        verify(response).sendRedirect(request.getRequestURI() + ("?err=" + Error.PARSE_ERROR.getErrorCode()));
     }
 
     @Test
@@ -95,7 +96,7 @@ public class ProductDetailsPageServletTest {
         when(request.getPathInfo()).thenReturn("/" + CORRECT_ID);
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn(String.valueOf(Integer.MAX_VALUE));
         servlet.doPost(request, response);
-        Assert.assertEquals(servlet.getErrorType().getErrorCode(), Error.OUT_OF_STOCK.getErrorCode());
+        verify(response).sendRedirect(request.getRequestURI() + ("?err=" + Error.OUT_OF_STOCK.getErrorCode()));
     }
 
     @Test
@@ -103,10 +104,7 @@ public class ProductDetailsPageServletTest {
         final long CORRECT_ID = 1L;
         when(request.getPathInfo()).thenReturn("/" + CORRECT_ID);
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn(String.valueOf(1));
-        when(request.getServletContext()).thenReturn(servletContext);
         servlet.doPost(request, response);
-        verify(request).getServletContext();
-        verify(request.getServletContext()).setAttribute(anyString(), any(Cart.class));
-        Assert.assertEquals(servlet.getErrorType().getErrorCode(), Error.UNKNOWN.getErrorCode());
+        verify(response).sendRedirect(request.getRequestURI() + "?productAdded=ok");
     }
 }

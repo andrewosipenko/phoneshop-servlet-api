@@ -4,14 +4,16 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum Error {
-    PARSE_ERROR("nfe"),
-    OUT_OF_STOCK("oos"),
-    UNKNOWN("unkn");
+    PARSE_ERROR("nfe", "Not a number!"),
+    OUT_OF_STOCK("oos", "Not enough stock!"),
+    UNKNOWN("unkn", "Unknown error!");
 
     private final String errorCode;
+    private final String errorMessage;
 
-    Error(String errorCode) {
+    Error(String errorCode, String errorMessage) {
         this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
     }
 
     static Error identify(String errorCode) {
@@ -23,5 +25,9 @@ public enum Error {
 
     public String getErrorCode() {
         return errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }
