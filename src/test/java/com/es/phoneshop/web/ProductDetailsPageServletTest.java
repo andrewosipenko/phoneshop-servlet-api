@@ -10,10 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,6 +28,9 @@ public class ProductDetailsPageServletTest {
             = new ProductDemodataServletContextListener();
     @Mock
     private static ServletContextEvent servletContextEvent;
+    @Mock
+    private static ServletContext servletContext;
+
     private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
     @Mock
     private HttpServletRequest request;
@@ -46,7 +46,6 @@ public class ProductDetailsPageServletTest {
     @BeforeClass
     public static void start() {
         ArrayListProductDao.getInstance().setProducts(new ArrayList<>());
-        productDemodataServletContextListener.contextInitialized(servletContextEvent);
     }
 
     @Before
@@ -55,6 +54,9 @@ public class ProductDetailsPageServletTest {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(httpSession);
         when(request.getRequestURI()).thenReturn("");
+        when(servletContextEvent.getServletContext()).thenReturn(servletContext);
+        when(servletContext.getInitParameter(anyString())).thenReturn("3");
+        productDemodataServletContextListener.contextInitialized(servletContextEvent);
     }
 
     @Test

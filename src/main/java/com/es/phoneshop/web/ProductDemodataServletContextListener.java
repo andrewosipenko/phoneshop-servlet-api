@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.Product;
 import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -17,6 +18,8 @@ public class ProductDemodataServletContextListener implements ServletContextList
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        String maxHistorySize = servletContextEvent.getServletContext().getInitParameter("maxHistorySize");
+        HttpSessionHistoryService.getInstance().setMaxHistorySize(Integer.valueOf(maxHistorySize));
         if (productDao.findProducts().isEmpty()) {
             List<Product> result = new ArrayList<>();
             Currency usd = Currency.getInstance("USD");

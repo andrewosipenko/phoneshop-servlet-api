@@ -10,8 +10,8 @@ import java.util.List;
 
 public class HttpSessionHistoryService implements HistoryService {
     protected static final String HTTP_SESSION_HISTORY_KEY = "httpHistory";
-    protected final static int MAX_HISTORY_SIZE = 3;
     private static HttpSessionHistoryService INSTANCE;
+    private int maxHistorySize;
 
     private HttpSessionHistoryService() {
     }
@@ -41,8 +41,8 @@ public class HttpSessionHistoryService implements HistoryService {
         if (i == historyProducts.size()) {
             historyProducts.add(0, product);
         }
-        if (i == MAX_HISTORY_SIZE) {
-            historyProducts.remove(MAX_HISTORY_SIZE - 1);
+        if (i == maxHistorySize) {
+            historyProducts.remove(maxHistorySize - 1);
         }
     }
 
@@ -59,5 +59,9 @@ public class HttpSessionHistoryService implements HistoryService {
             }
             session.setAttribute(HTTP_SESSION_HISTORY_KEY, historyProducts);
         }
+    }
+
+    public void setMaxHistorySize(int maxHistorySize) {
+        this.maxHistorySize = maxHistorySize;
     }
 }
