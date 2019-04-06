@@ -1,6 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.enums.SortBy;
@@ -20,12 +19,10 @@ public class ProductListPageServlet extends HttpServlet {
     protected static final String PRODUCTS = "products";
 
     private ProductDao productDao = ArrayListProductDao.getInstance();
-    private HttpSessionCartService sessionCartService;
     private HttpSessionHistoryService sessionHistoryService;
 
     @Override
     public void init(ServletConfig config) {
-        sessionCartService = HttpSessionCartService.getInstance();
         sessionHistoryService = HttpSessionHistoryService.getInstance();
     }
 
@@ -40,8 +37,7 @@ public class ProductListPageServlet extends HttpServlet {
         if (request.getParameter(SORT) != null) {
             field = SortBy.valueOf(request.getParameter(SORT).toUpperCase());
         }
-        sessionCartService.update(request);
-        sessionHistoryService.update(request, null);
+        sessionHistoryService.update(request.getSession(), null);
         request.setAttribute(PRODUCTS, productDao.findProducts(query, field, ascending));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }

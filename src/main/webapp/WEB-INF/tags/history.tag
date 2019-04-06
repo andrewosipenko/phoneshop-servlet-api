@@ -2,10 +2,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ tag trimDirectiveWhitespaces="true" %>
 
-<c:if test="${not empty requestScope['history']}">
+<c:if test="${not empty sessionScope['httpHistory']}">
     <p>
     <h2>Recently viewed</h2>
-    <c:forEach items="${requestScope['history']}" var="historyProduct" varStatus="loop">
+    <c:forEach items="${sessionScope['httpHistory']}" var="historyProduct" varStatus="loop">
         <div id="history-block">
             <div>
                 <img align="center" class="product-tile" src="${historyProduct.imageUrl}"

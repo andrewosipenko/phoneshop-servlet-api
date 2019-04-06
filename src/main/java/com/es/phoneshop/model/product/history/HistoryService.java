@@ -2,8 +2,8 @@ package com.es.phoneshop.model.product.history;
 
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public interface HistoryService {
-    void update(HttpServletRequest req, Long productId) throws ProductNotFoundException;
+    void update(HttpSession session, Long productId) throws ProductNotFoundException;
 }

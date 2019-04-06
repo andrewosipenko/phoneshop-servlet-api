@@ -4,7 +4,6 @@ import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.Product;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +47,7 @@ public class HttpSessionHistoryService implements HistoryService {
     }
 
     @Override
-    public void update(HttpServletRequest req, Long productId) throws ProductNotFoundException {
-        HttpSession session = req.getSession();
+    public void update(HttpSession session, Long productId) throws ProductNotFoundException {
         if (session.getAttribute(HTTP_SESSION_HISTORY_KEY) == null) {
             List<Product> historyProducts = new ArrayList<>();
             session.setAttribute(HTTP_SESSION_HISTORY_KEY, historyProducts);
@@ -59,7 +57,7 @@ public class HttpSessionHistoryService implements HistoryService {
             if (productId != null) {
                 add(historyProducts, productId);
             }
-            req.setAttribute("history", historyProducts);
+            session.setAttribute(HTTP_SESSION_HISTORY_KEY, historyProducts);
         }
     }
 }

@@ -67,10 +67,4 @@ public class HttpSessionCartService implements CartService {
         HttpSession session = req.getSession();
         session.setAttribute(HTTP_SESSION_CART_KEY, customerCart);
     }
-
-    @Override
-    public void update(HttpServletRequest request) {
-        request.setAttribute("cart", request.getSession().getAttribute(HTTP_SESSION_CART_KEY));
-    }
-
 }

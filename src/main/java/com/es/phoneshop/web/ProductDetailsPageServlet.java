@@ -41,8 +41,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long productId = getProductId(req);
         req.setAttribute(ID, productId);
         req.setAttribute(PRODUCT, productDao.getProduct(productId));
-        historyService.update(req, productId);
-        httpSessionCartService.update(req);
+        historyService.update(req.getSession(), productId);
         req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
     }
 
