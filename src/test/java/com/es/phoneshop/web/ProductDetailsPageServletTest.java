@@ -54,8 +54,6 @@ public class ProductDetailsPageServletTest {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(httpSession);
         when(request.getRequestURI()).thenReturn("");
-        when(servletContextEvent.getServletContext()).thenReturn(servletContext);
-        when(servletContext.getInitParameter(anyString())).thenReturn("3");
         productDemodataServletContextListener.contextInitialized(servletContextEvent);
     }
 
@@ -88,8 +86,9 @@ public class ProductDetailsPageServletTest {
     @Test
     public void testParseError() throws ServletException, IOException {
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn("asd");
+        when(request.getPathInfo()).thenReturn("/1");
         servlet.doPost(request, response);
-        verify(response).sendRedirect(request.getRequestURI() + ("?err=" + Error.PARSE_ERROR.getErrorCode()));
+        verify(request).setAttribute("error", Error.PARSE_ERROR.getErrorMessage());
     }
 
     @Test
@@ -98,7 +97,7 @@ public class ProductDetailsPageServletTest {
         when(request.getPathInfo()).thenReturn("/" + CORRECT_ID);
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn(String.valueOf(Integer.MAX_VALUE));
         servlet.doPost(request, response);
-        verify(response).sendRedirect(request.getRequestURI() + ("?err=" + Error.OUT_OF_STOCK.getErrorCode()));
+        verify(request).setAttribute("error", Error.OUT_OF_STOCK.getErrorMessage());
     }
 
     @Test

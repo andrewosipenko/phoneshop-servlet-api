@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
 
-    public static final String HTTP_SESSION_CART_KEY = "httpCart";
+    protected static final String HTTP_SESSION_CART_KEY = "httpCart";
     private static HttpSessionCartService instance;
 
     private HttpSessionCartService() {
@@ -47,7 +47,6 @@ public class HttpSessionCartService implements CartService {
         } else {
             customerCart.getCartItems().add(new CartItem(product, newItem.getQuantity()));
         }
-        customerCart.recalculate();
         save(request);
     }
 
@@ -73,10 +72,9 @@ public class HttpSessionCartService implements CartService {
 
 
     public void update(Cart cart, Long id, Integer quantity) {
-        CartItem updateItem = cart.getCartItems().stream()
+        Optional<CartItem> itemToUpdate = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getId().equals(id))
-                .findFirst()
-                .get();
-        updateItem.setQuantity(quantity);
+                .findFirst();
+        itemToUpdate.ifPresent(cartItem -> cartItem.setQuantity(quantity));
     }
 }

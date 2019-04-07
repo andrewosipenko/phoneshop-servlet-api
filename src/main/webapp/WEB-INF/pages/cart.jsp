@@ -5,6 +5,9 @@
 
 <jsp:useBean id="httpCart" type="com.es.phoneshop.model.product.cart.Cart" scope="session"/>
 <tags:master pageTitle="Cart">
+    <span style="color: green;">
+        <h4>${param.message}</h4>
+    </span>
     <c:if test="${not empty requestScope['errors']}">
         <span style="color: red">
             <h4>Error: please check the quantities of products</h4>
@@ -57,9 +60,9 @@
                     <td colspan="2" align="right">$${httpCart.totalPrice}</td>
                 </tr>
             </table>
-            <p>
-                <button>Update</button>
-            </p>
-        </form>
+    <p>
+        <button>Update</button>
+    </p>
+    </form>
     </p>
 </tags:master>

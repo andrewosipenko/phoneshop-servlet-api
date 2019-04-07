@@ -23,15 +23,14 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HttpSessionCartServiceTest {
+    private final List<CartItem> items = new ArrayList<>();
     @Mock
     private Cart customerCart;
     @Mock
     private HttpServletRequest request;
     @Mock
     private HttpSession httpSession;
-
     private HttpSessionCartService httpSessionCartService;
-    private final List<CartItem> items = new ArrayList<>();
 
     @Before
     public void setup() {
@@ -51,6 +50,6 @@ public class HttpSessionCartServiceTest {
         ArrayListProductDao.getInstance().save(product);
         httpSessionCartService.add(request, customerCart, new CartItem(CORRECT_ID, QUANTITY));
         verify(customerCart, Mockito.atLeast(2)).getCartItems();
-        verify(httpSession, Mockito.times(1)).setAttribute(anyString(), any(Cart.class));
+        verify(httpSession, Mockito.times(2)).setAttribute(anyString(), any(Cart.class));
     }
 }

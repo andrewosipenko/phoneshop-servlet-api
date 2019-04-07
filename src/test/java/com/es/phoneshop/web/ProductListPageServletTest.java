@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
+    private final ProductListPageServlet servlet = new ProductListPageServlet();
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -28,8 +29,6 @@ public class ProductListPageServletTest {
     private ServletConfig servletConfig;
     @Mock
     private HttpSession httpSession;
-
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
     public void setup() {

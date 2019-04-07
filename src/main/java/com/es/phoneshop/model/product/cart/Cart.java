@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Cart implements Serializable {
     private final List<CartItem> cartItems;
@@ -35,10 +36,12 @@ public class Cart implements Serializable {
     }
 
     public void remove(Long idToRemove) {
-        cartItems.remove(cartItems.stream()
+        Optional<CartItem> itemToRemove = cartItems.stream()
                 .filter(cartItem -> cartItem.getProduct().getId().equals(idToRemove))
-                .findFirst()
-                .get());
-        recalculate();
+                .findFirst();
+        if (itemToRemove.isPresent()) {
+            cartItems.remove(itemToRemove.get());
+            recalculate();
+        }
     }
 }
