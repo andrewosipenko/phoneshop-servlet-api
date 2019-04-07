@@ -15,8 +15,6 @@
         PhoneShop
     </a>
 </header>
-<tags:cart/>
-<hr>
 <main>
     <jsp:doBody/>
 </main>

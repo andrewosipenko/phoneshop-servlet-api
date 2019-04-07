@@ -47,7 +47,8 @@ public class HttpSessionCartService implements CartService {
         } else {
             customerCart.getCartItems().add(new CartItem(product, newItem.getQuantity()));
         }
-        save(customerCart, request);
+        customerCart.recalculate();
+        save(request);
     }
 
     @Override
@@ -63,8 +64,19 @@ public class HttpSessionCartService implements CartService {
         return cart;
     }
 
-    private void save(Cart customerCart, HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        session.setAttribute(HTTP_SESSION_CART_KEY, customerCart);
+    @Override
+    public void save(HttpServletRequest request) {
+        Cart cart = getCart(request);
+        cart.recalculate();
+        request.getSession().setAttribute(HTTP_SESSION_CART_KEY, cart);
+    }
+
+
+    public void update(Cart cart, Long id, Integer quantity) {
+        CartItem updateItem = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(id))
+                .findFirst()
+                .get();
+        updateItem.setQuantity(quantity);
     }
 }

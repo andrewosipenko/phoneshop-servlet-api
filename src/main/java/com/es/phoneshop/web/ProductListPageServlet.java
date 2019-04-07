@@ -18,7 +18,7 @@ public class ProductListPageServlet extends HttpServlet {
     protected static final String SORT = "sort";
     protected static final String PRODUCTS = "products";
 
-    private ProductDao productDao = ArrayListProductDao.getInstance();
+    private final ProductDao productDao = ArrayListProductDao.getInstance();
     private HttpSessionHistoryService sessionHistoryService;
 
     @Override

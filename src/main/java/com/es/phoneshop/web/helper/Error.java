@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public enum Error {
     PARSE_ERROR("nfe", "Not a number!"),
+    INVALID_NUMBER("inv", "Invalid number!"),
     OUT_OF_STOCK("oos", "Not enough stock!"),
     UNKNOWN("unkn", "Unknown error!");
 

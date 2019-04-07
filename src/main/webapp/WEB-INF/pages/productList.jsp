@@ -6,6 +6,9 @@
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
     <p>
+        <jsp:include page="/cart/minicart"/>
+    </p>
+    <p>
         Welcome to Expert-Soft training!
     </p>
     <form>

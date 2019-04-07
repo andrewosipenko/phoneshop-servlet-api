@@ -31,7 +31,7 @@ public class HttpSessionCartServiceTest {
     private HttpSession httpSession;
 
     private HttpSessionCartService httpSessionCartService;
-    private List<CartItem> items = new ArrayList<>();
+    private final List<CartItem> items = new ArrayList<>();
 
     @Before
     public void setup() {
