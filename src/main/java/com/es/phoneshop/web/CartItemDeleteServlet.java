@@ -28,8 +28,9 @@ public class CartItemDeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long idToRemove = getProductId(req);
         Cart cart = cartService.getCart(req);
-        cart.remove(idToRemove);
-        cartService.save(req);
+        if (cartService.remove(cart, idToRemove)) {
+            cartService.save(req);
+        }
         if (cart.getCartItems().isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/products");
         } else {

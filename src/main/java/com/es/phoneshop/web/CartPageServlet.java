@@ -2,8 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.HttpSessionCartService;
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.exceptions.OutOfStockException;
 import com.es.phoneshop.web.helper.Error;
 
 import javax.servlet.ServletConfig;
@@ -18,12 +17,10 @@ import java.util.Objects;
 public class CartPageServlet extends HttpServlet {
 
     private HttpSessionCartService cartService;
-    private ProductDao productDao;
 
     @Override
     public void init(ServletConfig config) {
         cartService = HttpSessionCartService.getInstance();
-        productDao = ArrayListProductDao.getInstance();
     }
 
     @Override
@@ -46,13 +43,11 @@ public class CartPageServlet extends HttpServlet {
                     errors[i] = Error.INVALID_NUMBER.getErrorMessage();
                     continue;
                 }
-                if (productDao.getProduct(id).getStock() < quantity) {
-                    errors[i] = Error.OUT_OF_STOCK.getErrorMessage();
-                    continue;
-                }
                 cartService.update(cart, id, quantity);
             } catch (NumberFormatException e) {
                 errors[i] = Error.PARSE_ERROR.getErrorMessage();
+            } catch (OutOfStockException e) {
+                errors[i] = Error.OUT_OF_STOCK.getErrorMessage();
             }
         }
 

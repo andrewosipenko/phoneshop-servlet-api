@@ -23,10 +23,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CartPageServletTest {
-    @Mock
-    private static ServletContextEvent servletContextEvent;
     private static final ProductDemodataServletContextListener productDemodataServletContextListener =
             new ProductDemodataServletContextListener();
+    @Mock
+    private static ServletContextEvent servletContextEvent;
+    private final CartPageServlet cartPageServlet = new CartPageServlet();
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -37,7 +38,6 @@ public class CartPageServletTest {
     private HttpSession session;
     @Mock
     private RequestDispatcher requestDispatcher;
-    private final CartPageServlet cartPageServlet = new CartPageServlet();
 
     @BeforeClass
     public static void beforeAll() {

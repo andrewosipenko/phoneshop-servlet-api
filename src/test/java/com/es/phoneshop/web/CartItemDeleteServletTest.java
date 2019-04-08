@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CartItemDeleteServletTest {
+    private final CartItemDeleteServlet cartItemDeleteServlet = new CartItemDeleteServlet();
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -31,8 +32,6 @@ public class CartItemDeleteServletTest {
     private HttpSession session;
     @Mock
     private RequestDispatcher requestDispatcher;
-
-    private final CartItemDeleteServlet cartItemDeleteServlet = new CartItemDeleteServlet();
 
     @Before
     public void start() {

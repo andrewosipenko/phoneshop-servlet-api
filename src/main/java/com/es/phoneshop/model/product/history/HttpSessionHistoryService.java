@@ -52,7 +52,8 @@ public class HttpSessionHistoryService implements HistoryService {
             List<Product> historyProducts = new ArrayList<>();
             session.setAttribute(HTTP_SESSION_HISTORY_KEY, historyProducts);
         }
-        List<Product> historyProducts = (List<Product>) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
+        @SuppressWarnings("unchecked") List<Product> historyProducts =
+                (List<Product>) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
         if (historyProducts != null) {
             if (productId != null) {
                 add(historyProducts, productId);

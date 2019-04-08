@@ -10,5 +10,9 @@ public interface CartService {
 
     void save(HttpServletRequest request);
 
+    void recalculate(Cart customerCart);
+
+    boolean remove(Cart customerCart, Long idToRemove);
+
     Cart getCart(HttpServletRequest request);
 }
