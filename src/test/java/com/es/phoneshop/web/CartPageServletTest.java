@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.cart.HttpSessionCartService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,6 +40,10 @@ public class CartPageServletTest {
     private HttpSession session;
     @Mock
     private RequestDispatcher requestDispatcher;
+    @Mock
+    private HttpSessionCartService httpSessionCartService;
+    @Mock
+    private Cart cart;
 
     @BeforeClass
     public static void beforeAll() {
@@ -68,7 +74,10 @@ public class CartPageServletTest {
 
     @Test
     public void testDoPostBad() throws ServletException, IOException {
-        when(request.getParameterValues("quantity")).thenReturn(new String[]{"777"});
+        when(httpSessionCartService.getCart(request)).thenReturn(cart);
+        when(request.getParameterValues("quantity")).thenReturn(new String[]{"-1"});
+        cartPageServlet.setCartService(httpSessionCartService);
+
         cartPageServlet.doPost(request, response);
         verify(request).setAttribute(eq("errors"), any(String[].class));
     }

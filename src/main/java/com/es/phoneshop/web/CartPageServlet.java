@@ -60,4 +60,8 @@ public class CartPageServlet extends HttpServlet {
             resp.sendRedirect(req.getRequestURI() + "?message=Updated successfully");
         }
     }
+
+    void setCartService(HttpSessionCartService cartService) {
+        this.cartService = cartService;
+    }
 }
