@@ -10,6 +10,11 @@
         <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
     </servlet>
 
+    <context-param>
+        <param-name>maxHistorySize</param-name>
+        <param-value>3</param-value>
+    </context-param>
+
     <servlet-mapping>
         <servlet-name>productList</servlet-name>
         <url-pattern>/products</url-pattern>
@@ -25,6 +30,26 @@
         <url-pattern>/products/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>cartPageServlet</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cartPageServlet</servlet-name>
+        <url-pattern>/cart</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>cartItemDeleteServlet</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CartItemDeleteServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cartItemDeleteServlet</servlet-name>
+        <url-pattern>/cart/deleteCartItem/*</url-pattern>
+    </servlet-mapping>
+
     <error-page>
         <exception-type>com.es.phoneshop.model.product.exceptions.ProductNotFoundException</exception-type>
         <location>/WEB-INF/pages/productNotFound.jsp</location>
@@ -32,6 +57,10 @@
 
     <listener>
         <listener-class>com.es.phoneshop.web.ProductDemodataServletContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.es.phoneshop.web.ProductRecentlyViewedServletContextListener</listener-class>
     </listener>
 
 </web-app>

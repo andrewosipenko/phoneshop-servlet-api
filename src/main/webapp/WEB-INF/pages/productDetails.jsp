@@ -5,6 +5,9 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.dao.Product" scope="request"/>
 <tags:master pageTitle="Product List">
+    <p>
+        <jsp:include page="../fragments/minicart.jsp"/>
+    </p>
     <br>
     <div title="${product.code}">
         <img class="big-product-tile"

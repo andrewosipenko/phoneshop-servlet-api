@@ -7,11 +7,13 @@ import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
 
-    public static final String HTTP_SESSION_CART_KEY = "httpCart";
+    protected static final String HTTP_SESSION_CART_KEY = "httpCart";
     private static HttpSessionCartService instance;
 
     private HttpSessionCartService() {
@@ -47,7 +49,7 @@ public class HttpSessionCartService implements CartService {
         } else {
             customerCart.getCartItems().add(new CartItem(product, newItem.getQuantity()));
         }
-        save(customerCart, request);
+        save(request);
     }
 
     @Override
@@ -63,14 +65,47 @@ public class HttpSessionCartService implements CartService {
         return cart;
     }
 
-    private void save(Cart customerCart, HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        session.setAttribute(HTTP_SESSION_CART_KEY, customerCart);
+    @Override
+    public void save(HttpServletRequest request) {
+        Cart cart = getCart(request);
+        recalculate(cart);
+        request.getSession().setAttribute(HTTP_SESSION_CART_KEY, cart);
     }
 
     @Override
-    public void update(HttpServletRequest request) {
-        request.setAttribute("cart", request.getSession().getAttribute(HTTP_SESSION_CART_KEY));
+    public void recalculate(Cart customerCart) {
+        List<CartItem> cartItems = customerCart.getCartItems();
+        BigDecimal totalPrice = cartItems.stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        customerCart.setTotalPrice(totalPrice);
     }
 
+    @Override
+    public boolean remove(Cart customerCart, Long idToRemove) {
+        List<CartItem> cartItems = customerCart.getCartItems();
+        if (cartItems.removeIf(cartItem -> cartItem.getProduct().getId().equals(idToRemove))) {
+            recalculate(customerCart);
+            return true;
+        }
+        return false;
+    }
+
+
+    public void update(Cart cart, Long id, Integer quantity) throws OutOfStockException {
+        Optional<CartItem> itemToUpdate = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(id))
+                .findFirst();
+        if (itemToUpdate.isPresent()) {
+            CartItem item = itemToUpdate.get();
+            if (item.getProduct().getStock() < quantity) {
+                throw new OutOfStockException("Product{id="
+                        + id + "} has stock="
+                        + item.getProduct().getStock()
+                        + ", but wanted=" + quantity);
+            } else {
+                item.setQuantity(quantity);
+            }
+        }
+    }
 }

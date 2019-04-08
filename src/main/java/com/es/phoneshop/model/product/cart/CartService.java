@@ -8,7 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 public interface CartService {
     void add(HttpServletRequest request, Cart customerCart, CartItem cartItem) throws ProductNotFoundException, OutOfStockException;
 
-    Cart getCart(HttpServletRequest request);
+    void save(HttpServletRequest request);
 
-    void update(HttpServletRequest request);
+    void recalculate(Cart customerCart);
+
+    boolean remove(Cart customerCart, Long idToRemove);
+
+    Cart getCart(HttpServletRequest request);
 }

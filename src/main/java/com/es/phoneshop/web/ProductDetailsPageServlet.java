@@ -8,7 +8,6 @@ import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.exceptions.OutOfStockException;
 import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
 import com.es.phoneshop.web.helper.Error;
-import com.es.phoneshop.web.helper.ProductDetailsErrorHandler;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,27 +21,23 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected static final String ID = "id";
     protected static final String PRODUCT = "product";
     protected static final String QUANTITY = "quantity";
-    private ProductDao productDao = ArrayListProductDao.getInstance();
-    private ProductDetailsErrorHandler errorHandler;
+    private final ProductDao productDao = ArrayListProductDao.getInstance();
     private HttpSessionHistoryService historyService;
     private HttpSessionCartService httpSessionCartService;
 
 
     @Override
     public void init(ServletConfig config) {
-        errorHandler = new ProductDetailsErrorHandler();
         historyService = HttpSessionHistoryService.getInstance();
         httpSessionCartService = HttpSessionCartService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        errorHandler.handle(req);
         Long productId = getProductId(req);
         req.setAttribute(ID, productId);
         req.setAttribute(PRODUCT, productDao.getProduct(productId));
-        historyService.update(req, productId);
-        httpSessionCartService.update(req);
+        historyService.update(req.getSession(), productId);
         req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
     }
 
@@ -67,7 +62,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
             errorType = Error.PARSE_ERROR;
         }
 
-        resp.sendRedirect(req.getRequestURI() + ("?err=" + errorType.getErrorCode()));
+        req.setAttribute("error", errorType.getErrorMessage());
+        doGet(req, resp);
     }
 
     private Long getProductId(HttpServletRequest req) {

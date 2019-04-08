@@ -4,15 +4,14 @@ import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.Product;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HttpSessionHistoryService implements HistoryService {
     protected static final String HTTP_SESSION_HISTORY_KEY = "httpHistory";
-    protected final static int MAX_HISTORY_SIZE = 3;
     private static HttpSessionHistoryService INSTANCE;
+    private int maxHistorySize;
 
     private HttpSessionHistoryService() {
     }
@@ -42,24 +41,28 @@ public class HttpSessionHistoryService implements HistoryService {
         if (i == historyProducts.size()) {
             historyProducts.add(0, product);
         }
-        if (i == MAX_HISTORY_SIZE) {
-            historyProducts.remove(MAX_HISTORY_SIZE - 1);
+        if (i == maxHistorySize) {
+            historyProducts.remove(maxHistorySize - 1);
         }
     }
 
     @Override
-    public void update(HttpServletRequest req, Long productId) throws ProductNotFoundException {
-        HttpSession session = req.getSession();
+    public void update(HttpSession session, Long productId) throws ProductNotFoundException {
         if (session.getAttribute(HTTP_SESSION_HISTORY_KEY) == null) {
             List<Product> historyProducts = new ArrayList<>();
             session.setAttribute(HTTP_SESSION_HISTORY_KEY, historyProducts);
         }
-        List<Product> historyProducts = (List<Product>) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
+        @SuppressWarnings("unchecked") List<Product> historyProducts =
+                (List<Product>) session.getAttribute(HTTP_SESSION_HISTORY_KEY);
         if (historyProducts != null) {
             if (productId != null) {
                 add(historyProducts, productId);
             }
-            req.setAttribute("history", historyProducts);
+            session.setAttribute(HTTP_SESSION_HISTORY_KEY, historyProducts);
         }
+    }
+
+    public void setMaxHistorySize(int maxHistorySize) {
+        this.maxHistorySize = maxHistorySize;
     }
 }

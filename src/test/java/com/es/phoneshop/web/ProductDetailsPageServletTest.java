@@ -10,10 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,6 +28,9 @@ public class ProductDetailsPageServletTest {
             = new ProductDemodataServletContextListener();
     @Mock
     private static ServletContextEvent servletContextEvent;
+    @Mock
+    private static ServletContext servletContext;
+
     private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
     @Mock
     private HttpServletRequest request;
@@ -46,7 +46,6 @@ public class ProductDetailsPageServletTest {
     @BeforeClass
     public static void start() {
         ArrayListProductDao.getInstance().setProducts(new ArrayList<>());
-        productDemodataServletContextListener.contextInitialized(servletContextEvent);
     }
 
     @Before
@@ -55,6 +54,7 @@ public class ProductDetailsPageServletTest {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(httpSession);
         when(request.getRequestURI()).thenReturn("");
+        productDemodataServletContextListener.contextInitialized(servletContextEvent);
     }
 
     @Test
@@ -86,8 +86,9 @@ public class ProductDetailsPageServletTest {
     @Test
     public void testParseError() throws ServletException, IOException {
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn("asd");
+        when(request.getPathInfo()).thenReturn("/1");
         servlet.doPost(request, response);
-        verify(response).sendRedirect(request.getRequestURI() + ("?err=" + Error.PARSE_ERROR.getErrorCode()));
+        verify(request).setAttribute("error", Error.PARSE_ERROR.getErrorMessage());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class ProductDetailsPageServletTest {
         when(request.getPathInfo()).thenReturn("/" + CORRECT_ID);
         when(request.getParameter(ProductDetailsPageServlet.QUANTITY)).thenReturn(String.valueOf(Integer.MAX_VALUE));
         servlet.doPost(request, response);
-        verify(response).sendRedirect(request.getRequestURI() + ("?err=" + Error.OUT_OF_STOCK.getErrorCode()));
+        verify(request).setAttribute("error", Error.OUT_OF_STOCK.getErrorMessage());
     }
 
     @Test

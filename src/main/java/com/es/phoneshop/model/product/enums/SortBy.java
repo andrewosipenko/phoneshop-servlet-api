@@ -4,7 +4,7 @@ public enum SortBy {
     DESCRIPTION(1),
     PRICE(2);
 
-    private int sortId;
+    private final int sortId;
 
     SortBy(int sortId) {
         this.sortId = sortId;
