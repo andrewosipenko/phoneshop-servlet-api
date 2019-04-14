@@ -2,8 +2,7 @@ package com.es.phoneshop.model.product.dao.order;
 
 public enum PaymentMethod {
     MONEY("Money"),
-    CREDIT_CARD("Credit card"),
-    UNKNOWN("Unknown");
+    CREDIT_CARD("Credit card");
 
     private final String name;
 
@@ -17,9 +16,8 @@ public enum PaymentMethod {
                 return MONEY;
             case "credit card":
                 return CREDIT_CARD;
-            default:
-                return UNKNOWN;
         }
+        return null;
     }
 
     public String getName() {

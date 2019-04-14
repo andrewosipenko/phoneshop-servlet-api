@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DosFilter implements Filter {
 
@@ -29,7 +30,7 @@ public class DosFilter implements Filter {
             if (connection.firstConnection.until(LocalDateTime.now(), ChronoUnit.SECONDS) > 60) {
                 ipCounter.remove(ip);
                 filterChain.doFilter(servletRequest, servletResponse);
-            } else if (++connection.connectionAmount < maxConnectionsPerMinute) {
+            } else if (connection.connectionAmount.incrementAndGet() < maxConnectionsPerMinute) {
                 ipCounter.put(ip, connection);
                 filterChain.doFilter(servletRequest, servletResponse);
             }
@@ -43,10 +44,10 @@ public class DosFilter implements Filter {
 
     private class Connection {
         private final LocalDateTime firstConnection;
-        private Short connectionAmount;
+        private AtomicInteger connectionAmount;
 
         Connection(LocalDateTime firstConnection) {
-            this.connectionAmount = 0;
+            this.connectionAmount = new AtomicInteger(0);
             this.firstConnection = firstConnection;
         }
     }

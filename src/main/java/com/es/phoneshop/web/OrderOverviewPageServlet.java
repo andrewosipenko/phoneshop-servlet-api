@@ -20,6 +20,7 @@ public class OrderOverviewPageServlet extends HttpServlet {
 
     protected final String ORDER = "order";
     protected final String ID = "id";
+    protected final String ORDER_CART_PRICE = "orderCartPrice";
     private OrderDao orderDao;
     private CartService cartService;
 
@@ -36,8 +37,11 @@ public class OrderOverviewPageServlet extends HttpServlet {
         req.setAttribute(ID, uuid.toString());
         if (order.isPresent()) {
             req.setAttribute(ORDER, order.get());
-            cartService.clearCart(req);
+            if (req.getSession().getAttribute(ORDER_CART_PRICE + uuid.toString()) == null) {
+                req.getSession().setAttribute(ORDER_CART_PRICE + uuid.toString(), order.get().getCart().getTotalPrice());
+            }
             req.getRequestDispatcher("/WEB-INF/pages/overview.jsp").forward(req, resp);
+            cartService.clearCart(req);
         } else {
             throw new OrderNotFoundException();
         }

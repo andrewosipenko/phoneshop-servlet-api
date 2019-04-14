@@ -1,6 +1,7 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.dao.order.ArrayListOrderDao;
+import com.es.phoneshop.model.product.dao.order.DeliveryMode;
 import com.es.phoneshop.model.product.dao.order.Order;
 import com.es.phoneshop.model.product.dao.order.OrderDao;
 
@@ -10,9 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class CheckoutPageServlet extends HttpServlet {
-
+    protected final String DELIVERY_MODE = "deliveryMode";
     private OrderDao orderDao;
 
     @Override
@@ -22,6 +24,14 @@ public class CheckoutPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String deliveryMode;
+        if ((deliveryMode = req.getParameter(DELIVERY_MODE)) == null) {
+            req.setAttribute(DELIVERY_MODE, DeliveryMode.COURIER);
+        } else {
+            req.setAttribute(DELIVERY_MODE, DeliveryMode.identify(deliveryMode));
+        }
+
+        req.setAttribute("deliveryModes", Arrays.asList(DeliveryMode.values()));
         req.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(req, resp);
     }
 
@@ -32,7 +42,7 @@ public class CheckoutPageServlet extends HttpServlet {
             orderDao.placeOrder(order);
             resp.sendRedirect(req.getContextPath() + "/order/overview/" + order.getId());
         } else {
-            req.setAttribute("error", true);
+            req.setAttribute(DELIVERY_MODE, order.getDeliveryMode());
             doGet(req, resp);
         }
     }

@@ -4,6 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="httpCart" type="com.es.phoneshop.model.product.cart.Cart" scope="session"/>
+<jsp:useBean id="deliveryMode" type="com.es.phoneshop.model.product.dao.order.DeliveryMode" scope="request"/>
 <tags:master pageTitle="Checkout">
     <p>
     <table>
@@ -31,8 +32,16 @@
             </tr>
         </c:forEach>
         <tr>
-            <td>Total</td>
+            <td>Subtotal</td>
             <td colspan="2" align="right">$${httpCart.totalPrice}</td>
+        </tr>
+        <tr>
+            <td>Delivery [${deliveryMode.name.toLowerCase()}]</td>
+            <td colspan="2" align="right">$${deliveryMode.price}</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td colspan="2" align="right">$${httpCart.totalPrice + deliveryMode.price}</td>
         </tr>
     </table>
 
@@ -49,29 +58,28 @@
         <p>
         <div>
             <label for="firstName">First name </label>
-            <input type="text" id="firstName" name="firstName" value="${param.firstName}">
-            <tags:requiredField parameter="${param.firstName}"/>
-
+            <input type="text" id="firstName" name="firstName" value="${param.firstName}" required>
         </div>
         <p>
         <div>
             <label for="lastName">Last name </label>
-            <input type="text" id="lastName" name="lastName" value="${param.lastName}">
-            <tags:requiredField parameter="${param.lastName}"/>
+            <input type="text" id="lastName" name="lastName" value="${param.lastName}" required>
         </div>
         <p>
         <div>
             <label for="phone">Phone </label>
-            <input type="tel" id="phone" name="phone" value="${param.phone}">
-            <tags:requiredField parameter="${param.phone}"/>
+            <input type="tel" id="phone" name="phone" value="${param.phone}" required>
         </div>
         <p>
         <div>
             <label for="deliveryMode">Delivery mode </label>
-            <select name="deliveryMode" id="deliveryMode">
-                <option>Courier</option>
-                <option>Store pickup</option>
+            <select name="deliveryMode" id="deliveryMode" onchange="changeDeliveryMode.click()">
+                <c:forEach var="mode" items="${requestScope['deliveryModes']}">
+                    <option value="${mode}" ${deliveryMode eq mode ? "selected" : ""}>${mode.name}</option>
+                </c:forEach>
             </select>
+            <button id="changeDeliveryMode" formaction="checkout" formmethod="get" formnovalidate
+                    style="display: none"></button>
         </div>
         <p>
         <div>
@@ -79,12 +87,11 @@
             <input type="text" id="deliveryDate" name="deliveryDate" readonly value="Tomorrow">
         </div>
         <p>
-        <div>Delivery costs: $${httpCart.totalPrice}</div>
+        <div>Delivery costs: $${deliveryMode.price}</div>
         <p>
         <div>
             <label for="deliveryAddress">Delivery address </label>
-            <input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}">
-            <tags:requiredField parameter="${param.deliveryAddress}"/>
+            <input type="text" id="deliveryAddress" name="deliveryAddress" value="${param.deliveryAddress}" required>
         </div>
         <p>
         <div>
