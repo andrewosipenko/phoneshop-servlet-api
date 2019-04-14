@@ -36,7 +36,7 @@ public class OrderOverviewPageServlet extends HttpServlet {
         req.setAttribute(ID, uuid.toString());
         if (order.isPresent()) {
             req.setAttribute(ORDER, order.get());
-            cartService.getCart(req).getCartItems().clear();
+            cartService.clearCart(req);
             req.getRequestDispatcher("/WEB-INF/pages/overview.jsp").forward(req, resp);
         } else {
             throw new OrderNotFoundException();

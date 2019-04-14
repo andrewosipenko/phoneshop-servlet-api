@@ -66,6 +66,13 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
+    public void clearCart(HttpServletRequest request) {
+        Cart cart = getCart(request);
+        cart.getCartItems().clear();
+        cart.setTotalPrice(BigDecimal.ZERO);
+    }
+
+    @Override
     public void save(HttpServletRequest request) {
         Cart cart = getCart(request);
         recalculate(cart);

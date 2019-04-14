@@ -15,4 +15,6 @@ public interface CartService {
     boolean remove(Cart customerCart, Long idToRemove);
 
     Cart getCart(HttpServletRequest request);
+
+    void clearCart(HttpServletRequest request);
 }
