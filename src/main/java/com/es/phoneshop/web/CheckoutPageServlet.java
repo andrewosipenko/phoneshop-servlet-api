@@ -25,11 +25,10 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String deliveryMode;
-        if ((deliveryMode = req.getParameter(DELIVERY_MODE)) == null) {
-            req.setAttribute(DELIVERY_MODE, DeliveryMode.COURIER);
-        } else {
-            req.setAttribute(DELIVERY_MODE, DeliveryMode.identify(deliveryMode));
-        }
+        req.setAttribute(DELIVERY_MODE,
+                (deliveryMode = req.getParameter(DELIVERY_MODE)) == null
+                        ? DeliveryMode.COURIER // default value
+                        : DeliveryMode.identify(deliveryMode));
 
         req.setAttribute("deliveryModes", Arrays.asList(DeliveryMode.values()));
         req.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(req, resp);
