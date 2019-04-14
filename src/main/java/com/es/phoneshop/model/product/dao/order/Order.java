@@ -105,4 +105,8 @@ public class Order implements Serializable {
     public UUID getId() {
         return id;
     }
+
+    protected void setId(UUID id) {
+        this.id = id;
+    }
 }

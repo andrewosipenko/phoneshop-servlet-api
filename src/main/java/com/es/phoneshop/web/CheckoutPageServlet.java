@@ -36,4 +36,8 @@ public class CheckoutPageServlet extends HttpServlet {
             doGet(req, resp);
         }
     }
+
+    protected void setOrderDao(OrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
 }

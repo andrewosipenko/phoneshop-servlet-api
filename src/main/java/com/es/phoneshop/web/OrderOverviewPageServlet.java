@@ -48,4 +48,11 @@ public class OrderOverviewPageServlet extends HttpServlet {
         return UUID.fromString(idFromPath);
     }
 
+    protected void setOrderDao(OrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
+
+    protected void setCartService(CartService cartService) {
+        this.cartService = cartService;
+    }
 }

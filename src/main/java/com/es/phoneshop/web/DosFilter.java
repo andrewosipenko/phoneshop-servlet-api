@@ -22,7 +22,7 @@ public class DosFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String ip = servletRequest.getRemoteAddr();
         if (ipCounter.get(ip) == null) {
-            ipCounter.put(ip, new Connection((short) 0, LocalDateTime.now()));
+            ipCounter.put(ip, new Connection(LocalDateTime.now()));
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             Connection connection = ipCounter.get(ip);
@@ -42,11 +42,11 @@ public class DosFilter implements Filter {
     }
 
     private class Connection {
+        private final LocalDateTime firstConnection;
         private Short connectionAmount;
-        private LocalDateTime firstConnection;
 
-        Connection(Short connectionAmount, LocalDateTime firstConnection) {
-            this.connectionAmount = connectionAmount;
+        Connection(LocalDateTime firstConnection) {
+            this.connectionAmount = 0;
             this.firstConnection = firstConnection;
         }
     }
