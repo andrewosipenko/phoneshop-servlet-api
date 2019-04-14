@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private static ArrayListProductDao INSTANCE;
+    private static ArrayListProductDao instance;
     private List<Product> products;
 
     private ArrayListProductDao() {
@@ -19,14 +19,14 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public static ArrayListProductDao getInstance() {
-        if (INSTANCE == null) {
+        if (instance == null) {
             synchronized (ArrayListProductDao.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new ArrayListProductDao();
+                if (instance == null) {
+                    instance = new ArrayListProductDao();
                 }
             }
         }
-        return INSTANCE;
+        return instance;
     }
 
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ArrayListOrderDao implements OrderDao {
 
-    private static ArrayListOrderDao INSTANCE;
+    private static ArrayListOrderDao instance;
     private final CartService cartService;
     private final List<Order> orders;
 
@@ -22,14 +22,14 @@ public class ArrayListOrderDao implements OrderDao {
     }
 
     public static ArrayListOrderDao getInstance() {
-        if (INSTANCE == null) {
+        if (instance == null) {
             synchronized (ArrayListOrderDao.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new ArrayListOrderDao();
+                if (instance == null) {
+                    instance = new ArrayListOrderDao();
                 }
             }
         }
-        return INSTANCE;
+        return instance;
     }
 
     @Override
