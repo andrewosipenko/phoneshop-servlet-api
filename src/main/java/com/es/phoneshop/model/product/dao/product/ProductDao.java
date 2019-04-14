@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product.dao;
+package com.es.phoneshop.model.product.dao.product;
 
 import com.es.phoneshop.model.product.enums.SortBy;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;

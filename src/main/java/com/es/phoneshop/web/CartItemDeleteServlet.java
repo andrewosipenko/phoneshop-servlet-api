@@ -1,6 +1,7 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.HttpSessionCartService;
 
 import javax.servlet.ServletConfig;
@@ -12,7 +13,7 @@ import java.io.IOException;
 
 public class CartItemDeleteServlet extends HttpServlet {
 
-    private HttpSessionCartService cartService;
+    private CartService cartService;
 
     @Override
     public void init(ServletConfig config) {

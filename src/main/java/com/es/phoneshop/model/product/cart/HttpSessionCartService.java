@@ -1,7 +1,7 @@
 package com.es.phoneshop.model.product.cart;
 
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.Product;
+import com.es.phoneshop.model.product.dao.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.product.Product;
 import com.es.phoneshop.model.product.exceptions.OutOfStockException;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 

@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product.dao;
+package com.es.phoneshop.model.product.dao.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

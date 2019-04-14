@@ -1,7 +1,7 @@
 package com.es.phoneshop.model.product.history;
 
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.Product;
+import com.es.phoneshop.model.product.dao.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.product.Product;
 import com.es.phoneshop.model.product.exceptions.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;

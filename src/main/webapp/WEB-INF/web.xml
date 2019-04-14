@@ -50,9 +50,34 @@
         <url-pattern>/cart/deleteCartItem/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>checkoutPageServlet</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>checkoutPageServlet</servlet-name>
+        <url-pattern>/checkout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>orderOverviewPageServlet</servlet-name>
+        <servlet-class>com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>orderOverviewPageServlet</servlet-name>
+        <url-pattern>/order/overview/*</url-pattern>
+    </servlet-mapping>
+
     <error-page>
         <exception-type>com.es.phoneshop.model.product.exceptions.ProductNotFoundException</exception-type>
         <location>/WEB-INF/pages/productNotFound.jsp</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>com.es.phoneshop.model.product.exceptions.OrderNotFoundException</exception-type>
+        <location>/WEB-INF/pages/orderNotFound.jsp</location>
     </error-page>
 
     <listener>

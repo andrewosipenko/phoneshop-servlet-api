@@ -7,8 +7,10 @@
     <p>
     <h2>
         <a href="${pageContext.servletContext.contextPath}/cart">Go To Cart</a>
+        <br>
+        <a href="${pageContext.servletContext.contextPath}/checkout">Go To Checkout</a>
     </h2>
-    </p>
+    <p>
     <table>
         <tr>
             <td>Image</td>

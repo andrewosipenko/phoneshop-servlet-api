@@ -1,8 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.dao.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.product.ProductDao;
 import com.es.phoneshop.model.product.enums.SortBy;
+import com.es.phoneshop.model.product.history.HistoryService;
 import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
 
 import javax.servlet.ServletConfig;
@@ -19,7 +20,7 @@ public class ProductListPageServlet extends HttpServlet {
     protected static final String PRODUCTS = "products";
 
     private final ProductDao productDao = ArrayListProductDao.getInstance();
-    private HttpSessionHistoryService sessionHistoryService;
+    private HistoryService sessionHistoryService;
 
     @Override
     public void init(ServletConfig config) {

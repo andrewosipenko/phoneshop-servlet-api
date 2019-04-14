@@ -2,10 +2,12 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartItem;
+import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.HttpSessionCartService;
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.dao.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.product.ProductDao;
 import com.es.phoneshop.model.product.exceptions.OutOfStockException;
+import com.es.phoneshop.model.product.history.HistoryService;
 import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
 import com.es.phoneshop.web.helper.Error;
 
@@ -22,8 +24,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected static final String PRODUCT = "product";
     protected static final String QUANTITY = "quantity";
     private final ProductDao productDao = ArrayListProductDao.getInstance();
-    private HttpSessionHistoryService historyService;
-    private HttpSessionCartService httpSessionCartService;
+    private HistoryService historyService;
+    private CartService httpSessionCartService;
 
 
     @Override
