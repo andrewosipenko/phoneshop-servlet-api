@@ -8,6 +8,44 @@
     <p>
     <h2>Thanks for purchase</h2>
     <p>
+    <table>
+        <tr>
+            <td>Image</td>
+            <td>Description</td>
+            <td>Price</td>
+            <td>Quantity</td>
+        </tr>
+        <c:forEach items="${order.cart.cartItems}" var="cartItem" varStatus="loop">
+            <c:set var="product" value="${cartItem.product}"/>
+            <tr>
+                <td>
+                    <img class="product-tile" src="${product.imageUrl}" alt="${product.code}">
+                </td>
+                <td>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                            ${product.description}
+                    </a>
+                </td>
+                <td>$${product.price}</td>
+                <td>
+                        ${cartItem.quantity}
+                </td>
+            </tr>
+        </c:forEach>
+        <tr>
+            <td>Subtotal</td>
+            <td colspan="2" align="right">$${order.cart.totalPrice}</td>
+        </tr>
+        <tr>
+            <td>Delivery [${order.deliveryMode.name.toLowerCase()}]</td>
+            <td colspan="2" align="right">$${order.deliveryMode.price}</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td colspan="2" align="right">$${order.cart.totalPrice + order.deliveryMode.price}</td>
+        </tr>
+    </table>
+    <p>
 
         <form method="post">
     <p>

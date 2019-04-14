@@ -44,7 +44,7 @@ public class DosFilter implements Filter {
 
     private class Connection {
         private final LocalDateTime firstConnection;
-        private AtomicInteger connectionAmount;
+        private final AtomicInteger connectionAmount;
 
         Connection(LocalDateTime firstConnection) {
             this.connectionAmount = new AtomicInteger(0);

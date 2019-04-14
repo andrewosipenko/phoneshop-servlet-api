@@ -54,7 +54,7 @@
         </h4>
     </c:if>
 
-    <form method="post">
+    <form method="post" action="${pageContext.request.contextPath}/checkout">
         <p>
         <div>
             <label for="firstName">First name </label>
@@ -78,7 +78,7 @@
                     <option value="${mode}" ${deliveryMode eq mode ? "selected" : ""}>${mode.name}</option>
                 </c:forEach>
             </select>
-            <button id="changeDeliveryMode" formaction="checkout" formmethod="get" formnovalidate
+            <button id="changeDeliveryMode" formnovalidate formmethod="get"
                     style="display: none"></button>
         </div>
         <p>
@@ -97,12 +97,12 @@
         <div>
             <label for="paymentMethod">Payment method </label>
             <select name="paymentMethod" id="paymentMethod">
-                <option>Money</option>
-                <option>Credit card</option>
+                <option ${param.paymentMethod eq "Money" ? "selected" : ""}>Money</option>
+                <option ${param.paymentMethod eq "Credit card" ? "selected" : ""}>Credit card</option>
             </select>
         </div>
         <p>
-            <button type="submit">Place order</button>
+            <input type="submit" value="Order">
         </p>
     </form>
 

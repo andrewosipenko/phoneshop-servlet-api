@@ -27,7 +27,7 @@ public class Order implements Serializable {
                  String deliveryAddress,
                  DeliveryMode deliveryMode,
                  PaymentMethod paymentMethod) {
-        this.cart = cart;
+        this.cart = new Cart(cart);
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;

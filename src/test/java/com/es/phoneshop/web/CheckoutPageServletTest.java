@@ -51,7 +51,6 @@ public class CheckoutPageServletTest {
         when(orderDao.getOrder(request)).thenReturn(order);
         when(orderDao.isOrderValid(order)).thenReturn(false);
         checkoutPageServlet.doPost(request, response);
-        verify(request).setAttribute("error", true);
         verify(request).getRequestDispatcher(anyString());
         verify(request.getRequestDispatcher(anyString())).forward(request, response);
     }
