@@ -1,11 +1,11 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.CartService;
-import com.es.phoneshop.model.product.cart.HttpSessionCartService;
-import com.es.phoneshop.model.product.dao.order.ArrayListOrderDao;
-import com.es.phoneshop.model.product.dao.order.Order;
-import com.es.phoneshop.model.product.dao.order.OrderDao;
-import com.es.phoneshop.model.product.exceptions.OrderNotFoundException;
+import com.es.phoneshop.core.cart.CartService;
+import com.es.phoneshop.core.cart.HttpSessionCartService;
+import com.es.phoneshop.core.dao.order.ArrayListOrderDao;
+import com.es.phoneshop.core.dao.order.Order;
+import com.es.phoneshop.core.dao.order.OrderDao;
+import com.es.phoneshop.core.exceptions.OrderNotFoundException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

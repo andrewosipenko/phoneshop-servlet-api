@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.HttpSessionCartService;
-import com.es.phoneshop.model.product.exceptions.OutOfStockException;
+import com.es.phoneshop.core.cart.Cart;
+import com.es.phoneshop.core.cart.HttpSessionCartService;
+import com.es.phoneshop.core.exceptions.OutOfStockException;
 import com.es.phoneshop.web.helper.Error;
 
 import javax.servlet.ServletConfig;

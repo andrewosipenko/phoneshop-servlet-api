@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="httpCart" class="com.es.phoneshop.model.product.cart.Cart" scope="session"/>
+<jsp:useBean id="httpCart" class="com.es.phoneshop.core.cart.Cart" scope="session"/>
 <c:if test="${not empty httpCart.cartItems}">
     <p>
     <h2>

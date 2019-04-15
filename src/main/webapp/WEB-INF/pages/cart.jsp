@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="httpCart" type="com.es.phoneshop.model.product.cart.Cart" scope="session"/>
+<jsp:useBean id="httpCart" type="com.es.phoneshop.core.cart.Cart" scope="session"/>
 <tags:master pageTitle="Cart">
     <span style="color: green;">
         <h4>${param.message}</h4>

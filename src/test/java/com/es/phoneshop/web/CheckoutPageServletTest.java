@@ -1,7 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.dao.order.Order;
-import com.es.phoneshop.model.product.dao.order.OrderDao;
+import com.es.phoneshop.core.dao.order.DeliveryMode;
+import com.es.phoneshop.core.dao.order.Order;
+import com.es.phoneshop.core.dao.order.OrderDao;
+import com.es.phoneshop.core.order.OrderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +32,19 @@ public class CheckoutPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private Order order;
-    @Mock
     private OrderDao orderDao;
+    @Mock
+    private OrderService orderService;
+    @Mock
+    private Order order;
 
     @Before
     public void start() {
+        when(orderService.getDeliveryMode(request)).thenReturn(DeliveryMode.STORE_PICKUP);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(orderService.createOrder(request)).thenReturn(order);
+        when(order.getDeliveryMode()).thenReturn(DeliveryMode.STORE_PICKUP);
+        checkoutPageServlet.setOrderService(orderService);
     }
 
     @Test
@@ -48,8 +56,6 @@ public class CheckoutPageServletTest {
     @Test
     public void testDoPost() throws ServletException, IOException {
         checkoutPageServlet.setOrderDao(orderDao);
-        when(orderDao.getOrder(request)).thenReturn(order);
-        when(orderDao.isOrderValid(order)).thenReturn(false);
         checkoutPageServlet.doPost(request, response);
         verify(request).getRequestDispatcher(anyString());
         verify(request.getRequestDispatcher(anyString())).forward(request, response);

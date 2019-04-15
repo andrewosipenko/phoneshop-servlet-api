@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.CartService;
-import com.es.phoneshop.model.product.dao.order.Order;
-import com.es.phoneshop.model.product.dao.order.OrderDao;
-import com.es.phoneshop.model.product.exceptions.OrderNotFoundException;
+import com.es.phoneshop.core.cart.CartService;
+import com.es.phoneshop.core.dao.order.Order;
+import com.es.phoneshop.core.dao.order.OrderDao;
+import com.es.phoneshop.core.exceptions.OrderNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

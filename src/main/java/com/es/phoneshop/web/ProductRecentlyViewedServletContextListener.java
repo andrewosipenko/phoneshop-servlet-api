@@ -1,6 +1,6 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
+import com.es.phoneshop.core.history.HttpSessionHistoryService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
