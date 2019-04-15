@@ -1,12 +1,14 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.CartItem;
-import com.es.phoneshop.model.product.cart.HttpSessionCartService;
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.exceptions.OutOfStockException;
-import com.es.phoneshop.model.product.history.HttpSessionHistoryService;
+import com.es.phoneshop.core.cart.Cart;
+import com.es.phoneshop.core.cart.CartItem;
+import com.es.phoneshop.core.cart.CartService;
+import com.es.phoneshop.core.cart.HttpSessionCartService;
+import com.es.phoneshop.core.dao.product.ArrayListProductDao;
+import com.es.phoneshop.core.dao.product.ProductDao;
+import com.es.phoneshop.core.exceptions.OutOfStockException;
+import com.es.phoneshop.core.history.HistoryService;
+import com.es.phoneshop.core.history.HttpSessionHistoryService;
 import com.es.phoneshop.web.helper.Error;
 
 import javax.servlet.ServletConfig;
@@ -22,8 +24,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected static final String PRODUCT = "product";
     protected static final String QUANTITY = "quantity";
     private final ProductDao productDao = ArrayListProductDao.getInstance();
-    private HttpSessionHistoryService historyService;
-    private HttpSessionCartService httpSessionCartService;
+    private HistoryService historyService;
+    private CartService httpSessionCartService;
 
 
     @Override
