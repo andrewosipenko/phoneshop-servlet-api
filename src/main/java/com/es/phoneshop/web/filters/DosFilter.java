@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.filters;
 
 import javax.servlet.*;
 import java.io.IOException;

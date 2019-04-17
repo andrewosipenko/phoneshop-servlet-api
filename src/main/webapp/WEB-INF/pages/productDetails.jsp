@@ -42,5 +42,9 @@
             <span style="color:green">${requestScope['productAdded']}</span>
         </c:if>
     </form>
+    <hr>
+    <p>
+        <jsp:include page="../fragments/productReview.jsp"/>
+    </p>
 </tags:master>
 

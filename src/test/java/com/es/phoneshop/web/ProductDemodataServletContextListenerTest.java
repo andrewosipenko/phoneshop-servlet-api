@@ -1,6 +1,7 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.core.dao.product.ArrayListProductDao;
+import com.es.phoneshop.web.listeners.ProductDemodataServletContextListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.core.cart.Cart;
 import com.es.phoneshop.core.cart.HttpSessionCartService;
+import com.es.phoneshop.web.listeners.ProductDemodataServletContextListener;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

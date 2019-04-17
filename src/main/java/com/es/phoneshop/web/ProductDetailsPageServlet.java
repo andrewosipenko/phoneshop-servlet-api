@@ -6,6 +6,8 @@ import com.es.phoneshop.core.cart.CartService;
 import com.es.phoneshop.core.cart.HttpSessionCartService;
 import com.es.phoneshop.core.dao.product.ArrayListProductDao;
 import com.es.phoneshop.core.dao.product.ProductDao;
+import com.es.phoneshop.core.dao.productReview.HashMapProductReviewDao;
+import com.es.phoneshop.core.dao.productReview.ProductReviewDao;
 import com.es.phoneshop.core.exceptions.OutOfStockException;
 import com.es.phoneshop.core.history.HistoryService;
 import com.es.phoneshop.core.history.HttpSessionHistoryService;
@@ -19,19 +21,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
-
+    protected static final String PRODUCT_REVIEWS = "productReviews";
     protected static final String ID = "id";
     protected static final String PRODUCT = "product";
     protected static final String QUANTITY = "quantity";
-    private final ProductDao productDao = ArrayListProductDao.getInstance();
+    private ProductDao productDao;
     private HistoryService historyService;
     private CartService httpSessionCartService;
-
+    private ProductReviewDao productReviewDao;
 
     @Override
     public void init(ServletConfig config) {
+        productDao = ArrayListProductDao.getInstance();
         historyService = HttpSessionHistoryService.getInstance();
         httpSessionCartService = HttpSessionCartService.getInstance();
+        productReviewDao = HashMapProductReviewDao.getInstance();
     }
 
     @Override
@@ -40,6 +44,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
         req.setAttribute(ID, productId);
         req.setAttribute(PRODUCT, productDao.getProduct(productId));
         historyService.update(req.getSession(), productId);
+        productReviewDao.findProductReviewsByProductId(productId)
+                .ifPresent(productReviews -> req.setAttribute(PRODUCT_REVIEWS, productReviews));
         req.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(req, resp);
     }
 

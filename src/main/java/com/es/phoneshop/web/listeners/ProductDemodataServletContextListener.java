@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.listeners;
 
 import com.es.phoneshop.core.dao.product.ArrayListProductDao;
 import com.es.phoneshop.core.dao.product.Product;
