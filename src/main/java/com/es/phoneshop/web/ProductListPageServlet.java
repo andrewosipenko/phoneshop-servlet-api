@@ -13,9 +13,11 @@ import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
 
-    private final ProductDao productDao;
+    private  ProductDao productDao;
 
-    public ProductListPageServlet() {
+    @Override
+    public void init() throws ServletException {
+        super.init();
         productDao = new ArrayListProductDao();
     }
 
