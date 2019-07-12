@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
 
-    private ProductDao productDao;
+    private final ProductDao productDao;
 
     public ProductListPageServlet() {
         productDao = new ArrayListProductDao();
@@ -24,6 +24,5 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute("products", productDao.findProducts());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
-
 
 }

@@ -32,17 +32,27 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void save(Product product) {
-        productList.add(product);
+        if (product.getId() == null) {
+            int last = productList.size() - 1;
+            Long id = productList.get(last).getId() + 1;
+            product.setId(id);
+            productList.add(product);
+        } else if (productList
+                .stream()
+                .anyMatch(p -> p.getId().equals(product.getId()))) {
+            for (int i = 0; i < productList.size(); i++) {
+                if (product.getId().equals(productList.get(i).getId())) {
+                    productList.set(i, product);
+                }
+            }
+        } else {
+            productList.add(product);
+        }
     }
 
     @Override
     public synchronized void delete(Long id) {
-        for (Product product : productList){
-            if (product.getId().equals(id)){
-                productList.remove(product);
-                break;
-            }
-        }
+        productList.remove(getProduct(id));
     }
 
 

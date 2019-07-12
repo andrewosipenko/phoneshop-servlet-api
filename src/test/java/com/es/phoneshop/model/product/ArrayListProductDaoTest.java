@@ -28,9 +28,11 @@ public class ArrayListProductDaoTest
     @Test
     public void testFindProducts() {
         int sizeBefore = productDao.findProducts().size();
-        Product product = new Product(3L, "sgs3", "Samsung Galaxy S III", null, usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg");
+        Product product = new Product(2L, "sgs3", "Samsung Galaxy S III", null, usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg");
+        Product product1 = new Product(null, "sgs3", "Samsung Galaxy S III", new BigDecimal(100), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg");
         productDao.save(product);
-        assertEquals(sizeBefore,productDao.findProducts().size());
+        productDao.save(product1);
+        assertEquals(sizeBefore + 1,productDao.findProducts().size());
     }
 
     @Test
