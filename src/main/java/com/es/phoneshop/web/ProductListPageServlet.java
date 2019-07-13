@@ -15,6 +15,7 @@ import java.util.Currency;
 import java.util.List;
 
 public class ProductListPageServlet extends HttpServlet {
+    
     private ProductDao dao;
     @Override
     public void init() throws ServletException {
