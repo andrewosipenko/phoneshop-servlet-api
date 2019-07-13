@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
@@ -28,14 +27,18 @@ public class ProductListPageServletTest {
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
-    public void setup(){
+    public void setup() throws ServletException {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        servlet.init();
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
+        String PATH = "/WEB-INF/pages/productList.jsp";
+        verify(request, times(1)).setAttribute(anyString(),anyList());
+        verify(request, times(1)).getRequestDispatcher(PATH);
         verify(requestDispatcher).forward(request, response);
     }
 }
