@@ -39,7 +39,12 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized List<Product> findProducts() {
-        return productList.stream().filter(product -> (product.getPrice() != null && product.getStock() > 0)).collect(Collectors.toList());
+        List result = productList.stream().filter(product -> (product.getPrice() != null && product.getStock() > 0)).collect(Collectors.toList());
+        if (result.size() != 0) {
+            return result;
+        } else {
+            throw new NullPointerException("Not found products");
+        }
     }
 
     @Override
