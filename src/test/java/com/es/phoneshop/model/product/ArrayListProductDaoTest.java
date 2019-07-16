@@ -2,39 +2,30 @@ package com.es.phoneshop.model.product;
 
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Currency;
 import java.util.List;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ArrayListProductDaoTest {
     @Mock
     private Product product1;
     @Mock
     private Product product2;
 
-    @InjectMocks
-    private ArrayListProductDao productDao;
+    private ArrayListProductDao productDao = new ArrayListProductDao();
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        product1.setId(1L);
         when(product1.getId()).thenReturn(1L);
-        product2.setStock(1);
-        product2.setPrice(new BigDecimal(100));
         when(product2.getId()).thenReturn(null);
         when(product2.getStock()).thenReturn(1);
         when(product2.getPrice()).thenReturn(new BigDecimal(100));
@@ -42,7 +33,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsResults() {
-        assertTrue(!productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts().isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -52,8 +43,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testGetProduct() {
-        Long id = product1.getId();
-        assertEquals(id, productDao.getProduct(id).getId());
+        assertEquals((Long) 1L, productDao.getProduct(1L).getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -71,8 +61,8 @@ public class ArrayListProductDaoTest {
     @Test
     public void testDelete() {
         List<Product> products = productDao.findProducts();
-        int size = products.size();
+        int sizeBefore = products.size();
         productDao.delete(products.get(0).getId());
-        assertEquals(size - 1, productDao.findProducts().size());
+        assertEquals(sizeBefore - 1, productDao.findProducts().size());
     }
 }
