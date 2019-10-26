@@ -27,6 +27,15 @@ public class ArrayListProductDaoTest
     }
 
     @Test
+    public void testFindProduct() {
+        product.setPrice(new BigDecimal(10));
+        product.setStock(12);
+        productDao.save(product);
+        assertTrue(productDao.findProducts() != null);
+    }
+
+
+    @Test
     public void testFindProductAfterSavingWithStockLess0() {
         product.setPrice(new BigDecimal(1));
         product.setStock(0);
