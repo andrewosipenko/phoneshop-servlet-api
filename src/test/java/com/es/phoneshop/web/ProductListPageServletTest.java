@@ -36,7 +36,7 @@ public class ProductListPageServletTest {
     private ProductListPageServlet servlet;
 
     @Before
-    public void setup(){
+    public void setup() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(productDao.findProducts()).thenReturn(productList);
     }
