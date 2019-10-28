@@ -1,18 +1,17 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
 
     public ArrayListProductDao(){
-        products= new CopyOnWriteArrayList<Product>();
+        products= new CopyOnWriteArrayList<>();
         Currency usd = Currency.getInstance("USD");
         products.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         products.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
@@ -32,7 +31,7 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public Product getProduct(Long id) {
         return products.stream()
-                .filter(s->s.getId()==id && s.getPrice()!=null && s.getStock()>0)
+                .filter(s->s.getId().equals(id) && s.getPrice()!=null && s.getStock()>0)
                 .findAny()
                 .orElse(null);
     }
@@ -46,21 +45,22 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product) {
-        if (product!=null && !products.contains(product))
+        if (products.contains(product))
+            throw new IllegalArgumentException();
+        if (product!=null)
             products.add(product);
     }
 
     @Override
     public void delete(Long id) {
-        Product productForDeleting=products.stream()
-                .filter(s-> s.getId()==id)
+         products.stream()
+                .filter(s -> s.getId().equals(id))
                 .findAny()
-                .orElse(null);
-        if (productForDeleting!=null)
-            products.remove(productForDeleting);
+                .map(s -> products.remove(s))
+                .orElseThrow(NoSuchElementException::new);
     }
 
-    public void deleteAll(){
+    void deleteAll(){
         products.clear();
     }
 

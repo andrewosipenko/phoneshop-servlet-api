@@ -92,7 +92,7 @@ public class Product {
             return false;
         }
         Product product=(Product)object;
-        return id==product.id && (code==product.code || code!=null && code.equals(product.getCode())) ;
+        return id.equals(product.id) && (code==product.code || code!=null && code.equals(product.getCode())) ;
 
     }
 

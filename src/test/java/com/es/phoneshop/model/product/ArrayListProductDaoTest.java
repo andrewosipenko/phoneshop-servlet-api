@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -50,7 +51,7 @@ public class ArrayListProductDaoTest
     @Test
     public void testGetNotExistingProduct(){
         Product actual = productDao.getProduct(15L);
-        assertEquals(null,actual);
+        assertNull(actual);
     }
 
     @Test
@@ -60,7 +61,14 @@ public class ArrayListProductDaoTest
         productDao.save(product);
         assertTrue(productDao.findProducts().contains(product));
         productDao.delete(product.getId());
-        assertEquals(null,productDao.getProduct(product.getId()));
+        assertNull(productDao.getProduct(product.getId()));
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testDeleteNotExistingProduct() throws NoSuchElementException{
+        Currency usd = Currency.getInstance("USD");
+        Product product=new Product(15L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.delete(product.getId());
     }
 
     @Test
@@ -70,15 +78,12 @@ public class ArrayListProductDaoTest
         assertTrue(productDao.findProducts().isEmpty());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testSaveExistingProduct(){
         Currency usd = Currency.getInstance("USD");
         Product product=new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
         productDao.save(product);
-        List<Product> expected=new ArrayList<>();
-        expected.add(product);
-        assertArrayEquals(expected.toArray(),productDao.findProducts().toArray());
     }
 
     @Test

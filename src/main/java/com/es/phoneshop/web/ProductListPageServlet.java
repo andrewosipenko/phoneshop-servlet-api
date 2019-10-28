@@ -18,13 +18,6 @@ import java.util.List;
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao= new ArrayListProductDao();
 
-    /*
-    @Override
-    public void init(ServletConfig config) throws ServletException{
-        productDao= new ArrayListProductDao();
-    }
-    */
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("products", productDao.findProducts());
