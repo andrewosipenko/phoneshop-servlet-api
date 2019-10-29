@@ -12,32 +12,38 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Product getProduct(Long id) throws NoSuchElementException {
-        return productList.stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst().get();
+        synchronized (ArrayListProductDao.class) {
+            return productList.stream()
+                    .filter(product -> product.getId().equals(id))
+                    .findAny().get();
+        }
     }
 
     @Override
     public List<Product> findProducts() {
-        return productList.stream()
-                .filter(product -> (product.getStock() > 0) && (product.getPrice()
-                        .compareTo(BigDecimal.ZERO) > 0))
-                .collect(Collectors.toList());
+        synchronized (ArrayListProductDao.class) {
+            return productList.stream()
+                    .filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
     public void save(Product product) throws Exception {
-        if(productList.contains(product) ||
-                productList.stream()
-                        .anyMatch(product1 -> product1.getId()
-                        .equals(product.getId()))) throw new Exception("Product duplication");
-        else
-           productList.add(product);
+        synchronized (ArrayListProductDao.class) {
+            if (isABadProduct(product)) {
+                throw new Exception("Product duplication");
+            } else {
+                productList.add(product);
+            }
+        }
     }
 
     @Override
     public void delete(Long id) throws NoSuchElementException {
-        productList.remove(getProduct(id));
+        synchronized (ArrayListProductDao.class) {
+            productList.remove(getProduct(id));
+        }
     }
 
     private List<Product> getSampleProducts() {
@@ -62,5 +68,11 @@ public class ArrayListProductDao implements ProductDao {
 
     public List<Product> getProductList() {
         return productList;
+    }
+
+    private boolean isABadProduct(Product product) {
+        return productList.stream()
+                .anyMatch(product1 -> product1.getId()
+                        .equals(product.getId()));
     }
 }
