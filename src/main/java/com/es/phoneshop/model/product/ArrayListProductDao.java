@@ -11,32 +11,30 @@ public class ArrayListProductDao implements ProductDao {
     private List<Product> productList = getSampleProducts();
 
     @Override
-    public Product getProduct(Long id) throws NoSuchElementException {
+    public synchronized Product getProduct(Long id) {
         return productList.stream()
                 .filter(product -> product.getId().equals(id))
-                .findFirst().get();
+                .findAny().orElseThrow(() -> new NoSuchElementException("Product not found"));
     }
 
     @Override
-    public List<Product> findProducts() {
+    public synchronized List<Product> findProducts() {
         return productList.stream()
-                .filter(product -> (product.getStock() > 0) && (product.getPrice()
-                        .compareTo(BigDecimal.ZERO) > 0))
+                .filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void save(Product product) throws Exception {
-        if(productList.contains(product) ||
-                productList.stream()
-                        .anyMatch(product1 -> product1.getId()
-                        .equals(product.getId()))) throw new Exception("Product duplication");
-        else
-           productList.add(product);
+    public synchronized void save(Product product) {
+        if (findProductsWithEqualsId(product) || product.getId() == null) {
+            throw new IllegalArgumentException("Product duplication or null id");
+        } else {
+            productList.add(product);
+        }
     }
 
     @Override
-    public void delete(Long id) throws NoSuchElementException {
+    public synchronized void delete(Long id) {
         productList.remove(getProduct(id));
     }
 
@@ -62,5 +60,11 @@ public class ArrayListProductDao implements ProductDao {
 
     public List<Product> getProductList() {
         return productList;
+    }
+
+    private boolean findProductsWithEqualsId(Product product) {
+        return productList.stream()
+                .anyMatch(product1 -> product1.getId()
+                        .equals(product.getId()));
     }
 }
