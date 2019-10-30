@@ -31,7 +31,7 @@ public class ArrayListProductDao implements ProductDao {
         if (products.contains(product)){
             throw new IllegalArgumentException("Product with such id is already exists");
         }
-        if (product != null || product.getId() != null){
+        if (product != null && product.getId() != null){
             products.add(product);
         }
         else {
