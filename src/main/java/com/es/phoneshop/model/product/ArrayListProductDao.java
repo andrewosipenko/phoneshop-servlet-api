@@ -1,31 +1,30 @@
 package com.es.phoneshop.model.product;
 
-import java.math.BigDecimal;
-import java.util.Currency;
+import com.es.phoneshop.model.exception.ProductNotFoundException;
+
+import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
+    private static ProductDao productDao;
+
+    public static ProductDao getInstance(){
+        if (productDao==null){
+            synchronized (ArrayListProductDao.class){
+                if (productDao==null)
+                    productDao=new ArrayListProductDao();
+            }
+        }
+        return productDao;
+    }
     private List<Product> products;
 
-    public ArrayListProductDao(){
+    private ArrayListProductDao(){
         products= new CopyOnWriteArrayList<>();
-        Currency usd = Currency.getInstance("USD");
-        products.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
-        products.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        products.add(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
-        products.add(new Product(4L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
-        products.add(new Product(5L, "iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg"));
-        products.add(new Product(6L, "htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));
-        products.add(new Product(7L, "sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg"));
-        products.add(new Product(8L, "xperiaxz", "Sony Xperia XZ", new BigDecimal(120), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Xperia%20XZ.jpg"));
-        products.add(new Product(9L, "nokia3310", "Nokia 3310", new BigDecimal(70), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Nokia/Nokia%203310.jpg"));
-        products.add(new Product(10L, "palmp", "Palm Pixi", new BigDecimal(170), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Palm/Palm%20Pixi.jpg"));
-        products.add(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
-        products.add(new Product(12L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
-        products.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
     }
 
     @Override
@@ -33,14 +32,69 @@ public class ArrayListProductDao implements ProductDao {
         return products.stream()
                 .filter(s->s.getId().equals(id) && s.getPrice()!=null && s.getStock()>0)
                 .findAny()
-                .orElse(null);
+                .orElseThrow(()-> new ProductNotFoundException(id));
     }
 
     @Override
-    public List<Product> findProducts() {
-        return products.stream()
+    public List<Product> findProducts(String query, SortField sortField,SortOrder sortOrder) {
+
+        List<Product> result =products.stream()
                 .filter(s-> s.getPrice()!=null && s.getStock()>0)
                 .collect(Collectors.toList());
+
+        if (query!=null) {
+            Map<Product,Integer> productsSearch=new TreeMap<>();
+
+            String[] partQuery = query.split(" ");
+
+            result.stream()
+                    .filter(s ->
+                    {
+                        int i = 0;
+                        for (String part : partQuery) {
+                            if (s.getDescription().contains(part))
+                                i++;
+                        }
+                        if (i == 0) {
+                            return false;
+                        } else {
+                            productsSearch.put(s, i);
+                            return true;
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            productsSearch.entrySet().stream().sorted(Map.Entry.comparingByValue());
+            result.clear();
+            result.addAll(productsSearch.keySet());
+        }
+        if (sortField==SortField.PRICE) {
+            if (sortOrder == SortOrder.ASC) {
+                return result.stream()
+                        .sorted(Comparator.comparing(Product::getPrice))
+                        .collect(Collectors.toList());
+            }
+
+            else {
+                return result.stream()
+                        .sorted(Comparator.comparing(Product::getPrice, Comparator.reverseOrder()))
+                        .collect(Collectors.toList());
+            }
+        }
+        if (sortField==SortField.DESCRIPTION){
+            if (sortOrder==SortOrder.ASC) {
+                return result.stream()
+                        .sorted(Comparator.comparing(Product::getDescription))
+                        .collect(Collectors.toList());
+            }
+            else {
+                return result.stream()
+                        .sorted(Comparator.comparing(Product::getDescription, Comparator.reverseOrder()))
+                        .collect(Collectors.toList());
+            }
+        }
+        return result;
+
     }
 
     @Override
@@ -57,7 +111,7 @@ public class ArrayListProductDao implements ProductDao {
                 .filter(s -> s.getId().equals(id))
                 .findAny()
                 .map(s -> products.remove(s))
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()->new ProductNotFoundException(id));
     }
 
     void deleteAll(){

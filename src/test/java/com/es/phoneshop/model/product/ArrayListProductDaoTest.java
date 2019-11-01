@@ -21,22 +21,22 @@ public class ArrayListProductDaoTest
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
         ((ArrayListProductDao) productDao).deleteAll();
     }
 
     @Test
     public void testFindProductsNoResults() {
-        assertTrue(productDao.findProducts().isEmpty());
+        assertTrue(productDao.findProducts(null,null,null).isEmpty());
     }
 
     @Test
     public void testNotEmptyList(){
-        assertNotNull(productDao.findProducts());
+        assertNotNull(productDao.findProducts(null,null,null));
         Currency usd = Currency.getInstance("USD");
         Product expected=new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg");
         productDao.save(expected);
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts(null,null,null).isEmpty());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
         Product product=new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
-        assertTrue(productDao.findProducts().contains(product));
+        assertTrue(productDao.findProducts(null,null,null).contains(product));
         productDao.delete(product.getId());
         assertNull(productDao.getProduct(product.getId()));
     }
@@ -75,7 +75,7 @@ public class ArrayListProductDaoTest
     public void testSaveNullProduct(){
         Product product=new Product();
         productDao.save(product);
-        assertTrue(productDao.findProducts().isEmpty());
+        assertTrue(productDao.findProducts(null,null,null).isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -93,7 +93,7 @@ public class ArrayListProductDaoTest
         productDao.save(product);
         List<Product> expected=new ArrayList<>();
         expected.add(product);
-        assertArrayEquals(expected.toArray(),productDao.findProducts().toArray());
+        assertArrayEquals(expected.toArray(),productDao.findProducts(null,null,null).toArray());
     }
 
 }

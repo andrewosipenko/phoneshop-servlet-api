@@ -1,9 +1,10 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 
-public class Product {
+public class Product implements Comparable<Product>{
     private Long id;
     private String code;
     private String description;
@@ -13,11 +14,13 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private ArrayList<PriceHistory> priceHistoryArrayList;
 
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
+                   String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -25,6 +28,20 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+        this.priceHistoryArrayList=new ArrayList<>();
+    }
+
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
+                   String imageUrl, ArrayList<PriceHistory> priceHistories1) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+        this.priceHistoryArrayList=new ArrayList<>();
+        this.priceHistoryArrayList=priceHistories1;
     }
 
     public Long getId() {
@@ -83,6 +100,14 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public ArrayList<PriceHistory> getPriceHistoryArrayList(){return priceHistoryArrayList;}
+
+    public void setPriceHistories(ArrayList<PriceHistory> priceHistoryArrayList){
+        priceHistoryArrayList=priceHistoryArrayList;
+    }
+
+    public void addPriceHistory(PriceHistory priceHistory){ priceHistoryArrayList.add(priceHistory);}
+
     @Override
     public boolean equals(Object object){
         if (object == this) {
@@ -102,5 +127,10 @@ public class Product {
         int result = 1;
         result = (int) (prime * result * id+ ((code == null) ? 0 : code.hashCode()));
         return result;
+    }
+
+    @Override
+    public int compareTo(Product o) {
+        return this.id.compareTo(o.id);
     }
 }
