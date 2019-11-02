@@ -7,4 +7,6 @@ public interface ProductDao {
     List<Product> findProducts();
     void save(Product product);
     void delete(Long id);
+    List<Product> findProductsByDescription(String query);
+    List<Product> sort(List<Product> unsortedProducts, String productField, String order);
 }

@@ -8,12 +8,22 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form action="">
+    <input name="search" value="${param.search}"/>
+    <button type="submit">Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+            Description
+            <tags:sort search="${param.search}" sortBy="description"/>
+        </td>
+        <td class="price">
+            Price
+            <tags:sort search="${param.search}" sortBy="price"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
