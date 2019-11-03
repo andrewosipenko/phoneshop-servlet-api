@@ -14,21 +14,23 @@ public class ArrayListProductDao implements ProductDao {
     public synchronized Product getProduct(Long id) {
         return productList.stream()
                 .filter(product -> product.getId().equals(id))
-                .findAny().orElseThrow(() -> new NoSuchElementException("Product not found"));
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Product not found"));
     }
 
     @Override
     public synchronized List<Product> findProducts() {
         return productList.stream()
-                .filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
+                .filter(product -> (product.getStock() > 0) && (product.getPrice()
+                        .compareTo(BigDecimal.ZERO) > 0))
                 .collect(Collectors.toList());
     }
 
     @Override
     public synchronized void save(Product product) {
-        if (findProductsWithEqualsId(product) || product.getId() == null) {
+        if(findProductsWithEqualsId(product)) {
             throw new IllegalArgumentException("Product duplication or null id");
-        } else {
+        }
+        else {
             productList.add(product);
         }
     }
@@ -58,13 +60,13 @@ public class ArrayListProductDao implements ProductDao {
         return result;
     }
 
-    public List<Product> getProductList() {
-        return productList;
-    }
-
     private boolean findProductsWithEqualsId(Product product) {
         return productList.stream()
                 .anyMatch(product1 -> product1.getId()
                         .equals(product.getId()));
+    }
+
+    public List<Product> getProductList() {
+        return productList;
     }
 }
