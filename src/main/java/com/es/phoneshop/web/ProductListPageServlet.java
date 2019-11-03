@@ -36,6 +36,10 @@ public class ProductListPageServlet extends HttpServlet {
         } else {
             products = productDao.findProducts();
         }
+        String sortParameter = request.getParameter("sortBy");
+        if (sortParameter != null) {
+            products = productDao.sort(products, sortParameter, request.getParameter("order"));
+        }
         return products;
     }
 

@@ -113,4 +113,15 @@ public class ArrayListProductDaoTest
         productDao.save(product1);
         assertTrue(productDao.findProductsByDescription("Nokia").isEmpty());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSortByNotExistingField() {
+        productDao.sort(productDao.findProducts(), "not existing field", "order");
+    }
+
+    @Test
+    public void testSortByEmptyField() {
+        List<Product> products = productDao.findProducts();
+        assertEquals(products, productDao.sort(products, "", "order"));
+    }
 }

@@ -1,15 +1,14 @@
 package com.es.phoneshop.model.product;
 import com.es.phoneshop.model.exception.ProductNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private static final ProductDao INSTANCE = new ArrayListProductDao();
     private List<Product> products;
+    private Map<String, Comparator<Product>> comparators;
 
     private ArrayListProductDao(){
         products = new ArrayList<>();
@@ -70,7 +69,27 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized List<Product> sort(List<Product> unsortedProducts, String productField, String order){
-        return new ArrayList<>();
+        if (productField != null && !productField.isEmpty()) {
+            return unsortedProducts.stream()
+                    .sorted(getComparator(productField, order))
+                    .collect(Collectors.toList());
+        } else {
+            return unsortedProducts;
+        }
+    }
+
+    private Comparator<Product> getComparator(String productField, String order) {
+        comparators = new HashMap<>();
+        comparators.put("price", Comparator.comparing(Product::getPrice));
+        comparators.put("description", Comparator.comparing(Product::getDescription));
+        if (!comparators.containsKey(productField)) {
+            throw new IllegalArgumentException("There is no comparator for sorting");
+        }
+        Comparator<Product> comparator = comparators.get(productField);
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 
 }
