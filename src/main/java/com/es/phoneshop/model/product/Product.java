@@ -133,4 +133,8 @@ public class Product implements Comparable<Product>{
     public int compareTo(Product o) {
         return this.id.compareTo(o.id);
     }
+
+    public void setPriceHistoryArrayList(ArrayList<PriceHistory> priceHistoryArrayList) {
+        this.priceHistoryArrayList = priceHistoryArrayList;
+    }
 }

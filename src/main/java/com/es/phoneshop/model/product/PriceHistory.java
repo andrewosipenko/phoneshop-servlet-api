@@ -13,26 +13,38 @@ public class PriceHistory {
     public PriceHistory(){
     }
 
-    public PriceHistory(Date date1, BigDecimal price1, Currency currency1){
-        date=date1;
-        price=price1;
-        currency=currency1;
+    public PriceHistory(Date date, BigDecimal price, Currency currency) {
+        this.date = date;
+        this.price = price;
+        this.currency = currency;
     }
-
-    public BigDecimal getPrice(){return price;}
-
-    public Date getDate(){return date;}
-
-    public Currency getCurrency(){return currency;}
-
-    public void setDate(Date date1){date=date1; }
-
-    public void setPrice(BigDecimal price1){price=price1; }
-
-    public void setCurrency(Currency currency1){currency=currency1;}
 
     public String getStringDate(){
         SimpleDateFormat format=new SimpleDateFormat("dd MMMM yyyy");
         return format.format(date);
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

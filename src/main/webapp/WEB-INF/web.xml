@@ -32,9 +32,4 @@
     <url-pattern>/products/*</url-pattern>
   </servlet-mapping>
 
-  <error-page>
-    <exception-type>com.es.phoneshop.model.exception.ProductNotFoundException</exception-type>
-    <location>/WEB-INF/pages/productNotFound.jsp</location>
-  </error-page>
-
 </web-app>

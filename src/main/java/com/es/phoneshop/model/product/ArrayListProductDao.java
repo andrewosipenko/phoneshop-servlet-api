@@ -2,10 +2,7 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.model.exception.ProductNotFoundException;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -15,8 +12,9 @@ public class ArrayListProductDao implements ProductDao {
     public static ProductDao getInstance(){
         if (productDao==null){
             synchronized (ArrayListProductDao.class){
-                if (productDao==null)
-                    productDao=new ArrayListProductDao();
+                if (productDao==null) {
+                    productDao = new ArrayListProductDao();
+                }
             }
         }
         return productDao;
@@ -41,60 +39,71 @@ public class ArrayListProductDao implements ProductDao {
         List<Product> result =products.stream()
                 .filter(s-> s.getPrice()!=null && s.getStock()>0)
                 .collect(Collectors.toList());
-
         if (query!=null) {
-            Map<Product,Integer> productsSearch=new TreeMap<>();
-
-            String[] partQuery = query.split(" ");
-
-            result.stream()
-                    .filter(s ->
-                    {
-                        int i = 0;
-                        for (String part : partQuery) {
-                            if (s.getDescription().contains(part))
-                                i++;
-                        }
-                        if (i == 0) {
-                            return false;
-                        } else {
-                            productsSearch.put(s, i);
-                            return true;
-                        }
-                    })
-                    .collect(Collectors.toList());
-
-            productsSearch.entrySet().stream().sorted(Map.Entry.comparingByValue());
-            result.clear();
-            result.addAll(productsSearch.keySet());
+            result=findProductsByQuery(query, result);
         }
+        result=sortProductsList(result,sortField,sortOrder);
+
+        return result;
+    }
+
+    private List<Product> findProductsByQuery(String query, List<Product> result){
+        Map<Product,Integer> productsSearch=new TreeMap<>();
+
+        String[] partQuery = query.split(" ");
+
+        result.stream()
+                .filter(s ->
+                {
+                    int i = 0;
+                    for (String part : partQuery) {
+                        if (s.getDescription().contains(part))
+                            i++;
+                    }
+                    if (i == 0) {
+                        return false;
+                    } else {
+                        productsSearch.put(s, i);
+                        return true;
+                    }
+                })
+                .collect(Collectors.toList());
+
+        productsSearch.entrySet().stream().sorted(Map.Entry.comparingByValue());
+        result.clear();
+        result.addAll(productsSearch.keySet());
+        return result;
+    }
+
+    private Comparator<Product> getComparator(SortField sortField,SortOrder sortOrder){
         if (sortField==SortField.PRICE) {
             if (sortOrder == SortOrder.ASC) {
-                return result.stream()
-                        .sorted(Comparator.comparing(Product::getPrice))
-                        .collect(Collectors.toList());
+                return Comparator.comparing(Product::getPrice);
             }
-
             else {
-                return result.stream()
-                        .sorted(Comparator.comparing(Product::getPrice, Comparator.reverseOrder()))
-                        .collect(Collectors.toList());
+                return Comparator.comparing(Product::getPrice, Comparator.reverseOrder());
             }
         }
         if (sortField==SortField.DESCRIPTION){
             if (sortOrder==SortOrder.ASC) {
-                return result.stream()
-                        .sorted(Comparator.comparing(Product::getDescription))
-                        .collect(Collectors.toList());
+                return Comparator.comparing(Product::getDescription);
             }
             else {
-                return result.stream()
-                        .sorted(Comparator.comparing(Product::getDescription, Comparator.reverseOrder()))
-                        .collect(Collectors.toList());
+                return Comparator.comparing(Product::getDescription, Comparator.reverseOrder());
             }
         }
-        return result;
+        return null;
+    }
 
+    private List<Product> sortProductsList(List<Product> productList, SortField sortField, SortOrder sortOrder){
+        List<Product> result = productList;
+        Comparator<Product> productComparator=getComparator(sortField,sortOrder);
+        if (productComparator!=null) {
+            result=productList.stream()
+                    .sorted(Objects.requireNonNull(getComparator(sortField, sortOrder)))
+                    .collect(Collectors.toList());
+        }
+        return result;
     }
 
     @Override

@@ -22,15 +22,16 @@ public class ProductListPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        SortField sortField = request.getParameter("sort") == null ?
-                null : SortField.valueOf(request.getParameter("sort").toUpperCase());
-        SortOrder sortOrder = request.getParameter("order") == null ?
-                null : SortOrder.valueOf(request.getParameter("order").toUpperCase());
+       String sortFieldString=request.getParameter("sort");
+       String sortOrderString=request.getParameter("order");
 
-        request.setAttribute("products",
-                productDao.findProducts(request.getParameter("query"), sortField, sortOrder));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
-        }
-    }
+       SortField sortField = sortFieldString== null ? null : SortField.valueOf(sortFieldString.toUpperCase());
+       SortOrder sortOrder = sortOrderString == null ? null : SortOrder.valueOf(sortOrderString.toUpperCase());
+
+       request.setAttribute("products",
+               productDao.findProducts(request.getParameter("query"), sortField, sortOrder));
+       request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+   }
+}
 
 

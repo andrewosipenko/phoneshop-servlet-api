@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 
@@ -21,7 +22,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         String uri = request.getRequestURI();
         String productID = uri.substring(uri.lastIndexOf("/")+1);
-        request.setAttribute("product", productDao.getProduct(Long.valueOf(productID)));
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request,response);
+        try {
+            request.setAttribute("product", productDao.getProduct(Long.valueOf(productID)));
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        }
+        catch(ProductNotFoundException e) {
+            request.setAttribute("errorType", productID);
+            request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);
+        }
     }
 }
