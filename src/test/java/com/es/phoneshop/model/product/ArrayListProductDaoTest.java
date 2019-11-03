@@ -9,6 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,7 +46,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts(anyString(), anyString(), anyString()).isEmpty());
     }
 
     @Test
@@ -53,7 +55,7 @@ public class ArrayListProductDaoTest {
 
         testProductDao.save(product);
 
-        assertEquals(testProductDao.findProducts(), productDao.findProducts());
+        assertEquals(testProductDao.findProducts(anyString(), anyString(), anyString()), productDao.findProducts(anyString(), anyString(), anyString()));
     }
 
     @Test(expected = IllegalArgumentException.class)

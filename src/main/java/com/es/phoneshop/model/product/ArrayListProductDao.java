@@ -1,10 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -19,8 +16,7 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized List<Product> findProducts() {
-        return productList.stream()
-                .filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
+        return productList.stream().filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
                 .collect(Collectors.toList());
     }
 
@@ -37,6 +33,16 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized void delete(Long id) {
         productList.remove(getProduct(id));
+    }
+
+    private boolean findProductsWithEqualsId(Product product) {
+        return productList.stream()
+                .anyMatch(product1 -> product1.getId()
+                        .equals(product.getId()));
+    }
+
+    public List<Product> getProductList() {
+        return productList;
     }
 
     private List<Product> getSampleProducts() {
@@ -57,15 +63,5 @@ public class ArrayListProductDao implements ProductDao {
         result.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
 
         return result;
-    }
-
-    private boolean findProductsWithEqualsId(Product product) {
-        return productList.stream()
-                .anyMatch(product1 -> product1.getId()
-                        .equals(product.getId()));
-    }
-
-    public List<Product> getProductList() {
-        return productList;
     }
 }
