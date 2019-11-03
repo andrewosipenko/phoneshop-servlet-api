@@ -20,14 +20,13 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized List<Product> findProducts() {
         return productList.stream()
-                .filter(product -> (product.getStock() > 0) && (product.getPrice()
-                        .compareTo(BigDecimal.ZERO) > 0))
+                .filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
                 .collect(Collectors.toList());
     }
 
     @Override
     public synchronized void save(Product product) {
-        if(findProductsWithEqualsId(product)) {
+        if(findProductsWithEqualsId(product) || product.getId() == null) {
             throw new IllegalArgumentException("Product duplication or null id");
         }
         else {
