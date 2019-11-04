@@ -13,16 +13,16 @@ import javax.servlet.ServletContextEvent;
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductDemodataServletContextListenerTest {
+public class ProductDemoDataServletContextListenerTest {
 
-    private ProductDemodataServletContextListener listener;
+    private ProductDemoDataServletContextListener listener;
 
     @Mock
     private ServletContextEvent servletContextEvent;
 
     @Before
     public void setup() {
-        listener = new ProductDemodataServletContextListener();
+        listener = new ProductDemoDataServletContextListener();
     }
 
     @Test

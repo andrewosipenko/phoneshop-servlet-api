@@ -11,7 +11,7 @@ import java.util.Currency;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ProductDemodataServletContextListener implements ServletContextListener {
+public class ProductDemoDataServletContextListener implements ServletContextListener {
     private static final Currency USD = Currency.getInstance("USD");
 
     @Override

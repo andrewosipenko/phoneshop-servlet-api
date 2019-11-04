@@ -27,7 +27,7 @@
 
 
   <listener>
-    <listener-class>com.es.phoneshop.web.ProductDemodataServletContextListener</listener-class>
+    <listener-class>com.es.phoneshop.web.ProductDemoDataServletContextListener</listener-class>
   </listener>
 
   <error-page>

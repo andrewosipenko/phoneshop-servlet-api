@@ -14,6 +14,9 @@ import java.util.Currency;
 import java.util.List;
 
 public class ProductListPageServlet extends HttpServlet {
+    private static final String SEARCH = "search";
+    private static final String SORT_BY = "sortBy";
+    private static final String ORDER = "order";
     private ProductDao productDao;
 
     @Override
@@ -29,16 +32,16 @@ public class ProductListPageServlet extends HttpServlet {
     }
 
     private List<Product> getProducts(HttpServletRequest request) {
-        String searchValue = request.getParameter("search");
+        String searchValue = request.getParameter(SEARCH);
         List<Product> products;
         if (searchValue != null && !searchValue.isEmpty()) {
             products = productDao.findProductsByDescription(searchValue);
         } else {
             products = productDao.findProducts();
         }
-        String sortParameter = request.getParameter("sortBy");
+        String sortParameter = request.getParameter(SORT_BY);
         if (sortParameter != null) {
-            products = productDao.sort(products, sortParameter, request.getParameter("order"));
+            products = productDao.sort(products, sortParameter, request.getParameter(ORDER));
         }
         return products;
     }

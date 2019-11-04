@@ -7,11 +7,18 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private static final ProductDao INSTANCE = new ArrayListProductDao();
+    private static final String PRICE = "price";
+    private static final String DESCRIPTION = "description";
+    private static final String DESC = "desc";
     private List<Product> products;
     private Map<String, Comparator<Product>> comparators;
 
-    private ArrayListProductDao(){
+    private ArrayListProductDao()
+    {
         products = new ArrayList<>();
+        comparators = new HashMap<>();
+        comparators.put(PRICE, Comparator.comparing(Product::getPrice));
+        comparators.put(DESCRIPTION, Comparator.comparing(Product::getDescription));
     }
 
     public static ProductDao getInstance() {
@@ -38,7 +45,7 @@ public class ArrayListProductDao implements ProductDao {
         if (products.stream().anyMatch( product -> product.getId().equals(newProduct.getId()))){
             throw new IllegalArgumentException("Product with such id is already exists");
         }
-        if (newProduct != null && newProduct.getId() != null){
+        if (newProduct != null){
             products.add(newProduct);
         }
         else {
@@ -79,14 +86,11 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     private Comparator<Product> getComparator(String productField, String order) {
-        comparators = new HashMap<>();
-        comparators.put("price", Comparator.comparing(Product::getPrice));
-        comparators.put("description", Comparator.comparing(Product::getDescription));
         if (!comparators.containsKey(productField)) {
             throw new IllegalArgumentException("There is no comparator for sorting");
         }
         Comparator<Product> comparator = comparators.get(productField);
-        if ("desc".equalsIgnoreCase(order)) {
+        if (DESC.equalsIgnoreCase(order)) {
             comparator = comparator.reversed();
         }
         return comparator;
