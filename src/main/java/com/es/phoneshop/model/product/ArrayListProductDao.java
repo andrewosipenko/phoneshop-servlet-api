@@ -2,7 +2,10 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.model.exception.ProductNotFoundException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -48,31 +51,17 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     private List<Product> findProductsByQuery(String query, List<Product> result){
-        Map<Product,Integer> productsSearch=new TreeMap<>();
-
         String[] partQuery = query.split(" ");
-
-        result.stream()
-                .filter(s ->
-                {
-                    int i = 0;
-                    for (String part : partQuery) {
-                        if (s.getDescription().contains(part))
-                            i++;
-                    }
-                    if (i == 0) {
-                        return false;
-                    } else {
-                        productsSearch.put(s, i);
-                        return true;
-                    }
-                })
+        return result.stream()
+                .filter(product -> Arrays.stream(partQuery).anyMatch(p -> product.getDescription().contains(p)))
+                .sorted(Comparator.comparing(p->matchCount(p,partQuery),Comparator.reverseOrder()))
                 .collect(Collectors.toList());
+    }
 
-        productsSearch.entrySet().stream().sorted(Map.Entry.comparingByValue());
-        result.clear();
-        result.addAll(productsSearch.keySet());
-        return result;
+    private int matchCount(Product product,String[] partQuery){
+        return (int) Arrays.stream(partQuery)
+                .filter(product.getDescription()::contains)
+                .count();
     }
 
     private Comparator<Product> getComparator(SortField sortField,SortOrder sortOrder){

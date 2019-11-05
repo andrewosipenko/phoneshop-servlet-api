@@ -5,7 +5,7 @@
 
 <tags:master pageTitle="Not Found">
     <p>
-        Product with code ${errorType} not found
+        Product with code ${pageContext.exception.id} not found
     </p>
 
 </tags:master>
