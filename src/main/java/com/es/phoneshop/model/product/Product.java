@@ -2,6 +2,8 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Product {
@@ -9,7 +11,7 @@ public class Product {
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
-    private BigDecimal price;
+    private Map<String, BigDecimal> prices = new LinkedHashMap<>();
     /** can be null if the price is null */
     private Currency currency;
     private int stock;
@@ -18,11 +20,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, Map<String, BigDecimal> prices, Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
-        this.price = price;
+        this.prices.putAll(prices);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -52,12 +54,20 @@ public class Product {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public Map<String, BigDecimal> getPrices() {
+        return prices;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public BigDecimal getPrice() {
+        return (BigDecimal) (prices.values().toArray())[prices.size() - 1];
+    }
+
+    public void setPrices(Map<String, BigDecimal> price) {
+        this.prices.putAll(price);
+    }
+
+    public void setPrice(String date, BigDecimal price) {
+        this.prices.put(date, price);
     }
 
     public Currency getCurrency() {
@@ -93,13 +103,13 @@ public class Product {
                 Objects.equals(id, product.id) &&
                 Objects.equals(code, product.code) &&
                 Objects.equals(description, product.description) &&
-                Objects.equals(price, product.price) &&
+                Objects.equals(prices, product.prices) &&
                 Objects.equals(currency, product.currency) &&
                 Objects.equals(imageUrl, product.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, description, price, currency, stock, imageUrl);
+        return Objects.hash(id, code, description, prices, currency, stock, imageUrl);
     }
 }

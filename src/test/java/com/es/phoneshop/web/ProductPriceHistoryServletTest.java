@@ -1,6 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductListService;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductPriceHistoryServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock

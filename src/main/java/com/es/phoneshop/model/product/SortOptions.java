@@ -6,7 +6,7 @@ public enum SortOptions implements Comparator<Product> {
     DESCRIPTION_ASC(Comparator.comparing(Product::getDescription), "description_asc"),
     DESCRIPTION_DESC(Comparator.comparing(Product::getDescription).reversed(), "description_desc"),
     PRICE_ASC(Comparator.comparing(Product::getPrice), "price_asc"),
-    PRICE_DESC(Comparator.comparing(Product::getPrice).reversed(), "priced_esc");
+    PRICE_DESC(Comparator.comparing(Product::getPrice).reversed(), "price_desc");
 
     private Comparator<Product> comparator;
     private String sortOptions;

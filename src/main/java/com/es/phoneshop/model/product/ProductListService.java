@@ -1,17 +1,20 @@
 package com.es.phoneshop.model.product;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ProductListServise {
-    private ProductDao productDao = new ArrayListProductDao();
+public class ProductListService {
+    private ProductDao productDao = ArrayListProductDao.getInstance();
 
     public Product getProduct(Long id) {
         return productDao.getProduct(id);
     }
 
     public List<Product> search(String query) {
-        if (query == null) {
+        if (query == null || query.equals("")) {
             return productDao.findProducts();
         } else {
             String[] allWordsFromQuery = query.toLowerCase().split("\\s+");
@@ -43,5 +46,9 @@ public class ProductListServise {
 
     public void delete(Long id) {
         productDao.delete(id);
+    }
+
+    public ProductDao getProductDao() {
+        return productDao;
     }
 }
