@@ -5,27 +5,40 @@
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
-  <p>
-    Welcome to Expert-Soft training!
-  </p>
-  <table>
-    <thead>
-      <tr>
-        <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
-      </tr>
-    </thead>
-    <c:forEach var="product" items="${products}">
-      <tr>
-        <td>
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-        </td>
-        <td>${product.description}</td>
-        <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-        </td>
-      </tr>
-    </c:forEach>
-  </table>
+
+    <p>
+        Welcome to Expert-Soft training!
+    </p>
+
+    <form action="/products">
+        <input type="text" name="query" value="${param.query}"/>
+        <input type="submit" value="Search"/>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <td>Image</td>
+            <td>Description
+                <tags:sort sort="description" query="${param.query}" order="asc"/>
+                <tags:sort sort="description" query="${param.query}" order="desc"/></td>
+            <td class="price">Price
+                <tags:sort sort="price" query="${param.query}" order="asc"/>
+                <tags:sort sort="price" query="${param.query}" order="desc"/></td>
+        </tr>
+        </thead>
+        <c:forEach var="product" items="${products}">
+            <tr>
+                <td>
+                    <img class="product-tile"
+                         src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+                </td>
+                <td><a href="/products/${product.id}">${product.description}</a></td>
+                <td class="price">
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
 </tags:master>

@@ -28,7 +28,7 @@ public class Product {
             return true;
         }
 
-        if (this.getClass() != obj.getClass()) {
+        if (this.getClass() != obj.getClass() && obj == null) {
             return false;
         }
 

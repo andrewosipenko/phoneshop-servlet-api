@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ArrayListProductDaoTest {
-    private ArrayListProductDao productDao = new ArrayListProductDao();
+    private ArrayListProductDao productDao = ArrayListProductDao.getInstance();
 
     @Mock
     private Product product;
@@ -61,7 +61,7 @@ public class ArrayListProductDaoTest {
         when(product3.getStock()).thenReturn(24);
 
 
-        List<Product> products = productDao.findProducts();
+        List<Product> products = productDao.findProducts(null, null, null);
         assertTrue(products.size() == 1);
         assertSame(products.get(0), product3);
     }
