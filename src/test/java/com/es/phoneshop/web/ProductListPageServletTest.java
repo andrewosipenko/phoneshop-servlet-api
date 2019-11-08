@@ -1,6 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductListService;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,13 +33,14 @@ public class ProductListPageServletTest {
 
     @Before
     public void setup() {
-        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getRequestDispatcher("/WEB-INF/pages/productList.jsp")).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
+        verify(request).setAttribute("products", productListService.findProducts(anyString(), anyString(), anyString()));
         verify(requestDispatcher).forward(request, response);
     }
 }

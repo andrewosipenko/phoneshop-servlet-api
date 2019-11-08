@@ -1,17 +1,14 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Product {
     private Long id;
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
-    private Map<String, BigDecimal> prices = new LinkedHashMap<>();
+    private Map<Date, BigDecimal> prices = new LinkedHashMap<>();
     /** can be null if the price is null */
     private Currency currency;
     private int stock;
@@ -20,7 +17,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String code, String description, Map<String, BigDecimal> prices, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, Map<Date, BigDecimal> prices, Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -54,7 +51,7 @@ public class Product {
         this.description = description;
     }
 
-    public Map<String, BigDecimal> getPrices() {
+    public Map<Date, BigDecimal> getPrices() {
         return prices;
     }
 
@@ -62,11 +59,11 @@ public class Product {
         return (BigDecimal) (prices.values().toArray())[prices.size() - 1];
     }
 
-    public void setPrices(Map<String, BigDecimal> price) {
+    public void setPrices(Map<Date, BigDecimal> price) {
         this.prices.putAll(price);
     }
 
-    public void setPrice(String date, BigDecimal price) {
+    public void setPrice(Date date, BigDecimal price) {
         this.prices.put(date, price);
     }
 

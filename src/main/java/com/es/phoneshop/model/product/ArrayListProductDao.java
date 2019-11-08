@@ -1,50 +1,70 @@
 package com.es.phoneshop.model.product;
 
-import java.util.*;
+import com.es.phoneshop.exceptions.ProductNotFoundException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private static ProductDao productDao;
-
-    public static synchronized ArrayListProductDao getInstance() {
-        if(productDao == null) {
-            productDao = new ArrayListProductDao();
-        }
-        return (ArrayListProductDao) productDao;
-    }
+    private static Lock lock = new ReentrantLock();
 
     private List<Product> productList;
+
+    public static ArrayListProductDao getInstance() {
+        lock.lock();
+        try {
+            if (productDao == null) {
+                productDao = new ArrayListProductDao();
+            }
+            return (ArrayListProductDao) productDao;
+        } finally {
+            lock.unlock();
+        }
+    }
 
     private ArrayListProductDao() {
         productList = new ArrayList<>();
     }
 
     @Override
-    public synchronized Product getProduct(Long id) {
+    public Product getProduct(Long id) {
         return productList.stream()
                 .filter(product -> product.getId().equals(id))
                 .findAny().orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + "not found"));
     }
 
     @Override
-    public synchronized List<Product> findProducts() {
-        return productList.stream().filter(product -> (product.getStock() > 0) && (product.getPrices() != null))
+    public List<Product> findProducts() {
+        return productList.stream().filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public synchronized void save(Product product) {
-        if(!productList.isEmpty() && findProductsWithEqualsId(product)) {
-            throw new IllegalArgumentException("Product with duplication");
-        }
-        else {
-            productList.add(product);
+    public void save(Product product) {
+        lock.lock();
+        try {
+            if (!productList.isEmpty() && findProductsWithEqualsId(product)) {
+                throw new IllegalArgumentException("Product with duplication");
+            } else {
+                productList.add(product);
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
     @Override
-    public synchronized void delete(Long id) {
-        productList.remove(getProduct(id));
+    public void delete(Long id) {
+        lock.lock();
+        try {
+            productList.remove(getProduct(id));
+        } finally {
+            lock.unlock();
+        }
     }
 
     private boolean findProductsWithEqualsId(Product product) {

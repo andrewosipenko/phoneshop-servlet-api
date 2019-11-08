@@ -6,8 +6,8 @@
   <display-name>Phoneshop servlet api training</display-name>
 
   <context-param>
-    <param-name>controlDataListener</param-name>
-    <param-value>listen</param-value>
+    <param-name>dataListenerRegulator</param-name>
+    <param-value>true</param-value>
   </context-param>
 
   <listener>
@@ -45,7 +45,7 @@
   </servlet-mapping>
 
   <error-page>
-    <exception-type>com.es.phoneshop.model.product.ProductNotFoundException</exception-type>
+    <exception-type>com.es.phoneshop.exceptions.ProductNotFoundException</exception-type>
     <location>/WEB-INF/pages/productNotFound.jsp</location>
   </error-page>
 

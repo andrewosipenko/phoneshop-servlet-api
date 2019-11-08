@@ -13,14 +13,14 @@ public class ProductListService {
         return productDao.getProduct(id);
     }
 
-    public List<Product> search(String query) {
+    private List<Product> search(String query) {
         if (query == null || query.equals("")) {
             return productDao.findProducts();
         } else {
             String[] allWordsFromQuery = query.toLowerCase().split("\\s+");
             return productDao.findProducts().stream()
                     .collect(Collectors.toMap(product -> product, product -> Arrays.stream(allWordsFromQuery)
-                    .filter(word -> product.getDescription().toLowerCase().contains(word)).count()))
+                            .filter(word -> product.getDescription().toLowerCase().contains(word)).count()))
                     .entrySet().stream()
                     .filter(map -> map.getValue() > 0)
                     .sorted(Comparator.comparing(Map.Entry<Product, Long>::getValue).reversed())
@@ -31,11 +31,11 @@ public class ProductListService {
 
     public List<Product> findProducts(String query, String sortField, String sortOrder) {
         String sortOptions = sortField + "_" + sortOrder;
-        Comparator<Product> comparator = SortOptions.getComparator(sortOptions);
 
-        if (comparator == null) {
+        if(sortOptions.equals("null_null")) {
             return search(query);
         } else {
+            Comparator<Product> comparator = SortOptions.valueOf(sortOptions.toUpperCase());
             return search(query).stream().sorted(comparator).collect(Collectors.toList());
         }
     }

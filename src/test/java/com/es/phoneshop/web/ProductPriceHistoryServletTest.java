@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,17 +29,19 @@ public class ProductPriceHistoryServletTest {
     @Mock
     private ProductListService productListService;
     @InjectMocks
-    private ProductListPageServlet servlet;
+    private ProductPriceHistoryServlet servlet;
 
     @Before
     public void setup() {
-        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getPathInfo()).thenReturn("/1");
+        when(request.getRequestDispatcher("/WEB-INF/pages/productsPrices.jsp")).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
+        verify(request).setAttribute("product", productListService.getProduct(anyLong()));
         verify(requestDispatcher).forward(request, response);
     }
 }
