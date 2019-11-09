@@ -13,7 +13,7 @@ public class ProductListService {
         return productDao.getProduct(id);
     }
 
-    private List<Product> search(String query) {
+    public List<Product> search(String query) {
         if (query == null || query.equals("")) {
             return productDao.findProducts();
         } else {

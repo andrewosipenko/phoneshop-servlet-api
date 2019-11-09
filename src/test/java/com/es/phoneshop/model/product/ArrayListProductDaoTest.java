@@ -7,14 +7,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArrayListProductDaoTest {
-    private ArrayListProductDao productDao = ArrayListProductDao.getInstance();;
+    private ArrayListProductDao productDao = ArrayListProductDao.getInstance();
 
     @Mock
     private Product product;
@@ -22,8 +20,6 @@ public class ArrayListProductDaoTest {
     private Product product1;
     @Mock
     private Product product2;
-    @Mock
-    private Product product3;
 
     @Before
     public void setup() {
@@ -32,11 +28,9 @@ public class ArrayListProductDaoTest {
         when(product.getId()).thenReturn(0L);
         when(product1.getId()).thenReturn(1L);
         when(product2.getId()).thenReturn(2L);
-        when(product3.getId()).thenReturn(3L);
 
         productDao.save(product);
         productDao.save(product1);
-        productDao.save(product2);
     }
 
     @Test(expected = ProductNotFoundException.class)
@@ -51,16 +45,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProducts() {
-        BigDecimal price = new BigDecimal(1);
-        when(product.getPrice()).thenReturn(price);
-        when(product1.getPrice()).thenReturn(price);
-        when(product2.getPrice()).thenReturn(null);
-
-       when(product.getStock()).thenReturn(1);
-       when(product1.getStock()).thenReturn(0);
-       when(product2.getStock()).thenReturn(1);
-
-        assertEquals(productDao.findProducts().size(), 1);
+        assertEquals(productDao.findProducts().size(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,7 +57,7 @@ public class ArrayListProductDaoTest {
     public void testSave() {
         int oldSize = productDao.getProductList().size();
 
-        productDao.save(product3);
+        productDao.save(product2);
 
         assertEquals(productDao.getProductList().size(), oldSize + 1);
     }

@@ -32,9 +32,14 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Product getProduct(Long id) {
-        return productList.stream()
-                .filter(product -> product.getId().equals(id))
-                .findAny().orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + "not found"));
+        lock.lock();
+        try {
+            return productList.stream()
+                    .filter(product -> product.getId().equals(id))
+                    .findAny().orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + "not found"));
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
