@@ -7,7 +7,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,6 +65,26 @@ public class ProductListServiceTest {
         String query = "Apple";
         assertEquals(productListService.findProducts(query, null, null),
                 productListService.search(query));
+    }
+
+    @Test
+    public void testFindProductsWithFO() {
+        String field = "PRICE";
+        String order = "ASC";
+        Comparator<Product> comparator = SortOptions.valueOf(field + "_" + order);
+
+        List<Product> productList = productListService.findProducts(null, field, order);
+
+        List<Product> products = new ArrayList<>(productList);
+        products.sort(comparator);
+
+        assertEquals(productList, products);
+    }
+
+    @Test
+    public void testSearchProductsWithoutMatches() {
+        String query = "]";
+        assertTrue(productListService.search(query).isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -44,8 +44,13 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public List<Product> findProducts() {
-        return productList.stream().filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
-                .collect(Collectors.toList());
+        lock.lock();
+        try {
+            return productList.stream().filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
+                    .collect(Collectors.toList());
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

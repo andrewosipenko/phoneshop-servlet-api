@@ -32,7 +32,7 @@ public class ProductListService {
     public List<Product> findProducts(String query, String sortField, String sortOrder) {
         String sortOptions = sortField + "_" + sortOrder;
 
-        if(sortOptions.equals("null_null")) {
+        if (sortOptions.equals("null_null")) {
             return search(query);
         } else {
             Comparator<Product> comparator = SortOptions.valueOf(sortOptions.toUpperCase());
