@@ -4,9 +4,6 @@ import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortOrder;
-import com.es.phoneshop.model.recentlyViewed.HttpSessionViewedProductsService;
-import com.es.phoneshop.model.recentlyViewed.RecentlyViewedProducts;
-import com.es.phoneshop.model.recentlyViewed.ViewedProductsService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

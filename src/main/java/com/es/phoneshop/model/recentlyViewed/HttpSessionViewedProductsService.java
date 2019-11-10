@@ -27,7 +27,7 @@ public class HttpSessionViewedProductsService implements ViewedProductsService {
                 request.getSession().getAttribute("viewedProducts");
         if (viewedProducts==null){
             viewedProducts=new RecentlyViewedProducts();
-            request.setAttribute("viewedProducts",viewedProducts);
+            request.getSession().setAttribute("viewedProducts",viewedProducts);
         }
         return viewedProducts;
     }

@@ -39,8 +39,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
         RecentlyViewedProducts viewedProducts=viewedProductsService.getViewedProducts(request);
         viewedProductsService.add(viewedProducts,product);
-        //viewedProducts=viewedProductsService.getViewedProducts(request);
-        request.setAttribute("viewedProducts", viewedProducts);
+        request.getSession().setAttribute("viewedProducts", viewedProducts);
 
         showPage(request,response,product);
     }
