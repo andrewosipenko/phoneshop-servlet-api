@@ -9,6 +9,14 @@
         ${product.description}
     </p>
 
+    <p>
+        <c:if test="${not empty error}">
+            <span style="color:red">Error adding to cart!</span>
+        </c:if>
+        <c:if test="${param.success}">
+            <span style="color:green">Added to cart successfully!</span>
+        </c:if>
+    </p>
     <table>
         <tr>
             <td>Image</td>
@@ -23,6 +31,34 @@
             <td class="price">
                 <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
             </td>
+        </tr>
+    </table>
+    <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
+        <p>
+            <label>Quantity:</label>
+            <input name="quantity" class="price" value="${not empty param.quantity ? param.quantity : 1}">
+            <button>Add to cart</button>
+        </p>
+        <p>
+            <c:if test="${not empty error}">
+                <span style="color:red">${error}</span>
+            </c:if>
+        </p>
+    </form>
+    <c:if test="${not empty viewedProducts}">
+        <h2>Viewed Products</h2>
+    </c:if>
+    <table>
+        <tr>
+            <c:forEach var="product" items="${viewedProducts.viewedProducts}">
+                <td>
+                    <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+                    <br>
+                    <a href="products/${product.id}">${product.description}</a>
+                    <br>
+                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                </td>
+            </c:forEach>
         </tr>
     </table>
 </tags:master>
