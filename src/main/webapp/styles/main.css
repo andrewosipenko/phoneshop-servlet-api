@@ -32,3 +32,11 @@ img.product-tile {
 body.product-list {
 
 }
+
+.message-red{
+  color:red;
+}
+
+.message-green{
+  color: green;
+}

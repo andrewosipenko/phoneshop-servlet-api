@@ -8,9 +8,10 @@ import java.util.List;
 public class RecentlyViewedProducts {
     private List<Product> viewedProducts;
 
-    public RecentlyViewedProducts(){
-        viewedProducts=new ArrayList<>();
+    public RecentlyViewedProducts() {
+        viewedProducts = new ArrayList<>();
     }
+
     public RecentlyViewedProducts(List<Product> viewedProducts) {
         this.viewedProducts = viewedProducts;
     }
@@ -23,7 +24,11 @@ public class RecentlyViewedProducts {
         this.viewedProducts = viewedProducts;
     }
 
-    public void addViewedProduct(Product product){
+    public void addViewedProduct(Product product) {
         viewedProducts.add(product);
+    }
+
+    public void deleteViewedProduct(int index) {
+        viewedProducts.remove(index);
     }
 }

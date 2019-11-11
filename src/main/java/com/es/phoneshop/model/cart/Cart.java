@@ -10,7 +10,7 @@ public class Cart {
     private BigDecimal totalCost;
 
     public Cart() {
-        this.cartItems=new ArrayList<>();
+        this.cartItems = new ArrayList<>();
     }
 
     public List<CartItem> getCartItems() {
@@ -21,7 +21,7 @@ public class Cart {
         this.totalQuantity = totalQuantity;
     }
 
-    public int getTotalQuantity(){
+    public int getTotalQuantity() {
         return totalQuantity;
     }
 

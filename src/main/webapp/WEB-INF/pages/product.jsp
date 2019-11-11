@@ -10,12 +10,14 @@
     </p>
 
     <p>
-        <c:if test="${not empty error}">
-            <span style="color:red">Error adding to cart!</span>
-        </c:if>
-        <c:if test="${param.success}">
-            <span style="color:green">Added to cart successfully!</span>
-        </c:if>
+        <c:choose>
+            <c:when test="${not empty error}">
+                <span class="message-red">Error adding to cart!</span>
+            </c:when>
+            <c:when test="${param.success}">
+                <span class="message-green">Added to cart successfully!</span>
+            </c:when>
+        </c:choose>
     </p>
     <table>
         <tr>

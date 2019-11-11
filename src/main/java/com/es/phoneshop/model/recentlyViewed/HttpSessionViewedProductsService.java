@@ -3,17 +3,20 @@ package com.es.phoneshop.model.recentlyViewed;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class HttpSessionViewedProductsService implements ViewedProductsService {
+    public static final String VIEWED_PRODUCTS = "viewedProducts";
     private static ViewedProductsService viewedProductsService;
 
-    private HttpSessionViewedProductsService(){
+    private HttpSessionViewedProductsService() {
     }
 
-    public static ViewedProductsService getInstance(){
-        if (viewedProductsService==null){
-            synchronized (ViewedProductsService.class){
-                if (viewedProductsService==null) {
+    public static ViewedProductsService getInstance() {
+        if (viewedProductsService == null) {
+            synchronized (ViewedProductsService.class) {
+                if (viewedProductsService == null) {
                     viewedProductsService = new HttpSessionViewedProductsService();
                 }
             }
@@ -23,25 +26,24 @@ public class HttpSessionViewedProductsService implements ViewedProductsService {
 
     @Override
     public RecentlyViewedProducts getViewedProducts(HttpServletRequest request) {
-        RecentlyViewedProducts viewedProducts=(RecentlyViewedProducts)
-                request.getSession().getAttribute("viewedProducts");
-        if (viewedProducts==null){
-            viewedProducts=new RecentlyViewedProducts();
-            request.getSession().setAttribute("viewedProducts",viewedProducts);
+        HttpSession httpSession = request.getSession();
+        RecentlyViewedProducts viewedProducts = (RecentlyViewedProducts)
+                httpSession.getAttribute(VIEWED_PRODUCTS);
+        if (viewedProducts == null) {
+            viewedProducts = new RecentlyViewedProducts();
+            httpSession.setAttribute(VIEWED_PRODUCTS, viewedProducts);
         }
         return viewedProducts;
     }
 
     @Override
-    public void add(RecentlyViewedProducts viewedProducts,Product product) {
-        if (!viewedProducts.getViewedProducts().contains(product)){
-            if (viewedProducts.getViewedProducts().size()<3) {
-                viewedProducts.addViewedProduct(product);
+    public void add(RecentlyViewedProducts viewedProducts, Product product) {
+        List<Product> viewedProductsList=viewedProducts.getViewedProducts();
+        if (!viewedProductsList.contains(product)) {
+            if (viewedProductsList.size() > 2) {
+                viewedProducts.deleteViewedProduct(0);
             }
-            else{
-                viewedProducts.getViewedProducts().remove(0);
-                viewedProducts.addViewedProduct(product);
-            }
+            viewedProducts.addViewedProduct(product);
         }
     }
 }
