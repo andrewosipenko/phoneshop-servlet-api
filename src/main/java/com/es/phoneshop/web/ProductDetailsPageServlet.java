@@ -25,6 +25,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private CartService cartService;
     private ViewedProductsService viewedProductsService;
 
+    private final String PRODUCT = "product";
+    private final String CART = "cart";
+    private final String QUANTITY = "quantity";
+    private final String ERROR = "error";
+
     @Override
     public void init() {
         productDao = ArrayListProductDao.getInstance();
@@ -53,7 +58,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     private void addToCart(HttpServletRequest request, HttpServletResponse response, Product product) throws ServletException, IOException {
-        final String ERROR = "error";
         String error;
         try {
             int quantity = getQuantity(request);
@@ -73,7 +77,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     private int getQuantity(HttpServletRequest request) throws ParseException {
-        final String QUANTITY = "quantity";
         Locale locale = request.getLocale();
         String quantityString = request.getParameter(QUANTITY);
         return NumberFormat.getNumberInstance(locale).parse(quantityString).intValue();
@@ -86,8 +89,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     private void showPage(HttpServletRequest request, HttpServletResponse response, Product product) throws ServletException, IOException {
-        final String PRODUCT = "product";
-        final String CART = "cart";
         request.setAttribute(PRODUCT, product);
         request.setAttribute(CART, cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
