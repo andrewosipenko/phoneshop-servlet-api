@@ -5,7 +5,7 @@ import com.es.phoneshop.model.exception.LackOfStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class HttpSessionCartService implements CartService{
-    private static final CartService INSTANCE = new HttpSessionCartService();
+    private static volatile CartService INSTANCE;
     private static final String CART_ATTRIBUTE = "cart";
     private static final String SUCCESS_PARSING = "success parsing";
     private ProductDao productDao = ArrayListProductDao.getInstance();
@@ -22,15 +22,22 @@ public class HttpSessionCartService implements CartService{
     }
 
     public static CartService getInstance() {
+        if(INSTANCE == null){
+            synchronized (HttpSessionCartService.class){
+                if(INSTANCE == null){
+                    INSTANCE = new HttpSessionCartService();
+                }
+            }
+        }
         return INSTANCE;
     }
 
     @Override
-    public String add(Cart cart, Long productId, String quantity, Locale locale) throws LackOfStockException,
-            IllegalQuantityException, NumberFormatException {
+    public String add(HttpSession session, Cart cart, Long productId, String quantity, Locale locale)
+    throws LackOfStockException, IllegalQuantityException, NumberFormatException {
         Product product = productDao.getProduct(productId);
         String resultOfParsingQuantity = parseQuantity(locale, quantity, product.getStock());
-        if (resultOfParsingQuantity == SUCCESS_PARSING) {
+        if (resultOfParsingQuantity.equals(SUCCESS_PARSING)) {
             int quantityInt = Integer.parseInt(quantity);
             Optional<CartItem> optionalCartItem = cart
                     .getCartItems()
@@ -80,18 +87,18 @@ public class HttpSessionCartService implements CartService{
         int totalQuantity = cart
                 .getCartItems()
                 .stream()
-                .map(cartItem -> cartItem.getQuantity())
+                .map(CartItem::getQuantity)
                 .reduce(Integer::sum)
                 .orElse(0);
         cart.setTotalQuantity(totalQuantity);
     }
 
     @Override
-    public Cart getCart(HttpServletRequest request) {
-        Cart cart = (Cart) request.getSession().getAttribute(CART_ATTRIBUTE);
+    public Cart getCart(HttpSession session) {
+        Cart cart = (Cart) session.getAttribute(CART_ATTRIBUTE);
         if (cart == null) {
             cart = new Cart();
-            request.getSession().setAttribute(CART_ATTRIBUTE, cart);
+            session.setAttribute(CART_ATTRIBUTE, cart);
         }
         return cart;
     }

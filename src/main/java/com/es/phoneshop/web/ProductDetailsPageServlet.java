@@ -1,27 +1,30 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.HttpSessionCartService;
+import com.es.phoneshop.model.exception.IllegalQuantityException;
+import com.es.phoneshop.model.exception.LackOfStockException;
 import com.es.phoneshop.model.product.*;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Deque;
+import java.util.Locale;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
-    private CartService cartService;
     private ViewedProductsService viewedProducts;
     private static final String QUANTITY_PARAMETER = "quantity";
+    private CartService cartService;
 
     @Override
     public void init() {
         productDao = ArrayListProductDao.getInstance();
-        cartService = HttpSessionCartService.getInstance();
         viewedProducts = HttpSessionViewedProductService.getInstance();
+        cartService =  HttpSessionCartService.getInstance();
     }
 
     @Override
@@ -37,10 +40,22 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        int quantity;
+        Cart cart = cartService.getCart(request.getSession());
+        Long productId = extractId(request);
+        String quantity = request.getParameter(QUANTITY_PARAMETER);
+        Locale locale = request.getLocale();
         try {
-            quantity = Integer.parseInt(request.getParameter(QUANTITY_PARAMETER));
-        } catch (NumberFormatException e) {
+            String resultOfAddingProductInCart = cartService.add(request.getSession(), cart, productId, quantity, locale);
+        }  catch (LackOfStockException e) {
+            sendError("Error of stock! Max stock is " + productDao.getProduct(productId).getStock(),
+                    request, response);
+            return;
+        }
+        catch (IllegalQuantityException e) {
+            sendError("Quantity should be greater then 0!", request, response);
+            return;
+        }
+        catch (NumberFormatException e) {
             sendError("Quantity should be a number", request, response);
             return;
         }
@@ -57,5 +72,4 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private Long extractId(HttpServletRequest request){
         return Long.parseLong(request.getPathInfo().replaceAll("/", ""));
     }
-
 }

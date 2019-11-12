@@ -1,12 +1,12 @@
 package com.es.phoneshop.model.product;
+import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.exception.ProductNotFoundException;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static final ProductDao INSTANCE = new ArrayListProductDao();
+    private static volatile ProductDao INSTANCE;
     private static final String PRICE = "price";
     private static final String DESCRIPTION = "description";
     private static final String DESC = "desc";
@@ -22,6 +22,13 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public static ProductDao getInstance() {
+        if(INSTANCE == null){
+            synchronized (HttpSessionCartService.class){
+                if(INSTANCE == null){
+                    INSTANCE = new ArrayListProductDao();
+                }
+            }
+        }
         return INSTANCE;
     }
 
