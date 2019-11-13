@@ -45,8 +45,7 @@
   </servlet-mapping>
 
   <error-page>
-    <exception-type>com.es.phoneshop.exceptions.ProductNotFoundException</exception-type>
+    <error-code>404</error-code>
     <location>/WEB-INF/pages/productNotFound.jsp</location>
   </error-page>
-
 </web-app>
