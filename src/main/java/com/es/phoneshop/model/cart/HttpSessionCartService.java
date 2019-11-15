@@ -5,6 +5,7 @@ import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class HttpSessionCartService implements CartService {
     private static final String CART_ATTRIBUTE = CartService.class + ".cart";
@@ -36,10 +37,57 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public void add(Cart cart, Product product, int quantity) {
-        if (quantity > product.getStock()) {
-            throw new OutOfStockException(product.getStock());
+        Optional<CartItem> optionalCartItem = cart.getCartItems().stream()
+                .filter(cartItem -> product.equals(cartItem.getProduct()))
+                .findFirst();
+        if (optionalCartItem.isPresent()) {
+            CartItem cartItem = optionalCartItem.get();
+            int newQuantity = cartItem.getQuantity() + quantity;
+            if (newQuantity > product.getStock()) {
+                throw new OutOfStockException(product.getStock());
+            }
+            cartItem.setQuantity(newQuantity);
+        } else {
+            if (quantity > product.getStock()) {
+                throw new OutOfStockException(product.getStock());
+            }
+            cart.getCartItems().add(new CartItem(product, quantity));
         }
-        cart.getCartItems().add(new CartItem(product, quantity));
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void update(Cart cart, Product product, int quantity) {
+        Optional<CartItem> optionalCartItem = cart.getCartItems().stream()
+                .filter(cartItem -> product.equals(cartItem.getProduct()))
+                .findFirst();
+        if (optionalCartItem.isPresent()) {
+            CartItem cartItem = optionalCartItem.get();
+            int newQuantity = quantity;
+            if (newQuantity > product.getStock()) {
+                throw new OutOfStockException(product.getStock());
+            }
+            if (newQuantity == 0) {
+                delete(cart, product);
+            } else {
+                cartItem.setQuantity(newQuantity);
+            }
+        } else {
+            if (quantity > product.getStock()) {
+                throw new OutOfStockException(product.getStock());
+            }
+            cart.getCartItems().add(new CartItem(product, quantity));
+        }
+        recalculateTotals(cart);
+    }
+
+    @Override
+    public void delete(Cart cart, Product product) {
+        CartItem cartItemToDelete = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findFirst()
+                .get();
+        cart.getCartItems().remove(cartItemToDelete);
         recalculateTotals(cart);
     }
 

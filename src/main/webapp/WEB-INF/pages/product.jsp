@@ -43,7 +43,7 @@
         </p>
         <p>
             <c:if test="${not empty error}">
-                <span style="color:red">${error}</span>
+                <span class="message-red">${error}</span>
             </c:if>
         </p>
     </form>

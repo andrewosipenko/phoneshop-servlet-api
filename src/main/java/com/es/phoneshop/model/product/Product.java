@@ -1,10 +1,11 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 
-public class Product implements Comparable<Product>{
+public class Product implements Comparable<Product>, Serializable {
     private Long id;
     private String code;
     private String description;
