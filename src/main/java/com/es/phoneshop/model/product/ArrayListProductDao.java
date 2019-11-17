@@ -1,4 +1,5 @@
 package com.es.phoneshop.model.product;
+
 import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.exception.ProductNotFoundException;
 import java.util.*;
@@ -13,8 +14,7 @@ public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
     private Map<String, Comparator<Product>> comparators;
 
-    private ArrayListProductDao()
-    {
+    private ArrayListProductDao() {
         products = new ArrayList<>();
         comparators = new HashMap<>();
         comparators.put(PRICE, Comparator.comparing(Product::getPrice));
@@ -22,9 +22,9 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public static ProductDao getInstance() {
-        if(INSTANCE == null){
-            synchronized (HttpSessionCartService.class){
-                if(INSTANCE == null){
+        if (INSTANCE == null) {
+            synchronized (HttpSessionCartService.class) {
+                if (INSTANCE == null) {
                     INSTANCE = new ArrayListProductDao();
                 }
             }
@@ -37,7 +37,7 @@ public class ArrayListProductDao implements ProductDao {
         return products.stream()
                 .filter(product -> product.getId().equals(id))
                 .findAny()
-                .orElseThrow( () -> new ProductNotFoundException( "Product is not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product is not found"));
     }
 
     @Override
@@ -49,13 +49,12 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void save(Product newProduct) {
-        if (products.stream().anyMatch( product -> product.getId().equals(newProduct.getId()))){
+        if (products.stream().anyMatch(product -> product.getId().equals(newProduct.getId()))) {
             throw new IllegalArgumentException("Product with such id is already exists");
         }
-        if (newProduct != null){
+        if (newProduct != null) {
             products.add(newProduct);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Product or id can not be null");
         }
     }
@@ -69,20 +68,20 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized List<Product> findProductsByDescription(String query){
-    List<String> keywords = Arrays.asList(query.split("\\s"));
-    List<Product> allProducts = findProducts();
-    Map<Product, Integer> mapOfMatches = allProducts.stream()
-            .collect(Collectors.toMap(Function.identity(), product -> (int) keywords.stream()
-                    .filter(product.getDescription()::contains)
-                    .count()));
-       return mapOfMatches.keySet().stream()
-            .filter(product -> mapOfMatches.get(product) > 0)
-            .collect(Collectors.toList());
+    public synchronized List<Product> findProductsByDescription(String query) {
+        List<String> keywords = Arrays.asList(query.split("\\s"));
+        List<Product> allProducts = findProducts();
+        Map<Product, Integer> mapOfMatches = allProducts.stream()
+                .collect(Collectors.toMap(Function.identity(), product -> (int) keywords.stream()
+                        .filter(product.getDescription()::contains)
+                        .count()));
+        return mapOfMatches.keySet().stream()
+                .filter(product -> mapOfMatches.get(product) > 0)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public synchronized List<Product> sort(List<Product> unsortedProducts, String productField, String order){
+    public synchronized List<Product> sort(List<Product> unsortedProducts, String productField, String order) {
         if (productField != null && !productField.isEmpty()) {
             return unsortedProducts.stream()
                     .sorted(getComparator(productField, order))

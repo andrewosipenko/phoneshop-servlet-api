@@ -5,14 +5,17 @@ import com.es.phoneshop.model.exception.LackOfStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
-public class HttpSessionCartService implements CartService{
+public class HttpSessionCartService implements CartService {
     private static volatile CartService INSTANCE;
     private static final String CART_ATTRIBUTE = "cart";
     private static final String SUCCESS_PARSING = "success parsing";
@@ -22,9 +25,9 @@ public class HttpSessionCartService implements CartService{
     }
 
     public static CartService getInstance() {
-        if(INSTANCE == null){
-            synchronized (HttpSessionCartService.class){
-                if(INSTANCE == null){
+        if (INSTANCE == null) {
+            synchronized (HttpSessionCartService.class) {
+                if (INSTANCE == null) {
                     INSTANCE = new HttpSessionCartService();
                 }
             }
@@ -34,7 +37,7 @@ public class HttpSessionCartService implements CartService{
 
     @Override
     public String add(HttpSession session, Cart cart, Long productId, String quantity, Locale locale)
-    throws LackOfStockException, IllegalQuantityException, NumberFormatException {
+            throws LackOfStockException, IllegalQuantityException, NumberFormatException {
         Product product = productDao.getProduct(productId);
         String resultOfParsingQuantity = parseQuantity(locale, quantity, product.getStock());
         if (resultOfParsingQuantity.equals(SUCCESS_PARSING)) {
@@ -58,8 +61,43 @@ public class HttpSessionCartService implements CartService{
         }
     }
 
+    @Override
+    public Map<Long, String> update(HttpSession session, Cart cart, String[] productIds, String[] quantities, Locale locale) {
+        Map<Long, String> errors = new HashMap();
+        for (int i = 0; i < productIds.length; i++) {
+            Product product = productDao.getProduct(Long.valueOf(productIds[i]));
+            String resultOfParsing = parseQuantity(locale, quantities[i], product.getStock());
+            if (resultOfParsing.equals(SUCCESS_PARSING)) {
+                int quantityInt = Integer.parseInt(quantities[i]);
+                cart.getCartItems()
+                        .stream()
+                        .filter(cartItem -> cartItem.getProduct().getId().equals(product.getId()))
+                        .findAny()
+                        .ifPresent(cartItem -> cartItem.setQuantity(quantityInt));
+                calculateTotalQuantity(cart);
+                calculateTotalPrice(cart);
+            } else {
+                errors.put(Long.valueOf(productIds[i]), resultOfParsing);
+            }
+        }
+        return errors;
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId) {
+        int quantity = cart.getCartItems()
+                .stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .findAny()
+                .get()
+                .getQuantity();
+        cart.getCartItems().removeIf(cartItem -> cartItem.getProduct().getId().equals(productId));
+        calculateTotalQuantity(cart);
+        calculateTotalPrice(cart);
+    }
+
     private String parseQuantity(Locale locale, String quantity, int stock) throws LackOfStockException,
-            IllegalQuantityException, NumberFormatException{
+            IllegalQuantityException, NumberFormatException {
         try {
             int quantityInt = Integer.parseInt(String.valueOf(NumberFormat.getInstance(locale).parse(quantity)));
             if (quantityInt < 0) {

@@ -1,3 +1,4 @@
+<%@ attribute name="pageClass" %>
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ attribute name="pageTitle" required="true" %>
 

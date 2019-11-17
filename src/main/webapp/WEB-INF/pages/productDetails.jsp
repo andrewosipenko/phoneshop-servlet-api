@@ -4,6 +4,12 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <tags:master pageTitle="Product List">
+    <p>
+        <jsp:include page="/cart/minicart"/>
+        <c:if test="${not empty errorMessage}">
+            <%@ include file="../fragments/miniCart.jsp" %>
+        </c:if>
+    </p>
     <table>
         <thead>
         <tr>
@@ -43,4 +49,3 @@
 
     <tags:recentlyViewed products="${recentlyViewedProducts}"/>
 </tags:master>
-
