@@ -15,41 +15,50 @@
             </c:when>
         </c:choose>
     </p>
-    <form method="post" action="${pageContext.servletContext.contextPath}/cart">
-        <table>
-            <tr>
-                <td>Image</td>
-                <td>Description</td>
-                <td>Price</td>
-                <td>Quantity</td>
-                <td>Action</td>
-            </tr>
-            <c:forEach var="item" items="${cart.cartItems}" varStatus="status">
-                <c:set var="product" value="${item.product}"/>
-            <tr>
-                <td>
-                    <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-                </td>
-                <td>${product.description}</td>
-                <td class="price">
-                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-                </td>
-                <td>
-                    <input name="quantity" value="${not empty errorMap[product]? paramValues.quantity[status.index] : item.quantity}"/>
-                    <c:if test="${not empty errorMap[product]}">
-                        <span class="message-red">${errorMap[product]}</span>
-                    </c:if>
-                    <input type="hidden" name="productId" value="${product.id}"/>
-                </td>
-                <td>
-                    <button form="deleteCartItem" name="productId" value="${product.id}">Delete</button>
-                </td>
-            </tr>
-            </c:forEach>
-        </table>
-        <br>
-        <button>Update</button>
-    </form>
+    <c:choose>
+        <c:when test="${not empty cart.cartItems}">
+        <form method="post" action="${pageContext.servletContext.contextPath}/cart">
+            <table>
+                <tr>
+                    <td>Image</td>
+                    <td>Description</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Action</td>
+                </tr>
+                <c:forEach var="item" items="${cart.cartItems}" varStatus="status">
+                    <c:set var="product" value="${item.product}"/>
+                <tr>
+                    <td>
+                        <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+                    </td>
+                    <td>${product.description}</td>
+                    <td class="price">
+                        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                    </td>
+                    <td>
+                        <input name="quantity" value="${not empty errorMap[product]? paramValues.quantity[status.index] : item.quantity}"/>
+                        <c:if test="${not empty errorMap[product]}">
+                            <span class="message-red">${errorMap[product]}</span>
+                        </c:if>
+                        <input type="hidden" name="productId" value="${product.id}"/>
+                    </td>
+                    <td>
+                        <button form="deleteCartItem" name="productId" value="${product.id}">Delete</button>
+                    </td>
+                </tr>
+                </c:forEach>
+            </table>
+            <br>
+            <button>Update</button>
+        </form>
+        </c:when>
+        <c:otherwise>
+            <p>
+                Cart is empty!
+            </p>
+        </c:otherwise>
+    </c:choose>
 
     <form id="deleteCartItem" action="${pageContext.servletContext.contextPath}/cart/deleteCartItem" method="post">
     </form>

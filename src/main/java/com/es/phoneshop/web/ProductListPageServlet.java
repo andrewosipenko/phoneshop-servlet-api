@@ -33,6 +33,14 @@ public class ProductListPageServlet extends HttpServlet {
 
        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
    }
+
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
+    }
 }
 
 

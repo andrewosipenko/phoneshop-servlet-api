@@ -33,7 +33,7 @@ public class DeleteCartItemServlet extends HttpServlet {
         Cart cart = cartService.getCart(request);
         cartService.delete(cart, product);
 
-        responce.sendRedirect(request.getContextPath() + "/cart?success=true");
+        responce.sendRedirect(request.getContextPath() + "/cart");
 
     }
 }
