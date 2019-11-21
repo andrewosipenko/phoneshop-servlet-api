@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.recentlyViewed.RecentlyViewedProducts;
@@ -18,14 +19,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsPageServletTest {
@@ -56,6 +57,7 @@ public class ProductDetailsPageServletTest {
         httpSession = Mockito.mock(HttpSession.class);
         when(request.getSession()).thenReturn(httpSession);
     }
+
     @Test
     public void testDoGet() throws ServletException, IOException {
         when(request.getRequestURI()).thenReturn("/11");
@@ -69,11 +71,11 @@ public class ProductDetailsPageServletTest {
         when(cartService.getCart(request)).thenReturn(cart);
         when(viewedProductsService.getViewedProducts(request)).thenReturn(viewedProducts);
 
-        servlet.doGet(request,response);
+        servlet.doGet(request, response);
 
         verify(httpSession).setAttribute("viewedProducts", viewedProducts);
         verify(request).setAttribute("product", product);
-        verify(request).setAttribute("cart",cart);
+        verify(request).setAttribute("cart", cart);
         verify(requestDispatcher).forward(request, response);
     }
 
@@ -90,7 +92,7 @@ public class ProductDetailsPageServletTest {
         when(productDao.getProduct(11L)).thenReturn(product);
         when(cartService.getCart(request)).thenReturn(cart);
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
         verify(response).sendRedirect(anyString());
     }
@@ -108,32 +110,32 @@ public class ProductDetailsPageServletTest {
         when(productDao.getProduct(11L)).thenReturn(product);
         when(cartService.getCart(request)).thenReturn(cart);
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
         verify(request).setAttribute("error", "Not a number");
         verify(request).setAttribute("product", product);
-        verify(request).setAttribute("cart",cart);
+        verify(request).setAttribute("cart", cart);
         verify(requestDispatcher).forward(request, response);
     }
 
     @Test
     public void testDoPostWithOutOfStockError() throws ServletException, IOException {
+        CartService cartService = HttpSessionCartService.getInstance();
+        servlet.setCartService(cartService);
+
         when(request.getLocale()).thenReturn(new Locale("en"));
         when(request.getRequestURI()).thenReturn("/11");
         when(request.getParameter("quantity")).thenReturn("999");
 
-        Cart cart = new Cart();
         Currency usd = Currency.getInstance("USD");
         Product product = new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg");
 
         when(productDao.getProduct(11L)).thenReturn(product);
-        when(cartService.getCart(request)).thenReturn(cart);
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
-        verify(request).setAttribute("error", "Not enough stock. Available "+product.getStock());
+        verify(request).setAttribute("error", "Not enough stock. Available " + product.getStock());
         verify(request).setAttribute("product", product);
-        verify(request).setAttribute("cart",cart);
         verify(requestDispatcher).forward(request, response);
     }
 }

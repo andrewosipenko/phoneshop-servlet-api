@@ -34,14 +34,14 @@ public class ProductListPageServletTest {
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
-    public void setup(){
+    public void setup() {
         servlet.setProductDao(productDao);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-        List<Product> products=new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         when(request.getAttribute("products")).thenReturn(products);
         servlet.doGet(request, response);
 

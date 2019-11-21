@@ -9,12 +9,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -49,7 +46,7 @@ public class DeleteCartItemServletTest {
     public void testDoPostSuccessfully() throws IOException {
         when(request.getParameter("productId")).thenReturn("1");
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
         verify(request).getParameter("productId");
         verify(response).sendRedirect(anyString());

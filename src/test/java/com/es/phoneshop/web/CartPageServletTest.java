@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import org.junit.Before;
@@ -59,21 +60,21 @@ public class CartPageServletTest {
         Cart cart = new Cart();
         when(cartService.getCart(request)).thenReturn(cart);
 
-        servlet.doGet(request,response);
+        servlet.doGet(request, response);
 
         verify(request).setAttribute("cart", cart);
-        verify(requestDispatcher).forward(request,response);
+        verify(requestDispatcher).forward(request, response);
     }
 
     @Test
     public void testDoPostSuccessfully() throws ServletException, IOException {
         when(request.getParameterValues("productId")).thenReturn(new String[]{"1", "2"});
-        when(request.getParameterValues("quantity")).thenReturn(new String[]{"1","1"});
+        when(request.getParameterValues("quantity")).thenReturn(new String[]{"1", "1"});
 
         when(cartService.getCart(request)).thenReturn(new Cart());
         when(request.getLocale()).thenReturn(new Locale("en"));
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
         verify(response).sendRedirect(anyString());
     }
@@ -82,44 +83,47 @@ public class CartPageServletTest {
     public void testDoPostWithNotANumberError() throws ServletException, IOException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        Cart cart= new Cart();
-        Map<Product, String> errorMap= new HashMap<>();
-        errorMap.put(product,"Not a number");
+        Cart cart = new Cart();
+        Map<Product, String> errorMap = new HashMap<>();
+        errorMap.put(product, "Not a number");
 
         when(request.getParameterValues("productId")).thenReturn(new String[]{"1", "2"});
-        when(request.getParameterValues("quantity")).thenReturn(new String[]{"eee","1"});
+        when(request.getParameterValues("quantity")).thenReturn(new String[]{"eee", "1"});
 
         when(productDao.getProduct(1L)).thenReturn(product);
         when(cartService.getCart(request)).thenReturn(cart);
         when(request.getLocale()).thenReturn(new Locale("en"));
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
         verify(request).setAttribute("errorMap", errorMap);
         verify(request).setAttribute("cart", cart);
-        verify(requestDispatcher).forward(request,response);
+        verify(requestDispatcher).forward(request, response);
     }
 
     @Test
     public void testDoPostWithOutOfStockError() throws ServletException, IOException {
+        CartService cartService = HttpSessionCartService.getInstance();
+        servlet.setCartService(cartService);
+
         Currency usd = Currency.getInstance("USD");
-        Product product = new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        Cart cart= new Cart();
-        Map<Product, String> errorMap= new HashMap<>();
-        errorMap.put(product,"Not enough stock. Available "+product.getStock());
+        Product product1 = new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product2 = new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg");
+
+        Map<Product, String> errorMap = new HashMap<>();
+        errorMap.put(product1, "Not enough stock. Available " + product1.getStock());
 
         when(request.getParameterValues("productId")).thenReturn(new String[]{"1", "2"});
-        when(request.getParameterValues("quantity")).thenReturn(new String[]{"100000","1"});
+        when(request.getParameterValues("quantity")).thenReturn(new String[]{"100000", "1"});
 
-        when(productDao.getProduct(1L)).thenReturn(product);
-        when(cartService.getCart(request)).thenReturn(cart);
+        when(productDao.getProduct(1L)).thenReturn(product1);
+        when(productDao.getProduct(2L)).thenReturn(product2);
         when(request.getLocale()).thenReturn(new Locale("en"));
 
-        servlet.doPost(request,response);
+        servlet.doPost(request, response);
 
         verify(request).setAttribute("errorMap", errorMap);
-        verify(request).setAttribute("cart", cart);
-        verify(requestDispatcher).forward(request,response);
+        verify(requestDispatcher).forward(request, response);
     }
 
 

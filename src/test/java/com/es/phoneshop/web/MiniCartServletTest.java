@@ -36,7 +36,7 @@ public class MiniCartServletTest {
     private MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
-    public void setUp(){
+    public void setUp() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         httpSession = Mockito.mock(HttpSession.class);
         when(request.getSession()).thenReturn(httpSession);
