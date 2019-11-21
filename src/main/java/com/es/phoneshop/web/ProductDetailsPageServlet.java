@@ -93,4 +93,28 @@ public class ProductDetailsPageServlet extends HttpServlet {
         request.setAttribute(CART, cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
+
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
+    }
+
+    public CartService getCartService() {
+        return cartService;
+    }
+
+    public void setCartService(CartService cartService) {
+        this.cartService = cartService;
+    }
+
+    public ViewedProductsService getViewedProductsService() {
+        return viewedProductsService;
+    }
+
+    public void setViewedProductsService(ViewedProductsService viewedProductsService) {
+        this.viewedProductsService = viewedProductsService;
+    }
 }

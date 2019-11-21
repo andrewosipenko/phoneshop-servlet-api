@@ -26,14 +26,29 @@ public class DeleteCartItemServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse responce) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String productId = request.getParameter(PRODUCT_ID);
         Product product = productDao.getProduct(Long.valueOf(productId));
 
         Cart cart = cartService.getCart(request);
         cartService.delete(cart, product);
 
-        responce.sendRedirect(request.getContextPath() + "/cart");
+        response.sendRedirect(request.getContextPath() + "/cart");
+    }
 
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
+    }
+
+    public CartService getCartService() {
+        return cartService;
+    }
+
+    public void setCartService(CartService cartService) {
+        this.cartService = cartService;
     }
 }

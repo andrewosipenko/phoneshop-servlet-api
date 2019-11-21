@@ -84,4 +84,20 @@ public class CartPageServlet extends HttpServlet {
     private int getQuantity(Locale locale, String quantityString) throws ParseException {
         return NumberFormat.getNumberInstance(locale).parse(quantityString).intValue();
     }
+
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
+    }
+
+    public CartService getCartService() {
+        return cartService;
+    }
+
+    public void setCartService(CartService cartService) {
+        this.cartService = cartService;
+    }
 }
