@@ -18,28 +18,30 @@
     <c:choose>
         <c:when test="${not empty cart.cartItems}">
             <form method="post" action="${pageContext.servletContext.contextPath}/cart">
-                <table>
+                <table class="table table-bordered">
+                    <thead>
                     <tr>
-                        <td>Image</td>
-                        <td>Description</td>
-                        <td>Price</td>
-                        <td>Quantity</td>
-                        <td>Action</td>
+                        <th scope="col">Image</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Action</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <c:forEach var="item" items="${cart.cartItems}" varStatus="status">
-                        <c:set var="product" value="${item.product}"/>
+                    <c:set var="product" value="${item.product}"/>
                         <tr>
                             <td>
                                 <img class="product-tile"
                                      src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
                             </td>
                             <td>${product.description}</td>
-                            <td class="price">
-                                <fmt:formatNumber value="${product.price}" type="currency"
-                                                  currencySymbol="${product.currency.symbol}"/>
-                            </td>
                             <td>
-                                <input name="quantity"
+                                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/></td>
+                            <td>
+
+                                <input type="text" class="form-control" name="quantity"
                                        value="${not empty errorMap[product]? paramValues.quantity[status.index] : item.quantity}"/>
                                 <c:if test="${not empty errorMap[product]}">
                                     <span class="message-red">${errorMap[product]}</span>
@@ -47,13 +49,13 @@
                                 <input type="hidden" name="productId" value="${product.id}"/>
                             </td>
                             <td>
-                                <button form="deleteCartItem" name="productId" value="${product.id}">Delete</button>
+                                <button class="btn btn-dark" form="deleteCartItem" name="productId" value="${product.id}">Delete</button>
                             </td>
                         </tr>
                     </c:forEach>
+                    </tbody>
                 </table>
-                <br>
-                <button>Update</button>
+                <button class="btn btn-dark" style="margin-left: 1%;">Update</button>
             </form>
         </c:when>
         <c:otherwise>

@@ -8,57 +8,55 @@
 <jsp:useBean id="priceHistory" class="com.es.phoneshop.model.product.PriceHistory"/>
 
 <tags:master pageTitle="Product List">
-  <p>
+  <h1 class="display-4">
     Welcome to Expert-Soft training!
-  </p>
+  </h1>
   <form>
-    <label>
-      <input name="query" value="${param.query}">
-    </label>
-    <button>Search</button>
+    <div class="form-row">
+      <div class="col-3">
+        <input type="text" class="form-control" placeholder="${param.query}" name="query" value="${param.query}">
+      </div>
+      <div class="col-3">
+        <button class="btn btn-dark" method="get">Search</button>
+      </div>
+    </div>
   </form>
-  <table>
-    <thead>
-      <tr>
-        <td>Image</td>
-        <td>Description
+  <div class="row">
+    <div class="col-3">
+      <ul class="list-group">
+        <li class="list-group-item">Sort by</li>
+        <li class="list-group-item">Description:
           <tags:sort sort="description" order="asc"/>
           <tags:sort sort="description" order="desc"/>
-        </td>
-        <td class="price">Price
+        </li>
+        <li class="list-group-item">Price:
           <tags:sort sort="price" order="asc"/>
           <tags:sort sort="price" order="desc"/>
-        </td>
-      </tr>
-    </thead>
-    <c:forEach var="product" items="${products}">
-      <tr>
-        <td>
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-        </td>
-        <td>
-            <a href="products/${product.id}">${product.description}</a>
-        </td>
-        <td class="price">
-          <div>
-            <a href="#popup${product.id}">
+        </li>
+      </ul>
+    </div>
+  <div class="col-8">
+    <div class="row">
+      <c:forEach var="product" items="${products}">
+        <div class="card col-4">
+          <img
+                  src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}"
+                  class="card-img-top"
+                  alt="..."
+          />
+          <div class="card-body">
+            <h5 class="card-title"><a href="products/${product.id}">${product.description}</a></h5>
+            <p class="card-text">
+              <c:forEach var="priceHistory" items="${product.priceHistoryArrayList}">
+                ${priceHistory.getStringDate()}:  ${priceHistory.price} ${priceHistory.currency}<br>
+              </c:forEach>
+            </p>
+            <p class="btn btn-primary">
               <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-            </a>
+            </p>
           </div>
-          <div id="popup${product.id}" class="overlay">
-            <div class="popup">
-              <h2>Price history</h2>
-              <h1>${product.description}</h1>
-              <a class="close" href="#">&times;</a>
-              <div class="content">
-                <c:forEach var="priceHistory" items="${product.priceHistoryArrayList}">
-                  <li>${priceHistory.getStringDate()}:  ${priceHistory.price} ${priceHistory.currency}</li>
-                </c:forEach>
-              </div>
-            </div>
-          </div>
-            </td>
-      </tr>
-    </c:forEach>
-  </table>
+        </div>
+      </c:forEach>
+    </div>
+  </div>
 </tags:master>

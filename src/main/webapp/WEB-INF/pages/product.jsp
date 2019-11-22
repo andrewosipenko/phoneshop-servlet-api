@@ -5,9 +5,9 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Detail">
-    <p>
+    <h3>
         ${product.description}
-    </p>
+    </h3>
 
     <p>
         <c:choose>
@@ -19,28 +19,36 @@
             </c:when>
         </c:choose>
     </p>
-    <table>
+    <table class="table table-bordered" style="width:50%;">
+        <thead>
         <tr>
-            <td>Image</td>
-            <td>Description</td>
-            <td>Price</td>
+            <th scope="col">Image</th>
+            <th scope="col">Description</th>
+            <th scope="col">Price</th>
         </tr>
+        </thead>
+        <tbody>
         <tr>
-            <td>
+            <th scope="row">
                 <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-            </td>
+            </th>
             <td>${product.description}</td>
-            <td class="price">
-                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-            </td>
+            <td><fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/></td>
         </tr>
+        </tbody>
     </table>
     <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
-        <p>
-            <label>Quantity:</label>
-            <input name="quantity" class="price" value="${not empty param.quantity ? param.quantity : 1}">
-            <button>Add to cart</button>
-        </p>
+        <div class="form-row">
+            <div class="col-1" style="margin-left:10px;">
+                <p>Quantity:</p>
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" name="quantity" value="${not empty param.quantity ? param.quantity : 1}">
+            </div>
+            <div class="col-3">
+                <button class="btn btn-dark">Add to cart</button>
+            </div>
+        </div>
         <p>
             <c:if test="${not empty error}">
                 <span class="message-red">${error}</span>
@@ -48,19 +56,25 @@
         </p>
     </form>
     <c:if test="${not empty viewedProducts}">
-        <h2>Viewed Products</h2>
+        <h3>Viewed Products</h3>
     </c:if>
-    <table>
-        <tr>
+    <div class="col-9">
+        <div class="row">
             <c:forEach var="product" items="${viewedProducts.viewedProducts}">
-                <td>
-                    <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-                    <br>
-                    <a href="products/${product.id}">${product.description}</a>
-                    <br>
-                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-                </td>
+                <div class="card col-3">
+                    <img
+                            src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}"
+                            class="rounded mx-auto d-block"
+                            alt="..."
+                    />
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="products/${product.id}">${product.description}</a></h5>
+                        <p class="btn btn-primary">
+                            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                        </p>
+                    </div>
+                </div>
             </c:forEach>
-        </tr>
-    </table>
+        </div>
+    </div>
 </tags:master>
