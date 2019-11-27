@@ -84,16 +84,8 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public void delete(Cart cart, Long productId) {
-        int quantity = cart.getCartItems()
-                .stream()
-                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                .findAny()
-                .get()
-                .getQuantity();
-        cart.getCartItems().removeIf(cartItem -> cartItem.getProduct().getId().equals(productId));
-        calculateTotalQuantity(cart);
-        calculateTotalPrice(cart);
+    public void delete(Cart cart, Product product) {
+        cart.getCartItems().removeIf(cartItem -> cartItem.getProduct().equals(product));
     }
 
     private String parseQuantity(Locale locale, String quantity, int stock) throws LackOfStockException,

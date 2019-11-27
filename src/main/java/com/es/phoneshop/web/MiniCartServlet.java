@@ -10,17 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MiniCartServlet extends HttpServlet {
+    public static final String MINI_CART = "miniCart";
     private CartService cartService;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
+        super.init();
         cartService = HttpSessionCartService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("miniCart", new MiniCart(cartService.getCart(request.getSession())));
+        request.setAttribute(MINI_CART, new MiniCart(cartService.getCart(request.getSession())));
         request.getRequestDispatcher("/WEB-INF/fragments/miniCart.jsp").include(request, response);
     }
 }

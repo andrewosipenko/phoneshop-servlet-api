@@ -49,11 +49,12 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void save(Product newProduct) {
-        if (products.stream().anyMatch(product -> product.getId().equals(newProduct.getId()))) {
-            throw new IllegalArgumentException("Product with such id is already exists");
-        }
-        if (newProduct != null) {
-            products.add(newProduct);
+        if (newProduct != null && newProduct.getId() != null) {
+            if (products.stream().anyMatch(product -> product.getId().equals(newProduct.getId()))) {
+                throw new IllegalArgumentException("Product with such id is already exists");
+            } else {
+                products.add(newProduct);
+            }
         } else {
             throw new IllegalArgumentException("Product or id can not be null");
         }

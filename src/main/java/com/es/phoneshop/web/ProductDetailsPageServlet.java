@@ -15,13 +15,17 @@ import java.util.Deque;
 import java.util.Locale;
 
 public class ProductDetailsPageServlet extends HttpServlet {
+    public static final String VIEWED_PRODUCTS = "viewedProducts";
+    public static final String PRODUCT = "product";
+    public static final String ERROR_MESSAGE = "errorMessage";
     private ProductDao productDao;
     private ViewedProductsService viewedProducts;
     private static final String QUANTITY_PARAMETER = "quantity";
     private CartService cartService;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
+        super.init();
         productDao = ArrayListProductDao.getInstance();
         viewedProducts = HttpSessionViewedProductService.getInstance();
         cartService =  HttpSessionCartService.getInstance();
@@ -31,9 +35,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = productDao.getProduct(extractId(request));
         Deque<Product> dequeViewedProducts = viewedProducts.getViewedProducts(request.getSession());
-        request.setAttribute("viewedProducts", dequeViewedProducts);
+        request.setAttribute(VIEWED_PRODUCTS, dequeViewedProducts);
         viewedProducts.addViewedProducts(viewedProducts.getViewedProducts(request.getSession()), product);
-        request.setAttribute("product", productDao.getProduct(extractId(request)));
+        request.setAttribute(PRODUCT, productDao.getProduct(extractId(request)));
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
 
@@ -64,7 +68,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     private void sendError(String message, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("errorMessage", message);
+        request.setAttribute(ERROR_MESSAGE, message);
         request.setAttribute(QUANTITY_PARAMETER, request.getParameter(QUANTITY_PARAMETER));
         doGet(request, response);
     }

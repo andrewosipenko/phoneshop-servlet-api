@@ -3,11 +3,9 @@ package com.es.phoneshop.model.product;
 import com.es.phoneshop.model.exception.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class ArrayListProductDaoTest

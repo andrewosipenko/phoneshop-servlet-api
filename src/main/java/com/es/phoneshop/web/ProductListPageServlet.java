@@ -17,17 +17,19 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String SEARCH = "search";
     private static final String SORT_BY = "sortBy";
     private static final String ORDER = "order";
+    public static final String PRODUCTS = "products";
     private ProductDao productDao;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
+        super.init();
         productDao = ArrayListProductDao.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("products", getProducts(request));
+        request.setAttribute(PRODUCTS, getProducts(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

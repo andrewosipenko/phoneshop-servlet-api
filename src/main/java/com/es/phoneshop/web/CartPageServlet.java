@@ -16,11 +16,19 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class CartPageServlet extends HttpServlet {
+    public static final String PRODUCT_ID = "productId";
+    public static final String QUANTITY = "quantity";
+    public static final String CART = "cart";
+    public static final String ERRORS = "errors";
+    public static final String QUANTITIES = "quantities";
+    public static final String SUCCESS = "success";
+    public static final String SUCCESS_TRUE = "?success=true";
     private ProductDao productDao;
     private CartService cartService;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
+        super.init();
         productDao = ArrayListProductDao.getInstance();
         cartService = HttpSessionCartService.getInstance();
     }
@@ -28,23 +36,24 @@ public class CartPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("cart", cartService.getCart(request.getSession()));
+        request.setAttribute(CART, cartService.getCart(request.getSession()));
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws
+            IOException, ServletException {
         boolean isSuccessful = updateCart(request);
         if (isSuccessful) {
-            response.sendRedirect(request.getRequestURI() + "?success=true");
+            response.sendRedirect(request.getRequestURI() + SUCCESS_TRUE);
         } else {
             doGet(request, response);
         }
     }
 
     private boolean updateCart(HttpServletRequest request) {
-        String[] productsIds = request.getParameterValues("productId");
-        String[] quantities = request.getParameterValues("quantity");
+        String[] productsIds = request.getParameterValues(PRODUCT_ID);
+        String[] quantities = request.getParameterValues(QUANTITY);
         String[] errors = new String[productsIds.length];
         Cart cart = cartService.getCart(request.getSession());
         for (int i = 0; i < productsIds.length; i++) {
@@ -60,9 +69,9 @@ public class CartPageServlet extends HttpServlet {
         if (isSuccessful) {
             cartService.calculateTotalPrice(cart);
         } else {
-            request.setAttribute("errors", errors);
-            request.setAttribute("quantities", quantities);
-            request.setAttribute("success", isSuccessful);
+            request.setAttribute(ERRORS, errors);
+            request.setAttribute(QUANTITIES, quantities);
+            request.setAttribute(SUCCESS, isSuccessful);
         }
         return isSuccessful;
     }

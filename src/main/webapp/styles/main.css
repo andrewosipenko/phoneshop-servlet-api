@@ -28,6 +28,26 @@ img.product-tile {
   max-width: 64px;
 }
 
+.quantity {
+  text-align: right;
+}
+
+.cart {
+  float: right;
+}
+
+.class-color-green{
+  color: green;
+}
+
+.class-color-red{
+  color: red;
+}
+
+.class-color-black{
+  color: black;
+}
+
 /* Page specific styles */
 body.product-list {
 

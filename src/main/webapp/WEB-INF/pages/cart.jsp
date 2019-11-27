@@ -7,17 +7,13 @@
 
 <tags:master pageTitle="Cart">
     <c:if test="${not empty paramValues.success}">
-        <p>
-            <span style="color: green">Successfully updated</span>
-        </p>
+            <p class = "class-color-green">Successfully updated</p>
     </c:if>
     <c:if test="${not empty success}">
-        <p>
-            <span style="color: red">Updating error</span>
-        </p>
+            <p class ="class-color-red">Updating error</p>
     </c:if>
-
     <form method="post">
+        <c:if test ="${cart.totalQuantity!=0}">
         <table>
             <thead>
             <tr>
@@ -38,7 +34,6 @@
                 </td>
             </tr>
             </thead>
-
             <c:forEach var="cartItem" items="${cart.cartItems}" varStatus="status">
                 <tr>
                     <td>
@@ -51,12 +46,12 @@
                         <a href="${productUrl}">${cartItem.product.description}</a>
                     </td>
                     <td>
-                        <input name="quantity" style="text-align: right" value="${empty errors[status.index]
+                        <input name="quantity" class="quantity" value="${empty errors[status.index]
                                                                     ? cartItem.quantity
                                                                     : quantities[status.index]}"/>
                         <c:if test="${errors[status.index] ne null}">
                             <br>
-                            <span style="color: red">${errors[status.index]}</span>
+                            <p class = "class-color-red">${errors[status.index]}</p>
                         </c:if>
                     </td>
                     <td class="price">
@@ -71,7 +66,7 @@
             </c:forEach>
 
             <tr>
-                <td colspan="3" style="text-align: right">
+                <td colspan="3" class="price">
                     Price:
                 </td>
                 <td>
@@ -79,10 +74,13 @@
                 </td>
             </tr>
         </table>
-
         <p>
             <c:url value="/cart" var="updateUrl"/>
             <button formaction="${updateUrl}">Update</button>
         </p>
+        </c:if>
+        <c:if test="${cart.totalQuantity == 0}">
+            <p class = "class-color-black">Your cart is empthy!</p>
+        </c:if>
     </form>
 </tags:master>
