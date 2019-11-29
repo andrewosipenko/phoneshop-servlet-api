@@ -91,6 +91,12 @@ public class HttpSessionCartService implements CartService {
         recalculateTotals(cart);
     }
 
+    @Override
+    public void clear(Cart cart) {
+        cart.getCartItems().clear();
+        recalculateTotals(cart);
+    }
+
     private void recalculateTotals(Cart cart) {
         cart.setTotalQuantity((int) cart.getCartItems().stream()
                 .mapToInt(CartItem::getQuantity)

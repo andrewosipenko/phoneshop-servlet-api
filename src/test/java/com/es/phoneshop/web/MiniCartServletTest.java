@@ -6,14 +6,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,8 +27,6 @@ public class MiniCartServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private HttpSession httpSession;
-    @Mock
     private CartService cartService;
 
     private MiniCartServlet servlet = new MiniCartServlet();
@@ -38,8 +34,6 @@ public class MiniCartServletTest {
     @Before
     public void setUp() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        httpSession = Mockito.mock(HttpSession.class);
-        when(request.getSession()).thenReturn(httpSession);
         servlet.setCartService(cartService);
     }
 
@@ -48,7 +42,6 @@ public class MiniCartServletTest {
         Cart cart = new Cart();
 
         when(cartService.getCart(request)).thenReturn(cart);
-        when(httpSession.getAttribute("cart")).thenReturn(cart);
 
         servlet.doGet(request, response);
 

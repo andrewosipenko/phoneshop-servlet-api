@@ -57,6 +57,12 @@
                 </table>
                 <button class="btn btn-dark" style="margin-left: 1%;">Update</button>
             </form>
+            <br>
+            <form action="${pageContext.servletContext.contextPath}/checkout" method="get">
+                <button class="btn btn-dark" style="margin-left: 1%;">
+                    Go to checkout page
+                </button>
+            </form>
         </c:when>
         <c:otherwise>
             <p>

@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.order.Order;
+import com.es.phoneshop.model.order.OrderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,39 +13,40 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class OrderOverviewPageServletTest {
     @Mock
-    private HttpServletRequest request;
+    HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private ProductDao productDao;
+    private OrderService orderService;
 
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private OrderOverviewPageServlet servlet = new OrderOverviewPageServlet();
 
     @Before
-    public void setup() {
-        servlet.setProductDao(productDao);
+    public void setUp() {
+        servlet.setOrderService(orderService);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
-        List<Product> products = new ArrayList<>();
+    public void testDoGetSuccessfully() throws ServletException, IOException {
+        when(request.getRequestURI()).thenReturn("/123");
+
+        Order order = new Order();
+        when(orderService.getOrder(anyString())).thenReturn(order);
 
         servlet.doGet(request, response);
 
-        verify(request).setAttribute("products", products);
+        verify(request).setAttribute("order", order);
         verify(requestDispatcher).forward(request, response);
     }
 

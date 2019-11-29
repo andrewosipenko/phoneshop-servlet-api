@@ -6,12 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -26,8 +24,6 @@ public class DeleteCartItemServletTest {
     @Mock
     private HttpServletResponse response;
     @Mock
-    private HttpSession httpSession;
-    @Mock
     private CartService cartService;
     @Mock
     private ProductDao productDao;
@@ -38,8 +34,6 @@ public class DeleteCartItemServletTest {
     public void setUp() {
         servlet.setCartService(cartService);
         servlet.setProductDao(productDao);
-        httpSession = Mockito.mock(HttpSession.class);
-        when(request.getSession()).thenReturn(httpSession);
     }
 
     @Test
