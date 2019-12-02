@@ -24,6 +24,10 @@ public class CheckoutPageServlet extends HttpServlet {
     private CartService cartService;
     private OrderService orderService;
 
+    private static final String WEB_INF_PAGES_CHECKOUT_JSP = "/WEB-INF/pages/checkout.jsp";
+
+    private static final String PHONE_FORMAT = "\\d{7,12}";
+
     private static final String ORDER = "order";
     private static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "lastName";
@@ -46,7 +50,7 @@ public class CheckoutPageServlet extends HttpServlet {
 
         request.setAttribute(ORDER, order);
 
-        request.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(request, response);
+        request.getRequestDispatcher(WEB_INF_PAGES_CHECKOUT_JSP).forward(request, response);
     }
 
     @Override
@@ -55,38 +59,57 @@ public class CheckoutPageServlet extends HttpServlet {
         Order order = orderService.getOrder(cart);
 
         Map<String, String> errorMap = new HashMap<>();
+        Map<String, String> paramMap = new HashMap<>();
 
-        String firstName = getRequiredParameter(request, FIRST_NAME, errorMap);
-        String lastName = getRequiredParameter(request, LAST_NAME, errorMap);
-
-        String phone = getRequiredParameter(request, PHONE, errorMap);
-        validatePhone(phone, errorMap);
+        getRequiredParameters(request, paramMap, errorMap);
 
         Date deliveryDate = validateDeliveryDate(request, DELIVERY_DATE, errorMap);
-
-        String deliveryAddress = getRequiredParameter(request, DELIVERY_ADDRESS, errorMap);
-
         PaymentMethod paymentMethod = getPaymentMethod(request, PAYMENT_METHOD);
 
         if (!errorMap.isEmpty()) {
             request.setAttribute(ERROR_MAP, errorMap);
             request.setAttribute(ORDER, order);
-            request.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(request, response);
+            request.getRequestDispatcher(WEB_INF_PAGES_CHECKOUT_JSP).forward(request, response);
             return;
         }
 
-        order.setFirstName(firstName);
-        order.setLastName(lastName);
-        order.setPhone(phone);
-        order.setDeliveryDate(deliveryDate);
-        order.setDeliveryAddress(deliveryAddress);
-        order.setPaymentMethod(paymentMethod);
+        setOrderParams(order, paramMap, deliveryDate, paymentMethod);
 
         String secureId = orderService.placeOrder(order);
 
         cartService.clear(cart);
 
         response.sendRedirect(request.getContextPath() + "/orderoverview/" + secureId);
+    }
+
+    private void getRequiredParameters(HttpServletRequest request, Map<String, String> paramMap, Map<String, String> errorMap) {
+        setParamMapKeys(paramMap);
+        for (String paramName : paramMap.keySet()) {
+            String param;
+            if (paramName.equals(PHONE)) {
+                param = getRequiredParameter(request, PHONE, errorMap);
+                validatePhone(param, errorMap);
+            } else {
+                param = getRequiredParameter(request, paramName, errorMap);
+            }
+            paramMap.put(paramName, param);
+        }
+    }
+
+    private void setParamMapKeys(Map<String, String> paramMap) {
+        paramMap.put(FIRST_NAME, "");
+        paramMap.put(LAST_NAME, "");
+        paramMap.put(PHONE, "");
+        paramMap.put(DELIVERY_ADDRESS, "");
+    }
+
+    private void setOrderParams(Order order, Map<String, String> paramMap, Date deliveryDate, PaymentMethod paymentMethod) {
+        order.setFirstName(paramMap.get(FIRST_NAME));
+        order.setLastName(paramMap.get(LAST_NAME));
+        order.setPhone(paramMap.get(PHONE));
+        order.setDeliveryDate(deliveryDate);
+        order.setDeliveryAddress(paramMap.get(DELIVERY_ADDRESS));
+        order.setPaymentMethod(paymentMethod);
     }
 
 
@@ -104,7 +127,7 @@ public class CheckoutPageServlet extends HttpServlet {
     }
 
     private void validatePhone(String phone, Map<String, String> errorMap) {
-        boolean result = phone.matches("\\d{7,12}");
+        boolean result = phone.matches(PHONE_FORMAT);
         if (!result) {
             errorMap.put(PHONE, "invalid phone number");
         }

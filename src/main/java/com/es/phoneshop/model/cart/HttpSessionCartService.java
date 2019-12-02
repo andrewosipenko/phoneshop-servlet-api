@@ -63,14 +63,13 @@ public class HttpSessionCartService implements CartService {
                 .findFirst();
         if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();
-            int newQuantity = quantity;
-            if (newQuantity > product.getStock()) {
+            if (quantity > product.getStock()) {
                 throw new OutOfStockException(product.getStock());
             }
-            if (newQuantity == 0) {
+            if (quantity == 0) {
                 delete(cart, product);
             } else {
-                cartItem.setQuantity(newQuantity);
+                cartItem.setQuantity(quantity);
             }
         } else {
             if (quantity > product.getStock()) {
@@ -98,7 +97,7 @@ public class HttpSessionCartService implements CartService {
     }
 
     private void recalculateTotals(Cart cart) {
-        cart.setTotalQuantity((int) cart.getCartItems().stream()
+        cart.setTotalQuantity(cart.getCartItems().stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum());
         cart.setTotalCost(BigDecimal.valueOf(cart.getCartItems().stream()

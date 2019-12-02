@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
+<%@ page import="com.es.phoneshop.model.order.PaymentMethod" %>
 
 <jsp:useBean id="order" type="com.es.phoneshop.model.order.Order" scope="request"/>
 <tags:master pageTitle="Checkout Page">
@@ -65,11 +66,11 @@
                         <tags:field label="Last name" name="lastName" errorMap="${errorMap}"/>
                     </tr>
                     <tr>
-                        <tags:field label="Phone" name="phone" errorMap="${errorMap}"/>
+                        <tags:phoneField label="Phone" name="phone" errorMap="${errorMap}"/>
                     </tr>
                     <tr>
                         <td rowspan="2">Delivery</td>
-                        <tags:field label="date" name="deliveryDate" errorMap="${errorMap}"/>
+                        <tags:dateField label="date" name="deliveryDate" errorMap="${errorMap}"/>
                     </tr>
                     <tr>
                         <tags:field label="address" name="deliveryAddress" errorMap="${errorMap}"/>
@@ -78,13 +79,22 @@
                         <td></td>
                         <td>Payment method</td>
                         <td>
-                            <input type="radio" name="paymentMethod" value="money" checked>money<br>
-                            <input type="radio" name="paymentMethod" value="creditCard">credit card<br>
+                            <c:set var="MONEY" value="<%=PaymentMethod.MONEY%>"/>
+                            <c:choose>
+                                <c:when test="${order.paymentMethod == MONEY}">
+                                    <input type="radio" name="paymentMethod" value="money" checked>money<br>
+                                    <input type="radio" name="paymentMethod" value="creditCard">credit card<br>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="radio" name="paymentMethod" value="money">money<br>
+                                    <input type="radio" name="paymentMethod" value="creditCard" checked>credit card<br>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                 </table>
                 <br>
-                <button class="btn btn-dark" style="margin-left: 1%;">Place to order</button>
+                <button class="btn btn-dark button-margin">Place to order</button>
                 <br>
             </form>
         </c:when>

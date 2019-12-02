@@ -39,3 +39,7 @@ body.product-list {
 .message-green{
   color: green;
 }
+
+.button-margin{
+  margin-left: 1%;
+}
