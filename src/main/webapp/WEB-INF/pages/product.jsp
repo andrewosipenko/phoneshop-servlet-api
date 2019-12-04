@@ -55,6 +55,37 @@
             </c:if>
         </p>
     </form>
+    <c:if test="${not empty product.reviewArrayList}">
+        <h4>Comments</h4>
+        <table>
+        <c:forEach var="review" items="${product.reviewArrayList}">
+            <tr>
+                <td>
+                    <p>Name: ${review.name}</p>
+                    <p>Rating: ${review.rating}</p>
+                    <p>Comment: ${review.comment}</p>
+                </td>
+            </tr>
+        </c:forEach>
+        </table>
+    </c:if>
+    <form action="${pageContext.servletContext.contextPath}/productReview/${product.id}" method="post">
+        <h4>Add your comment</h4>
+        <table>
+            <tr>
+                <tags:field label="Name" name="name" errorMap="${errorMap1}"/>
+            </tr>
+            <tr>
+                <tags:ratingField label="Rating" name="rating" errorMap="${errorMap1}"/>
+            </tr>
+            <tr>
+                <tags:field label="Comment" name="comment" errorMap="${errorMap1}"/>
+            </tr>
+        </table>
+        <br>
+        <button class="btn btn-dark button-margin">Add comment</button>
+        <br>
+    </form>
     <c:if test="${not empty viewedProducts}">
         <h3>Viewed Products</h3>
     </c:if>
