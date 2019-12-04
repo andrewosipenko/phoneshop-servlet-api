@@ -30,5 +30,16 @@ img.product-tile {
 
 /* Page specific styles */
 body.product-list {
+}
 
+.message-red{
+  color:red;
+}
+
+.message-green{
+  color: green;
+}
+
+.button-margin{
+  margin-left: 1%;
 }

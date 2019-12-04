@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,40 +13,39 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class MiniCartServletTest {
     @Mock
-    private HttpServletRequest request;
+    HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
     @Mock
-    private ProductDao productDao;
+    private CartService cartService;
 
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
-    public void setup() {
-        servlet.setProductDao(productDao);
+    public void setUp() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        servlet.setCartService(cartService);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-        List<Product> products = new ArrayList<>();
+        Cart cart = new Cart();
+
+        when(cartService.getCart(request)).thenReturn(cart);
 
         servlet.doGet(request, response);
 
-        verify(request).setAttribute("products", products);
-        verify(requestDispatcher).forward(request, response);
+        verify(request).setAttribute("cart", cart);
+        verify(requestDispatcher).include(request, response);
     }
-
 }
