@@ -2,6 +2,7 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Product {
     private Long id;
@@ -81,5 +82,24 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        Product product = (Product) o;
+        return getStock() == product.getStock() &&
+                getId().equals(product.getId()) &&
+                getCode().equals(product.getCode()) &&
+                Objects.equals(getDescription(), product.getDescription()) &&
+                getPrice().equals(product.getPrice()) &&
+                Objects.equals(getCurrency(), product.getCurrency()) &&
+                Objects.equals(getImageUrl(), product.getImageUrl());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCode(), getDescription(), getPrice(), getCurrency(), getStock(), getImageUrl());
     }
 }
