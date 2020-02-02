@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest
-{
+public class ProductListPageServletTest {
+
     @Mock
     private HttpServletRequest request;
 
@@ -43,15 +43,13 @@ public class ProductListPageServletTest
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(productDao.findProducts()).thenReturn(products);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException
-    {
+    public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
         verify(requestDispatcher).forward(request, response);

@@ -9,21 +9,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ProductListPageServlet extends HttpServlet
-{
+public class ProductListPageServlet extends HttpServlet {
+
     private ProductDao productDao;
 
     @Override
-    public void init() throws ServletException
-    {
+    public void init() throws ServletException {
         super.init();
 
         productDao = new ArrayListProductDao();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("products", productDao.findProducts());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }

@@ -17,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArrayListProductDaoTest
-{
+public class ArrayListProductDaoTest {
+
     @Mock
     private Product productWithoutPrice;
 
@@ -31,6 +31,9 @@ public class ArrayListProductDaoTest
     @Mock
     private Product productForAdding;
 
+    @Mock
+    private Product productForDelete;
+
     @Spy
     private List<Product> products = new ArrayList<>();
 
@@ -38,8 +41,7 @@ public class ArrayListProductDaoTest
     private ProductDao productDao = new ArrayListProductDao();
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         products.addAll(Arrays.asList(productWithoutPrice, productOutOfStock, rightProduct));
 
         when(productWithoutPrice.getId()).thenReturn(1L);
@@ -48,26 +50,30 @@ public class ArrayListProductDaoTest
         when(rightProduct.getId()).thenReturn(3L);
         when(rightProduct.getPrice()).thenReturn(new BigDecimal(1000));
         when(rightProduct.getStock()).thenReturn(1000);
-        when(productForAdding.getId()).thenReturn(4L);
+        when(productForDelete.getId()).thenReturn(4L);
     }
 
     @Test
-    public void testGetProduct()
-    {
+    public void testGetProduct() {
         assertEquals(productWithoutPrice, productDao.getProduct(1L));
     }
 
     @Test
-    public void testFindProducts()
-    {
+    public void testFindProducts() {
         assertEquals(1, productDao.findProducts().size());
     }
 
     @Test
-    public void testSaveAndDeleteProduct()
-    {
+    public void testSaveProduct() {
         productDao.save(productForAdding);
         assertEquals(4, products.size());
+
+        products.remove(productForAdding);
+    }
+
+    @Test
+    public void testDeleteProduct() {
+        products.add(productForDelete);
 
         productDao.delete(4L);
         assertEquals(3, products.size());

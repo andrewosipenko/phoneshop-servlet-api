@@ -3,8 +3,8 @@ package com.es.phoneshop.model.product;
 import java.math.BigDecimal;
 import java.util.Currency;
 
-public class Product
-{
+public class Product {
+
     private Long id;
     private String code;
     private String description;
@@ -19,13 +19,11 @@ public class Product
     private int stock;
     private String imageUrl;
 
-    public Product()
-    {
+    public Product() {
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
-                   String imageUrl)
-    {
+                   String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -35,73 +33,59 @@ public class Product
         this.imageUrl = imageUrl;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getCode()
-    {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(String code)
-    {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public BigDecimal getPrice()
-    {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price)
-    {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public Currency getCurrency()
-    {
+    public Currency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency)
-    {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 
-    public int getStock()
-    {
+    public int getStock() {
         return stock;
     }
 
-    public void setStock(int stock)
-    {
+    public void setStock(int stock) {
         this.stock = stock;
     }
 
-    public String getImageUrl()
-    {
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl)
-    {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 }
