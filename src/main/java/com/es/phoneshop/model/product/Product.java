@@ -15,6 +15,19 @@ public class Product {
     private int stock;
     private String imageUrl;
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", currency=" + currency +
+                ", stock=" + stock +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
+
     public Product() {
     }
 
@@ -87,9 +100,9 @@ public class Product {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Product)) return false;
+        if (!(o.getClass()== Product.class)) return false;
         Product product = (Product) o;
-        return getStock() == product.getStock() &&
+        return Objects.equals(getStock(),product.getStock()) &&
                 getId().equals(product.getId()) &&
                 getCode().equals(product.getCode()) &&
                 Objects.equals(getDescription(), product.getDescription()) &&
