@@ -38,11 +38,8 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void delete(Long id) {
-        Product product=products.stream()
-                .filter(p-> p.getId()==id)
-                .findAny()
-                .orElse(null);
-        if (product!=null)
-            products.remove(product);
+        products.stream()
+                .filter(p -> p.getId().equals(id))
+                .findAny().ifPresent(products::remove);
     }
 }

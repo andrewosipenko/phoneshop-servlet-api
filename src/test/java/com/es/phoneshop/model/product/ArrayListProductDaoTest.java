@@ -37,7 +37,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void findProducts() {
+    public void findProducts(){
         Long id = 2L;
         productDao.save(new Product(id, "2", "description 2",
                 new BigDecimal(400), usd, 10, "https://img.alicdn.com/imgextra/i3/2404040152/O1CN01E8FCgB1CzehJlqOHb_!!2404040152.jpg" ));
