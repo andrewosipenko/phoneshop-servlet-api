@@ -67,7 +67,7 @@ public class Product {
         this.currency = currency;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 

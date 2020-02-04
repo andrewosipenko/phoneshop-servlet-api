@@ -39,6 +39,7 @@
     </dependency>
   </dependencies>
   <build>
+      <defaultGoal>package</defaultGoal>
     <finalName>phoneshop-servlet-api</finalName>
     <pluginManagement>
       <plugins>
