@@ -32,24 +32,30 @@ public class ArrayListProductDaoTest
     }
 
     @Test
+    public void testGetProductIsFalse(){
+        assertTrue(productDao.getProduct(40L)==null);
+    }
+
+    @Test
     public void saveProductToList(){
-        Product product = new Product(Integer.toUnsignedLong(productDao.findProducts().size()+2), "sgs",
+        Product product = new Product(15L, "sgs",
                 "Samsung Galaxy Sss", new BigDecimal(100), Currency.getInstance("USD"), 100,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
         productDao.save(product);
-        assertTrue(productDao.getProduct(Integer.toUnsignedLong(productDao.findProducts().size()+1)).equals(product));
+        assertTrue(productDao.getProduct(15L).equals(product));
     }
 
     @Test
     public void deleteProductFromCenter() {
-
-        Product product = new Product(Integer.toUnsignedLong(productDao.findProducts().size()), "simc61",
+        System.out.println(productDao.findProducts().size());
+        Product product = new Product(20L, "simc61",
                 "Siemens C61", new BigDecimal(80), Currency.getInstance("USD"), 30,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg");
-
-        productDao.delete(Integer.toUnsignedLong(productDao.findProducts().size()+1));
-
-        assertTrue(productDao.getProduct(Integer.toUnsignedLong(productDao.findProducts().size())).equals(product));
+        productDao.save(product);
+        System.out.println(productDao.findProducts().size());
+        productDao.delete(20L);
+        System.out.println(productDao.findProducts().size());
+        assertTrue(productDao.getProduct(20L)==null);
     }
 }
