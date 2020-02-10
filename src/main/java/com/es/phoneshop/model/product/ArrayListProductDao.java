@@ -62,10 +62,7 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public Product getProduct(Long id) {
         if (productList != null) {
-            Optional<Product> pr = productList.stream().filter(product -> product.getId() == id).findFirst();
-            if(pr.isPresent()){
-                return pr.get();
-            }
+            return productList.stream().filter(product -> product.getId() == id).findFirst().orElse(null);
         }
         return null;
     }
@@ -75,27 +72,19 @@ public class ArrayListProductDao implements ProductDao {
         if (productList == null) {
             return null;
         }
-        return productList.stream().filter(product -> (product.getStock() > 0) && (product.getPrice() != null))
+        return productList.stream().filter(product -> (product.getStock() > 0)).filter(product->product.getPrice() != null)
                 .collect(Collectors.toList());
     }
 
     @Override
     public synchronized void save(Product product) {
-        for (int i = 0; i < productList.size(); i++){
-
-        }
-        for (Product item:productList) {
-
-        }
-
-        if(product.getId()==null) {
+        if (product.getId()==null) {
             product.setId(++maxId);
             productList.add(product);
         }
         else {
             productList.add(product);
         }
-
     }
 
     private void update(Product product, Product newProduct) {
@@ -106,15 +95,10 @@ public class ArrayListProductDao implements ProductDao {
         newProduct.setImageUrl(product.getImageUrl());
         newProduct.setStock(product.getStock());
     }
+
     @Override
     public synchronized void delete(Long id) {
         productList.removeIf(p -> Objects.equals(p.getId(), id));
     }
 
-    @Override
-    public String toString() {
-        return "ArrayListProductDao{" +
-                "productList=" + productList +
-                '}';
-    }
 }

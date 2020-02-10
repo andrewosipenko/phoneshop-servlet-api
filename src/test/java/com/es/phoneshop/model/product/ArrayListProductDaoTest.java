@@ -9,8 +9,7 @@ import java.util.Currency;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ArrayListProductDaoTest
-{
+public class ArrayListProductDaoTest {
     private ProductDao productDao;
 
     @Before
@@ -24,7 +23,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testGetProductIsTrue(){
+    public void testGetProductIsTrue() {
         assertTrue(productDao.getProduct(1L).equals(new Product(1L, "sgs",
                 "Samsung Galaxy S", new BigDecimal(100), Currency.getInstance("USD"), 100,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"))
@@ -32,12 +31,12 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testGetProductIsFalse(){
-        assertTrue(productDao.getProduct(40L)==null);
+    public void testGetProductIsFalse() {
+        assertTrue(productDao.getProduct(40L) == null);
     }
 
     @Test
-    public void saveProductToList(){
+    public void saveProductToList() {
         Product product = new Product(15L, "sgs",
                 "Samsung Galaxy Sss", new BigDecimal(100), Currency.getInstance("USD"), 100,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
@@ -48,14 +47,13 @@ public class ArrayListProductDaoTest
 
     @Test
     public void deleteProductFromCenter() {
-        System.out.println(productDao.findProducts().size());
         Product product = new Product(20L, "simc61",
                 "Siemens C61", new BigDecimal(80), Currency.getInstance("USD"), 30,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg");
         productDao.save(product);
-        System.out.println(productDao.findProducts().size());
-        productDao.delete(20L);
-        System.out.println(productDao.findProducts().size());
-        assertTrue(productDao.getProduct(20L)==null);
+        if(productDao.getProduct(20L).equals(product)) {
+            productDao.delete(20L);
+            assertTrue(productDao.getProduct(20L) == null);
+        }
     }
 }
