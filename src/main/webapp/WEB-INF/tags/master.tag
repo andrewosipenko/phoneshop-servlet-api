@@ -1,3 +1,4 @@
+<%@ attribute name="pageClass" %>
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ attribute name="pageTitle" required="true" %>
 
@@ -12,6 +13,10 @@
     <a href="${pageContext.servletContext.contextPath}">
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
       PhoneShop
+    </a>
+    <a class ="cart" href='http://localhost:8080/phoneshop_servlet_api_war_exploded/cart'>
+      Cart
+      <img src="${pageContext.servletContext.contextPath}/images/cart.jpg"/>
     </a>
   </header>
   <main>

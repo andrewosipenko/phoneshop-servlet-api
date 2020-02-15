@@ -1,9 +1,11 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Map;
 
-public class Product {
+public class Product implements Serializable {
     private Long id;
     private String code;
     private String description;
@@ -13,11 +15,13 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private Map<BigDecimal, PriceHistory> history;
 
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
+                   String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -25,6 +29,18 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+    }
+
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
+                   String imageUrl, Map<BigDecimal, PriceHistory>history) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+        this.history = history;
     }
 
     public Long getId() {
@@ -81,5 +97,13 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Map<BigDecimal, PriceHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Map<BigDecimal, PriceHistory> history) {
+        this.history = history;
     }
 }
