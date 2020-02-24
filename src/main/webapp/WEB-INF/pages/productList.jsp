@@ -8,12 +8,24 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input name="query" value="${param.query}">
+    <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <tags:sortLink sortField="description" sortOrder="asc"/>
+          <tags:sortLink sortField="description" sortOrder="desc"/>
+        </td>
+        <td class="price">
+          Price
+          <tags:sortLink sortField="price" sortOrder="asc"/>
+          <tags:sortLink sortField="price" sortOrder="desc"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
@@ -21,9 +33,14 @@
         <td>
           <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
         </td>
-        <td>${product.description}</td>
+        <td>
+          <a href="products/${product.id}">${product.description}</a>
+        </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <a href="products/priceHistory/${product.id}">
+            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          </a>
+        </td>
         </td>
       </tr>
     </c:forEach>
