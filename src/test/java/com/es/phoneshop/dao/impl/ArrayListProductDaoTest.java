@@ -3,7 +3,7 @@ package com.es.phoneshop.dao.impl;
 import com.es.phoneshop.model.enums.SortField;
 import com.es.phoneshop.model.enums.SortOrder;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductNotFoundException;
+import com.es.phoneshop.exception.ProductNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
