@@ -1,9 +1,8 @@
 package com.es.phoneshop.dao.impl;
 
-
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductNotFoundException;
+import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.enums.SortField;
 import com.es.phoneshop.model.enums.SortOrder;
 
@@ -27,7 +26,7 @@ public class ArrayListProductDao implements ProductDao {
         private static final ArrayListProductDao instance = new ArrayListProductDao();
     }
 
-    public List<Product> getProductList() {
+    List<Product> getProductList() {
         return productList;
     }
 

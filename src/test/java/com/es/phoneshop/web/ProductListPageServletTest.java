@@ -4,6 +4,7 @@ import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.model.enums.SortField;
 import com.es.phoneshop.model.enums.SortOrder;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.impl.DefaultRecentlyViewedService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,8 @@ public class ProductListPageServletTest {
     @Mock
     private ArrayListProductDao productDao;
     @Mock
+    private DefaultRecentlyViewedService recentlyViewedService;
+    @Mock
     private Product product1;
     @Mock
     private Product product2;
@@ -50,6 +53,7 @@ public class ProductListPageServletTest {
         servlet.doGet(request, response);
 
         verify(productDao).findProducts(null, null, null);
+        verify(request).setAttribute("recentlyViewed", recentlyViewedService.getProducts(request));
         verify(request).setAttribute("products", productDao.findProducts(null, null, null));
         verify(requestDispatcher).forward(request, response);
     }

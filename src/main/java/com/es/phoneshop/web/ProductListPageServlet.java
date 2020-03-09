@@ -4,6 +4,8 @@ import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.enums.SortField;
 import com.es.phoneshop.model.enums.SortOrder;
+import com.es.phoneshop.service.RecentlyViewedService;
+import com.es.phoneshop.service.impl.DefaultRecentlyViewedService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,10 +16,12 @@ import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao;
+    private RecentlyViewedService recentlyViewedService;
 
     @Override
     public void init(ServletConfig config) {
         productDao = ArrayListProductDao.getInstance();
+        recentlyViewedService = DefaultRecentlyViewedService.getInstance();
     }
 
     @Override
@@ -26,13 +30,14 @@ public class ProductListPageServlet extends HttpServlet {
         SortField field = getSortField(request);
         SortOrder order = getSortOrder(request);
 
+        request.setAttribute("recentlyViewed", recentlyViewedService.getProducts(request));
         request.setAttribute("products", productDao.findProducts(query, field, order));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 
     private SortField getSortField(HttpServletRequest request) {
         String field = request.getParameter("sortField");
-        if(field == null) {
+        if (field == null) {
             return null;
         }
         return SortField.valueOf(field.toUpperCase());
@@ -40,7 +45,7 @@ public class ProductListPageServlet extends HttpServlet {
 
     private SortOrder getSortOrder(HttpServletRequest request) {
         String order = request.getParameter("sortOrder");
-        if(order == null) {
+        if (order == null) {
             return null;
         }
         return SortOrder.valueOf(order.toUpperCase());
