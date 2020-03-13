@@ -1,15 +1,17 @@
 package com.es.phoneshop.model.cart;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cart {
+public class Cart implements Serializable {
     private List<CartItem> cartItems;
     private BigDecimal totalPrice;
 
     public Cart() {
         this.cartItems = new ArrayList<>();
+        this.totalPrice = new BigDecimal(0);
     }
 
     public void setCartItems(List<CartItem> cartItems) {

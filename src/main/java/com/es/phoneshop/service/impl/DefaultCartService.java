@@ -10,6 +10,7 @@ import com.es.phoneshop.service.CartService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class DefaultCartService implements CartService {
@@ -44,7 +45,7 @@ public class DefaultCartService implements CartService {
     public void add(Cart cart, long productId, int quantity) throws OutOfStockException {
         Product product = productDao.getProduct(productId);
         Optional<CartItem> oneProductItem = cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getProductId() == productId)
+                .filter(cartItem -> cartItem.getProduct().getId() == productId)
                 .findAny();
         int oneProductQuantity = oneProductItem.map(CartItem::getQuantity).orElse(0);
         int stockAvailable = product.getStock() - oneProductQuantity;
@@ -54,7 +55,40 @@ public class DefaultCartService implements CartService {
         if (oneProductItem.isPresent()) {
             oneProductItem.get().setQuantity(oneProductQuantity + quantity);
         } else {
-            cart.getCartItems().add(new CartItem(productId, quantity));
+            cart.getCartItems().add(new CartItem(product, quantity));
         }
+        recalculateTotalPrice(cart);
+    }
+
+    @Override
+    public void update(Cart cart, long productId, int quantity) throws OutOfStockException {
+        Product product = productDao.getProduct(productId);
+        Optional<CartItem> oneProductItem = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getId() == productId)
+                .findAny();
+        if (oneProductItem.isPresent()) {
+            int stockAvailable = product.getStock() - oneProductItem.get().getQuantity();
+            if (product.getStock() < quantity) {
+                throw new OutOfStockException(stockAvailable);
+            } else {
+                oneProductItem.get().setQuantity(quantity);
+                recalculateTotalPrice(cart);
+            }
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, long productId) {
+        cart.getCartItems().removeIf(item -> item.getProduct().getId() == productId);
+        recalculateTotalPrice(cart);
+    }
+
+    @Override
+    public void recalculateTotalPrice(Cart cart) {
+        BigDecimal totalPrice = cart.getCartItems().stream()
+                .map(cartItem -> cartItem.getProduct().getPrice().multiply(new BigDecimal(cartItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        cart.setTotalPrice(totalPrice);
     }
 }
