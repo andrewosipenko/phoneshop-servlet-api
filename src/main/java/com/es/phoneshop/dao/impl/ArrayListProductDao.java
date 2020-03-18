@@ -23,7 +23,7 @@ public class ArrayListProductDao extends AbstractDao<Product> implements Product
         private static final ArrayListProductDao instance = new ArrayListProductDao();
     }
 
-    List<Product> getProductList() {
+    public List<Product> getProductList() {
         return super.items;
     }
 

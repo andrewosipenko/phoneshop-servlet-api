@@ -5,27 +5,33 @@
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
-    <p>
-        Welcome to Expert-Soft training!
-    </p>
-    <form>
-        <input name="query" value="${param.query}">
-        <button>Search</button>
+    <form method="post">
+        <label>Description<input name="description"></label>
+        <br>
+        <br>
+        <label>Min price <input name="minPrice" type="number"></label>
+        <br>
+        <br>
+        <label>Max price <input name="maxPrice" type="number"></label>
+        <br>
+        <br>
+        <label>Min stock <input name="minStock" type="number"></label>'
+        <br>
+        <br>
+        <label>Max stock <input name="maxStock" type="number"></label>'
+        <br>
+        <button formaction="<c:url value="/advancedSearch"/>" formmethod="post">Search</button>
     </form>
-    <a href="${pageContext.servletContext.contextPath}/advancedSearch"> Advanced Search </a>
+    <c:if test="${not empty products}">
     <table>
         <thead>
         <tr>
             <td>Image</td>
             <td>
                 Description
-                <tags:sortLink sortField="description" sortOrder="asc"/>
-                <tags:sortLink sortField="description" sortOrder="desc"/>
             </td>
             <td class="price">
                 Price
-                <tags:sortLink sortField="price" sortOrder="asc"/>
-                <tags:sortLink sortField="price" sortOrder="desc"/>
             </td>
         </tr>
         </thead>
@@ -48,19 +54,5 @@
             </tr>
         </c:forEach>
     </table>
-    <table class="recently-viewed">
-        <tr>
-            <jsp:useBean id="recentlyViewed" scope="request" type="java.util.List"/>
-            <c:forEach var="product" items="${recentlyViewed}">
-                <td>
-                    <img src="${product.imageUrl}">
-                    <div>${product.description}</div>
-                    <div>
-                        <fmt:formatNumber value="${product.price}" type="currency"
-                                          currencySymbol="${product.currency.symbol}"/>
-                    </div>
-                </td>
-            </c:forEach>
-        </tr>
-    </table>
+    </c:if>
 </tags:master>
