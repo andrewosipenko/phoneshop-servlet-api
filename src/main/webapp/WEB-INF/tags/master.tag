@@ -14,6 +14,7 @@
         PhoneShop
     </a>
     <jsp:include page="/minicart"/>
+    <a href="${pageContext.servletContext.contextPath}/checkout"> Checkout</a>
 </header>
 <main>
     <jsp:doBody/>

@@ -11,6 +11,7 @@ import com.es.phoneshop.service.CartService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class DefaultCartService implements CartService {
@@ -22,7 +23,6 @@ public class DefaultCartService implements CartService {
     }
 
     public static DefaultCartService getInstance() {
-
         return CartServiceHolder.instance;
     }
 
@@ -43,7 +43,7 @@ public class DefaultCartService implements CartService {
 
     @Override
     public void add(Cart cart, long productId, int quantity) throws OutOfStockException {
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.get(productId);
         Optional<CartItem> oneProductItem = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getId() == productId)
                 .findAny();
@@ -62,7 +62,7 @@ public class DefaultCartService implements CartService {
 
     @Override
     public void update(Cart cart, long productId, int quantity) throws OutOfStockException {
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.get(productId);
         Optional<CartItem> oneProductItem = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getId() == productId)
                 .findAny();
@@ -90,5 +90,11 @@ public class DefaultCartService implements CartService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         cart.setTotalPrice(totalPrice);
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.setCartItems(new ArrayList<>());
+        cart.setTotalPrice(BigDecimal.ZERO);
     }
 }

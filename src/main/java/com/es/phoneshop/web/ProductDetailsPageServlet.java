@@ -34,7 +34,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = Long.valueOf(request.getPathInfo().substring(1));
         Cart cart = cartService.getCart(request);
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.get(productId);
 
         recentlyViewedService.addProduct(request, product);
 
