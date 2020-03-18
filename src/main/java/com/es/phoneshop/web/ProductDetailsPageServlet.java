@@ -34,7 +34,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = Long.valueOf(request.getPathInfo().substring(1));
         Cart cart = cartService.getCart(request);
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.get(productId);
 
         recentlyViewedService.addProduct(request, product);
 
@@ -47,20 +47,17 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
-
+        long productId = Long.parseLong(request.getPathInfo().substring(1));
         String quantityString = request.getParameter("quantity");
         int quantity;
         try {
             NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
             quantity = numberFormat.parse(quantityString).intValue();
+            cartService.add(cart, productId, quantity);
         } catch (ParseException e) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
             return;
-        }
-        long productId = Long.parseLong(request.getPathInfo().substring(1));
-        try {
-            cartService.add(cart, productId, quantity);
         } catch (OutOfStockException e) {
             request.setAttribute("error", "Not enough stock, available " + e.getStockAvailable());
             doGet(request, response);

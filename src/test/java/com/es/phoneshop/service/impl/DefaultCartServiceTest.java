@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertEquals;
@@ -30,7 +31,11 @@ public class DefaultCartServiceTest {
     @Mock
     private HttpSession session;
     @Mock
-    private Product product;
+    private Product product1;
+    @Mock
+    private Product product2;
+    @Spy
+    private CartItem cartItem;
     @Mock
     private ArrayListProductDao productDao;
     @Spy
@@ -42,10 +47,21 @@ public class DefaultCartServiceTest {
 
     @Before
     public void setup() {
-        when(cart.getCartItems()).thenReturn(cartItems);
-        when(productDao.getProduct(1L)).thenReturn(product);
+        cartItems.add(cartItem);
+        cartItem.setQuantity(1);
 
-        when(product.getStock()).thenReturn(5);
+        when(cartItem.getProduct()).thenReturn(product2);
+        when(cart.getCartItems()).thenReturn(cartItems);
+        when(productDao.getProduct(2L)).thenReturn(product2);
+        when(productDao.getProduct(1L)).thenReturn(product1);
+
+        when(product1.getStock()).thenReturn(5);
+        when(product1.getPrice()).thenReturn(new BigDecimal(100));
+        when(product1.getId()).thenReturn(1L);
+
+        when(product2.getStock()).thenReturn(6);
+        when(product2.getPrice()).thenReturn(new BigDecimal(200));
+        when(product2.getId()).thenReturn(2L);
     }
 
     @Test
@@ -62,7 +78,7 @@ public class DefaultCartServiceTest {
     public void testAddProduct() throws OutOfStockException {
         cartService.add(cart, 1L, 1);
 
-        assertEquals(1, cart.getCartItems().size());
+        assertEquals(2, cart.getCartItems().size());
     }
 
     @Test
@@ -70,8 +86,8 @@ public class DefaultCartServiceTest {
         cartService.add(cart, 1L, 1);
         cartService.add(cart, 1L, 2);
 
-        assertEquals(1, cart.getCartItems().size());
-        assertEquals(3, cart.getCartItems().get(0).getQuantity());
+        assertEquals(2, cart.getCartItems().size());
+        assertEquals(3, cart.getCartItems().get(1).getQuantity());
     }
 
     @Test(expected = OutOfStockException.class)
@@ -83,5 +99,24 @@ public class DefaultCartServiceTest {
     public void testAddProductWithOutOfStockAndEqualId() throws OutOfStockException {
         cartService.add(cart, 1L, 2);
         cartService.add(cart, 1L, 5);
+    }
+
+    @Test
+    public void testUpdateCart() throws OutOfStockException {
+        cartService.update(cart, 2L, 3);
+
+        assertEquals(3, cart.getCartItems().get(0).getQuantity());
+    }
+
+    @Test(expected = OutOfStockException.class)
+    public void testUpdateCartWithOutOfStock() throws OutOfStockException {
+        cartService.update(cart, 2L, 10);
+    }
+
+    @Test
+    public void testDeleteProduct() throws OutOfStockException {
+        cartService.delete(cart, 1L);
+
+        assertEquals(1, cart.getCartItems().size());
     }
 }

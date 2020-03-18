@@ -3,50 +3,109 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-  <display-name>Phoneshop servlet api training</display-name>
+    <display-name>Phoneshop servlet api training</display-name>
 
-  <listener>
-    <listener-class>com.es.phoneshop.sampledata.ProductSampleDataListener</listener-class>
-  </listener>
+    <listener>
+        <listener-class>com.es.phoneshop.sampledata.ProductSampleDataListener</listener-class>
+    </listener>
 
-  <context-param>
-    <param-name>sampleData</param-name>
-    <param-value>enable</param-value>
-  </context-param>
+    <context-param>
+        <param-name>sampleData</param-name>
+        <param-value>enable</param-value>
+    </context-param>
 
-  <servlet>
-    <servlet-name>productList</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>productList</servlet-name>
-    <url-pattern>/products</url-pattern>
-  </servlet-mapping>
+    <filter>
+        <filter-name>dosFilter</filter-name>
+        <filter-class>com.es.phoneshop.web.DosFilter</filter-class>
+    </filter>
 
-  <servlet>
-    <servlet-name>productDetails</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
-  </servlet>
+    <filter-mapping>
+        <filter-name>dosFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-  <servlet-mapping>
-    <servlet-name>productDetails</servlet-name>
-    <url-pattern>/products/*</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <servlet-name>productList</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
+    </servlet>
 
-  <servlet>
-    <servlet-name>priceHistory</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductPriceHistoryPageServlet</servlet-class>
-  </servlet>
+    <servlet-mapping>
+        <servlet-name>productList</servlet-name>
+        <url-pattern>/products</url-pattern>
+    </servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>priceHistory</servlet-name>
-    <url-pattern>/products/priceHistory/*</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <servlet-name>productDetails</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+    </servlet>
 
-  <error-page>
-    <error-code>404</error-code>
-    <location>/WEB-INF/pages/productNotFound.jsp</location>
-  </error-page>
+    <servlet-mapping>
+        <servlet-name>productDetails</servlet-name>
+        <url-pattern>/products/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>priceHistory</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductPriceHistoryPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>priceHistory</servlet-name>
+        <url-pattern>/products/priceHistory/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>cart</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cart</servlet-name>
+        <url-pattern>/cart</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteCartItem</servlet-name>
+        <servlet-class>com.es.phoneshop.web.DeleteCartItemServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>deleteCartItem</servlet-name>
+        <url-pattern>/cart/deleteCartItem</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>checkout</servlet-name>
+        <servlet-class>com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>checkout</servlet-name>
+        <url-pattern>/checkout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>orderOverview</servlet-name>
+        <servlet-class>com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>orderOverview</servlet-name>
+        <url-pattern>/order/overview/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>minicart</servlet-name>
+        <servlet-class>com.es.phoneshop.web.MiniCartServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>minicart</servlet-name>
+        <url-pattern>/minicart</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/pages/productNotFound.jsp</location>
+    </error-page>
 
 </web-app>

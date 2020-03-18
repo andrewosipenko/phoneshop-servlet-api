@@ -2,7 +2,6 @@ package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.enums.SortField;
 import com.es.phoneshop.model.enums.SortOrder;
 
@@ -11,11 +10,9 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
-    private List<Product> productList;
-
+public class ArrayListProductDao extends AbstractDao<Product> implements ProductDao {
     private ArrayListProductDao() {
-        productList = new ArrayList<>();
+        super.items = new ArrayList<>();
     }
 
     public static ArrayListProductDao getInstance() {
@@ -27,14 +24,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     List<Product> getProductList() {
-        return productList;
-    }
-
-    @Override
-    public synchronized Product getProduct(Long id) {
-        return productList.stream()
-                .filter(product -> product.getId().equals(id)).findAny()
-                .orElseThrow(() -> new ProductNotFoundException(id));
+        return super.items;
     }
 
     @Override
@@ -51,7 +41,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     private List<Product> defaultFindProducts() {
-        return productList.stream()
+        return super.items.stream()
                 .filter(product -> product.getPrice() != null)
                 .filter(product -> product.getStock() > 0)
                 .collect(Collectors.toList());
@@ -90,23 +80,5 @@ public class ArrayListProductDao implements ProductDao {
 
         productList.sort(productComparator);
         return productList;
-    }
-
-    @Override
-    public synchronized void save(Product product) {
-        Optional<Product> saveProduct = productList.stream()
-                .filter(prod -> prod.getId().equals(product.getId()))
-                .findAny();
-        if (saveProduct.isPresent()) {
-            throw new IllegalArgumentException("Object's id isn't unic");
-        } else {
-            productList.add(product);
-        }
-    }
-
-    @Override
-    public synchronized void delete(Long id) {
-        Product delProd = this.getProduct(id);
-        productList.remove(delProd);
     }
 }

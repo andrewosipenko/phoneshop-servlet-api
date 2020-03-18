@@ -1,11 +1,13 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.item.Item;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
-public class Product {
-    private Long id;
+public class Product extends Item {
     private String code;
     private String description;
     /**

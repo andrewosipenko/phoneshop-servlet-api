@@ -7,9 +7,6 @@ import com.es.phoneshop.model.enums.SortOrder;
 
 import java.util.List;
 
-public interface ProductDao {
-    Product getProduct(Long id) throws ProductNotFoundException;
+public interface ProductDao extends Dao<Product> {
     List<Product> findProducts(String query, SortField field, SortOrder order);
-    void save(Product product);
-    void delete(Long id);
 }
