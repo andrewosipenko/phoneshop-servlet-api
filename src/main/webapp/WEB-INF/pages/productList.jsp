@@ -8,12 +8,20 @@
     <p>
         Welcome to Expert-Soft training!
     </p>
+    <form>
+        <input name="searcher" id="searcher" value="${param.searcher}">
+        <button>Find</button>
+    </form>
     <table>
         <thead>
         <tr>
             <td>Image</td>
-            <td>Description</td>
-            <td class="price">Price</td>
+            <td>Description
+                <a href="products?order=description&sort=asc&query =${param.searcher}">asc</a>
+                <a href="products?order=description&sort=desc&query =${param.searcher}">desc</a></td>
+            <td class="price">Price
+                <a href="products?order=price&sort=asc&query =${param.searcher}">asc</a>
+                <a href="products?order=price&sort=desc&query =${param.searcher}">desc</a></td>
         </tr>
         </thead>
         <c:forEach var="product" items="${products}">
@@ -22,11 +30,23 @@
                     <img class="product-tile" src="${product.imageUrl}">
                 </td>
                 <td>${product.description}</td>
+
                 <td class="price">
-                    <fmt:formatNumber value="${product.price}" type="currency"
-                                      currencySymbol="${product.currency.symbol}"/>
+                    <a href="products/price-history/${product.id}">
+                            <fmt:formatNumber value="${product.getCurrentPrice().cost}" type="currency"
+                                              currencySymbol="${product.currency.symbol}"/>
+                    </a>
                 </td>
+
             </tr>
         </c:forEach>
     </table>
+    <%--    <div class="b-container">--%>
+    <%--        Sample Text--%>
+    <%--    </div>--%>
+    <%--    <div class="b-popup">--%>
+    <%--        <div class="b-popup-content">--%>
+    <%--            Text in Popup--%>
+    <%--        </div>--%>
+    <%--    </div>--%>
 </tags:master>
