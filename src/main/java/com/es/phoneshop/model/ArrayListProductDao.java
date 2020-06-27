@@ -17,8 +17,8 @@ public class ArrayListProductDao implements ProductDao {
     public ArrayListProductDao() {
     }
 
-    public static ProductDao getInstance(){
-        return  productDao;
+    public static ProductDao getInstance() {
+        return productDao;
     }
 
 
@@ -27,15 +27,15 @@ public class ArrayListProductDao implements ProductDao {
         return products.stream()
                 .filter(product -> product.getId().equals(id))
                 .findFirst()
-                .orElseThrow(()-> new NoSuchElementException("Product with this id not found"));
+                .orElseThrow(() -> new NoSuchElementException("Product with this id not found"));
     }
 
-    private List<Product> findProductsByQuery(String query, List<Product> products){
+    private List<Product> findProductsByQuery(String query, List<Product> products) {
         String[] words = query.toLowerCase().split(" ");
-        return products.stream() .filter(product -> Arrays.stream(words)
+        return products.stream().filter(product -> Arrays.stream(words)
                 .anyMatch(word -> product.getDescription().toLowerCase().contains(word)))
 //                sorted my query
-                .sorted(Comparator.comparingInt(product -> (int)Arrays.stream(words)
+                .sorted(Comparator.comparingInt(product -> (int) Arrays.stream(words)
                         .filter(word -> product.getDescription().toLowerCase().contains(word)).count()))
                 .collect(Collectors.toList());
     }
@@ -46,11 +46,11 @@ public class ArrayListProductDao implements ProductDao {
                 .filter(product -> product.getStock() > 0)
                 .filter(product -> product.getCurrentPrice() != null)
                 .collect(Collectors.toList());
-        if (query != null){
-            productss = findProductsByQuery(query,productss);
+        if (query != null) {
+            productss = findProductsByQuery(query, productss);
         }
-        if(order != null){
-            productss = sortProductsByOrderAndSort(productss,order,sort);
+        if (order != null) {
+            productss = sortProductsByOrderAndSort(productss, order, sort);
         }
         return productss;
     }
@@ -67,23 +67,22 @@ public class ArrayListProductDao implements ProductDao {
                 break;
         }
 
-        if(ProductSortBy.valueOf(sort.toUpperCase()) == ProductSortBy.ASC){
+        if (ProductSortBy.valueOf(sort.toUpperCase()) == ProductSortBy.ASC) {
             productComparator = productComparator.reversed();
         }
         return productss.stream().sorted(productComparator).collect(Collectors.toList());
     }
 
     @Override
-    public synchronized void save(Product product) {
-        Optional<Product> existProduct = Optional.ofNullable(getProduct(product.getId())) ;
-        if (existProduct.isPresent()) {
-            update(product, existProduct.get());
-        } else {
+    public void save(Product product) {
+        try {
+            Product existProduct = getProduct(product.getId());
+            update(product, existProduct);
+        } catch (NoSuchElementException e) {
             product.setId(Integer.toUnsignedLong(products.size()));
             products.add(product);
         }
     }
-
 
     private void update(Product updateProduct, Product oldProduct) {
         oldProduct.setCode(updateProduct.getCode());
