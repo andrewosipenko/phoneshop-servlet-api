@@ -1,14 +1,15 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model;
 
-import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Currency;
+import java.util.List;
 
 public class Product {
     private Long id;
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
-    private BigDecimal price;
+    private List<Price> prices;
     /** can be null if the price is null */
     private Currency currency;
     private int stock;
@@ -17,11 +18,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, List<Price> prices, Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
-        this.price = price;
+        this.prices = prices;
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -51,13 +52,19 @@ public class Product {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public List<Price> getPrices() {
+        return prices;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setPrices(List<Price> prices) {
+        this.prices = prices;
+
     }
+
+    public Price getCurrentPrice(){
+        return this.prices.stream().max(Comparator.comparing(price->price.getDate().toEpochDay())).get();
+    }
+
 
     public Currency getCurrency() {
         return currency;
