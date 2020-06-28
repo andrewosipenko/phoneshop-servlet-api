@@ -25,4 +25,5 @@
             </tr>
         </c:forEach>
     </table>
+    <tags:viewed-product/>
 </tags:master>

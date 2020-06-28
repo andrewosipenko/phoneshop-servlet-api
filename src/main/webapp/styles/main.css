@@ -33,6 +33,13 @@ body.product-list {
 
 }
 
+.error-message{
+  color: red;
+}
+
+.congratulation-message{
+  color: green;
+}
 
 .b-container{
   width:200px;

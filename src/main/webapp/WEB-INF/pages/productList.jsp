@@ -33,20 +33,13 @@
 
                 <td class="price">
                     <a href="products/price-history/${product.id}">
-                            <fmt:formatNumber value="${product.getCurrentPrice().cost}" type="currency"
-                                              currencySymbol="${product.currency.symbol}"/>
+                        <fmt:formatNumber value="${product.getCurrentPrice().cost}" type="currency"
+                                          currencySymbol="${product.currency.symbol}"/>
                     </a>
                 </td>
 
             </tr>
         </c:forEach>
     </table>
-    <%--    <div class="b-container">--%>
-    <%--        Sample Text--%>
-    <%--    </div>--%>
-    <%--    <div class="b-popup">--%>
-    <%--        <div class="b-popup-content">--%>
-    <%--            Text in Popup--%>
-    <%--        </div>--%>
-    <%--    </div>--%>
+    <tags:viewed-product/>
 </tags:master>
