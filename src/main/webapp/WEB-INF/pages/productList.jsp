@@ -41,5 +41,6 @@
             </tr>
         </c:forEach>
     </table>
+    <jsp:include page="/cart/minicart"/>
     <tags:viewed-product/>
 </tags:master>

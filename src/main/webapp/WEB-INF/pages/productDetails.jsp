@@ -13,6 +13,7 @@
 <jsp:useBean id="product" class="com.es.phoneshop.model.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
     <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
     <h2>${product.description}</h2>
     <img src="${product.imageUrl}">
     <br>
@@ -40,5 +41,6 @@
     <form action="${pageContext.request.contextPath}/products">
         <button>Go to List</button>
     </form>
+    <jsp:include page="/cart/minicart"/>
     <tags:viewed-product/>
 </tags:master>
