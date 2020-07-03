@@ -55,4 +55,37 @@ public class CartServiceImpl implements CartService {
         BigDecimal currentPrice = product.getCurrentPrice().getCost().multiply(BigDecimal.valueOf(quantity));
         cart.setPrice(cart.getPrice().add(currentPrice));
     }
+
+    @Override
+    public void update(Cart cart, Long productId, Long quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("quantity must be more then 0!");
+        }
+        Product product = productDao.getProduct(productId);
+
+        Optional<CartItem> cartItem = cart.getCartItems().stream()
+                .filter(cartItem1 -> cartItem1.getProduct() == product).findFirst();
+
+        if (product.getStock() < quantity)
+            throw new NotEnoughElementsException("Shop have just"
+                    + product.getStock() + " " + product.getDescription());
+
+        if (cartItem.isPresent()) {
+            cartItem.get().setQuantity(quantity);
+            recalculateCartPrice(cart);
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId) {
+        cart.getCartItems().removeIf(cartItem -> cartItem.getProduct().getId().equals(productId));
+    }
+
+    private void recalculateCartPrice(Cart cart) {
+        cart.setPrice(cart.getCartItems()
+                .stream()
+                .map(cartItem -> cartItem.getProduct().getCurrentPrice().getCost()
+                        .multiply(new BigDecimal(cartItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
 }
