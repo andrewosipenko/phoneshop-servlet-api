@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.ArrayListProductDao;
+import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.model.Product;
-import com.es.phoneshop.model.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.services.RecentlyViewedService;
 import com.es.phoneshop.services.impl.RecentlyViewedServiceImpl;
 
@@ -28,7 +28,7 @@ public class PriceHistoryPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         Long productId = Long.parseLong(pathInfo.split("/")[1]);
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.getById(productId);
         req.setAttribute("product", product);
         req.setAttribute("viewedProducts", recentlyViewedService.getViewedProducts(req));
         req.getRequestDispatcher("/WEB-INF/pages/priceHistory.jsp").forward(req, resp);

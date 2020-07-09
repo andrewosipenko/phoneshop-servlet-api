@@ -1,5 +1,7 @@
 package com.es.phoneshop.services.impl;
 
+import com.es.phoneshop.dao.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exceptions.NotEnoughElementsException;
 import com.es.phoneshop.model.*;
 import com.es.phoneshop.services.CartService;
@@ -7,6 +9,7 @@ import com.es.phoneshop.services.CartService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
@@ -20,7 +23,10 @@ public class CartServiceImpl implements CartService {
     }
 
     public static CartService getInstance() {
-        return cartService == null ? new CartServiceImpl() : CartServiceImpl.cartService;
+        if (cartService == null) {
+            cartService = new CartServiceImpl();
+        }
+        return cartService;
     }
 
     @Override
@@ -35,8 +41,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public void clearCart(Cart cart){
+        cart.setCartItems(new ArrayList<>());
+        cart.setPrice(BigDecimal.ZERO);
+    }
+
+    @Override
     public void add(Cart cart, Long productId, Long quantity) throws NotEnoughElementsException {
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.getById(productId);
         Optional<CartItem> currentCartItem = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getId().equals(product.getId()))
                 .findFirst();
@@ -61,7 +73,7 @@ public class CartServiceImpl implements CartService {
         if (quantity <= 0) {
             throw new IllegalArgumentException("quantity must be more then 0!");
         }
-        Product product = productDao.getProduct(productId);
+        Product product = productDao.getById(productId);
 
         Optional<CartItem> cartItem = cart.getCartItems().stream()
                 .filter(cartItem1 -> cartItem1.getProduct() == product).findFirst();

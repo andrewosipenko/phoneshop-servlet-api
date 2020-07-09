@@ -1,34 +1,29 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.dao;
 
 import com.es.phoneshop.enums.ProductOrderBy;
 import com.es.phoneshop.enums.ProductSortBy;
+import com.es.phoneshop.model.Product;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends AbstractDefaultDao<Product> implements ProductDao {
     private List<Product> products = new ArrayList<>();
     private static ProductDao productDao = new ArrayListProductDao();
 
     public ArrayListProductDao(List<Product> products) {
         this.products = products;
+        super.init(this.products);
     }
 
     public ArrayListProductDao() {
+        super.init(this.products);
     }
 
     public static ProductDao getInstance() {
         return productDao;
     }
 
-
-    @Override
-    public synchronized Product getProduct(Long id) {
-        return products.stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Product with this id not found"));
-    }
 
     private List<Product> findProductsByQuery(String query, List<Product> products) {
         String[] words = query.toLowerCase().split(" ");
@@ -74,9 +69,14 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
+    public Product getById(Long id) {
+        return super.getById(id);
+    }
+
+    @Override
     public void save(Product product) {
         try {
-            Product existProduct = getProduct(product.getId());
+            Product existProduct = getById(product.getId());
             update(product, existProduct);
         } catch (NoSuchElementException e) {
             product.setId(Integer.toUnsignedLong(products.size()));
@@ -94,13 +94,12 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void delete(Long id) {
+    public synchronized void deleteById(Long id) {
         products.removeIf(product -> product.getId().equals(id));
     }
 
     @Override
     public void saveAll(List<Product> newProducts) {
-        System.out.println(newProducts.size());
         newProducts.stream().forEach(this::save);
     }
 }
