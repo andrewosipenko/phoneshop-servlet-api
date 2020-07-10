@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService{
     public List<Product> findProducts() {
         return productDao.getAll().stream().
                 filter(this::isProductsPricePresent).
-                filter(this::isProductsStockPositive).
+                filter(this::isProductInStock).
                 collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService{
         return product.getPrice() != null;
     }
 
-    private boolean isProductsStockPositive(Product product){
+    private boolean isProductInStock(Product product){
         return product.getStock() > 0;
     }
 
