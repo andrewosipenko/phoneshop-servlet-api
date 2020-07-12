@@ -27,6 +27,15 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,4 +91,32 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        else if (obj == null)
+            return false;
+        else if (getClass() != obj.getClass())
+            return false;
+
+        Product other = (Product)obj;
+        if (id != other.id)
+            return false;
+        else if (!code.equals(other.code))
+            return false;
+        else if (!description.equals(other.description))
+            return false;
+        else if (!price.equals(other.price))
+            return false;
+        else if (!currency.equals(other.currency))
+            return false;
+        else if (stock != other.stock)
+            return false;
+        else if (!imageUrl.equals(other.imageUrl))
+            return false;
+        return true;
+    }
+
 }
