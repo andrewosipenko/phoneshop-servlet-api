@@ -63,10 +63,14 @@ public class ArrayListProductDao implements ProductDao {
             products.stream().
                     filter(productFromList -> productFromList.getId().equals(product.getId())).
                     findAny().
-                    orElseGet(() -> {
-                        products.add(product);
-                        return product;
-                    });
+                    ifPresentOrElse(
+                            //if product already exist in collection swap them
+                            productFromList->{
+                                products.remove(productFromList);
+                                products.add(product);
+                            },
+                            //else if product isn't exist in collection simply add it 
+                            ()-> products.add(product));
         }
         finally {
             writelock.unlock();
