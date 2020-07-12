@@ -50,6 +50,12 @@ public class ArrayListProductDao extends AbstractDefaultDao<Product> implements 
         return productss;
     }
 
+    @Override
+    public void reduceAmountProducts(Product orderProduct, Long val) {
+        Product currentProduct = productDao.getById(orderProduct.getId());
+        currentProduct.setStock(currentProduct.getStock() - val.intValue());
+    }
+
     private List<Product> sortProductsByOrderAndSort(List<Product> productss, String order, String sort) {
 
         Comparator<Product> productComparator = null;

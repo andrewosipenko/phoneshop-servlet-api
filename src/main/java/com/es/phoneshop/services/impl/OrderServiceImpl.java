@@ -1,11 +1,13 @@
 package com.es.phoneshop.services.impl;
 
 import com.es.phoneshop.dao.ArrayListOrderDao;
+import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.dao.OrderDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.Cart;
 import com.es.phoneshop.model.Customer;
 import com.es.phoneshop.model.Order;
-import com.es.phoneshop.model.PaymentMethod;
+import com.es.phoneshop.enums.PaymentMethod;
 import com.es.phoneshop.services.OrderService;
 
 import java.math.BigDecimal;
@@ -16,6 +18,7 @@ public class OrderServiceImpl implements OrderService {
     public final BigDecimal DELIVERY_COST = new BigDecimal(5);
     private static OrderService orderService;
     OrderDao orderDao;
+    ProductDao productDao;
 
     public static OrderService getInstance() {
         if (orderService == null) {
@@ -25,12 +28,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public OrderServiceImpl() {
-        this.orderDao = new ArrayListOrderDao();
+        this.productDao = ArrayListProductDao.getInstance();
+        this.orderDao = ArrayListOrderDao.getInstance();
     }
 
 
     @Override
-    public Order placeOrder(Cart cart, Customer customer, HashMap<String, Object> additionalInformation) {
+    public Order generateOrder(Cart cart, Customer customer, HashMap<String, Object> additionalInformation) {
         Order order = new Order();
         order.setCartItems(cart.getCartItems());
         order.setSubtotalPrice(cart.getPrice());
@@ -57,6 +61,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderById(Long id) {
         return orderDao.getById(id);
+    }
+
+    @Override
+    public void placeOrder(Order order) {
+        order.getCartItems()
+                .stream()
+                .forEach(cartItem -> productDao.reduceAmountProducts(cartItem.getProduct(), cartItem.getQuantity()));
+        save(order);
     }
 
     @Override

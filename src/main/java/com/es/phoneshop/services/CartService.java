@@ -14,4 +14,6 @@ public interface CartService {
     void delete(Cart cart, Long ProductId);
 
     void clearCart(Cart cart);
+
+    void updateWithoutChangesProducts(Cart cart);
 }

@@ -1,4 +1,4 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.enums;
 
 import java.util.Arrays;
 

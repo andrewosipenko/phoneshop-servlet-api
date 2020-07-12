@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 public interface OrderService {
-    Order placeOrder(Cart cart, Customer customer, HashMap<String, Object> additionalInformation);
+    Order generateOrder(Cart cart, Customer customer, HashMap<String, Object> additionalInformation);
+
+    void placeOrder(Order order);
 
     BigDecimal getDeliveryCost();
 

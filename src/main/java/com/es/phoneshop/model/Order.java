@@ -1,5 +1,7 @@
 package com.es.phoneshop.model;
 
+import com.es.phoneshop.enums.PaymentMethod;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

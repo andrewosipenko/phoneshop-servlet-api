@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
@@ -41,7 +42,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void clearCart(Cart cart){
+    public void clearCart(Cart cart) {
         cart.setCartItems(new ArrayList<>());
         cart.setPrice(BigDecimal.ZERO);
     }
@@ -79,7 +80,7 @@ public class CartServiceImpl implements CartService {
                 .filter(cartItem1 -> cartItem1.getProduct() == product).findFirst();
 
         if (product.getStock() < quantity)
-            throw new NotEnoughElementsException("Shop have just"
+            throw new NotEnoughElementsException("Shop have just "
                     + product.getStock() + " " + product.getDescription());
 
         if (cartItem.isPresent()) {
@@ -89,11 +90,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public void updateWithoutChangesProducts(Cart cart) throws IllegalArgumentException, NotEnoughElementsException {
+        List<CartItem> cartItems = cart.getCartItems();
+        cartItems.stream().forEach(cartItem -> update(cart, cartItem.getProduct().getId(), cartItem.getQuantity()));
+    }
+
+    @Override
     public void delete(Cart cart, Long productId) {
         cart.getCartItems().removeIf(cartItem -> cartItem.getProduct().getId().equals(productId));
     }
 
-    private void recalculateCartPrice(Cart cart) {
+    public void recalculateCartPrice(Cart cart) {
         cart.setPrice(cart.getCartItems()
                 .stream()
                 .map(cartItem -> cartItem.getProduct().getCurrentPrice().getCost()
