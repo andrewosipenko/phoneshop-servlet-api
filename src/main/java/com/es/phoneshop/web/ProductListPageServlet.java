@@ -11,9 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
-    //TODO Contoller-layer
-
-    ProductService productService;
+    //TODO Controller-layer
+    private ProductService productService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -26,5 +25,4 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute("products", productService.findProducts());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
-
 }

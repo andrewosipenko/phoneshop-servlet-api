@@ -1,10 +1,11 @@
 package com.es.phoneshop.model.product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DAO<Entity, KeyValue> {
 
-    Entity get(KeyValue primaryKey);
+    Optional<Entity> get(KeyValue primaryKey);
 
     List<Entity> getAll();
 
