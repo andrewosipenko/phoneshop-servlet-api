@@ -22,7 +22,13 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productService.findProducts());
+        processRequest(request, response);
+    }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
+        String searchParam = request.getParameter(String.valueOf(QUERY_PARAM_KEYS.query));
+
+        request.setAttribute("products", productService.findProduct(searchParam));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

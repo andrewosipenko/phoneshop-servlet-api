@@ -35,6 +35,13 @@ public class ProductServiceImpl implements ProductService{
         productDao.delete(id);
     }
 
+    //todo search with or clause
+
+    @Override
+    public List<Product> findProduct(String q) {
+        return productDao.find(q);
+    }
+
     private boolean isProductsPricePresent(Product product){
         return product.getPrice() != null;
     }
