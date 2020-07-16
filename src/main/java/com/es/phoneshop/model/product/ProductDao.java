@@ -9,4 +9,6 @@ public interface ProductDao extends DAO<Product, Long> {
     List<Product> getAll();
     void save(Product product);
     void delete(Long id);
+    //
+    List<Product> find(String query);
 }

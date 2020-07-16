@@ -13,6 +13,6 @@
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
+    <url-pattern>/products/search</url-pattern>
   </servlet-mapping>
-
 </web-app>

@@ -87,4 +87,9 @@ public class ProductServiceImplTest {
         productService.delete(validExample1.getId());
         productService.getProduct(validExample1.getId());
     }
+
+    @Test
+    public void findPatients(){
+
+    }
 }

@@ -1,10 +1,13 @@
 package com.es.phoneshop.model.product;
 
+import org.apache.commons.collections.ComparatorUtils;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private long maxID;
@@ -93,6 +96,60 @@ public class ArrayListProductDao implements ProductDao {
 
     }
 
+    @Override
+    public List<Product> find(String query) {
+        readLock.lock();
+        try {
+            List<Comparator<Product>> comparators = new LinkedList<>();
+            if(query != null){
+                String[] terms = query.toLowerCase().split(" ");
+                Arrays.stream(terms)
+                        .forEach(term -> comparators.add(this.getDescriptionContainingComparator(term)));
+                return this.products.stream()
+                        .sorted(((Comparator<Product>) ComparatorUtils.chainedComparator(comparators)))
+                        .filter(product -> isPartlyContaining(product.getDescription(), terms))
+                        .collect(Collectors.toList());
+            } else return products;
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    //all methods without locks are reentrant
+    private boolean isPartlyContaining(String string, String[] terms){
+        for (var term : terms) {
+            if(string.toLowerCase().contains(term)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Comparator<Product> getDescriptionContainingComparator(String rawTerm){
+        return (product1, product2) -> {
+            String product1Description = product1.getDescription().toLowerCase();
+            String product2Description = product2.getDescription().toLowerCase();
+            String term = rawTerm.toLowerCase();
+
+            if (onlySecondContainsTerm(product1Description, product2Description, term)) {
+                return 1;
+            } else if (areBothContainingTerm(product1Description, product2Description, term)) {
+                return 0;
+            } else return -1;
+        };
+    }
+
+    private boolean onlySecondContainsTerm(String first, String second, String term){
+        return !first.contains(term) && second.contains(term);
+    }
+
+    private boolean areBothContainingTerm(String first, String second, String term){
+        //!product1Description.contains(term) && !product2Description.contains(term) ||
+        return first.contains(term) && second.contains(term);
+    }
+
+
+    //todo move into DataSampleListener
     private void getSampleProducts(){
         Currency usd = Currency.getInstance("USD");
         this.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
