@@ -12,5 +12,5 @@ public interface ProductService {
 
     void delete(Long id);
 
-    List<Product> findProduct(String q);
+    List<Product> findProduct(String sort, String order, String query);
 }

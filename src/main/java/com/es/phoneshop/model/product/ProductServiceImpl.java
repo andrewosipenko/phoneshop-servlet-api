@@ -1,8 +1,10 @@
 package com.es.phoneshop.model.product;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
 
 public class ProductServiceImpl implements ProductService{
     private final ProductDao productDao;
@@ -35,11 +37,31 @@ public class ProductServiceImpl implements ProductService{
         productDao.delete(id);
     }
 
-    //todo search with or clause
 
+    //Andrei wanted to use comparators chain but i think it would be overkill
     @Override
-    public List<Product> findProduct(String q) {
-        return productDao.find(q);
+    public List<Product> findProduct(String sort, String order, String query) {
+
+        Comparator<Product> comparator = Comparator.comparing(product -> {
+            //also could be used switch with enums
+            if(String.valueOf(SortField.description).equals(sort)){
+                return (Comparable) product.getDescription();
+            }
+            if(String.valueOf(SortField.price).equals(sort)){
+                return ((Comparable) product.getPrice());
+            }
+            //default value
+            return ((Comparable) Comparator.naturalOrder());
+        });
+
+        if(String.valueOf(SortOrder.desc).equals(order)){
+            comparator = comparator.reversed();
+        }
+
+        return productDao.find(query)
+                .stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
     }
 
     private boolean isProductsPricePresent(Product product){

@@ -101,7 +101,7 @@ public class ArrayListProductDao implements ProductDao {
         readLock.lock();
         try {
             List<Comparator<Product>> comparators = new LinkedList<>();
-            if(query != null){
+            if(query != null && !query.equals(" ")) {
                 String[] terms = query.toLowerCase().split(" ");
                 Arrays.stream(terms)
                         .forEach(term -> comparators.add(this.getDescriptionContainingComparator(term)));
@@ -114,6 +114,7 @@ public class ArrayListProductDao implements ProductDao {
             readLock.unlock();
         }
     }
+
 
     //all methods without locks are reentrant
     private boolean isPartlyContaining(String string, String[] terms){
