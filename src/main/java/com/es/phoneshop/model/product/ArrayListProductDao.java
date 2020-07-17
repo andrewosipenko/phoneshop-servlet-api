@@ -12,11 +12,15 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
 
     private List<Product> productList;
-    public long productId;
-    ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private long productId;
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     public ArrayListProductDao() {
         productList = getSampleProducts();
+    }
+
+    protected void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 
     @Override
@@ -27,7 +31,7 @@ public class ArrayListProductDao implements ProductDao {
             return productList.stream()
                     .filter((product) -> id.equals(product.getId()))
                     .findAny()
-                    . orElseThrow(() -> new ProductNotFoundException());
+                    .orElseThrow(ProductNotFoundException::new);
         }
         finally {
             readLock.unlock();
@@ -56,11 +60,8 @@ public class ArrayListProductDao implements ProductDao {
         try {
             Long id = product.getId();
             if (id != null) {
-                Product oldProduct = getProduct(id);
-                int index = productList.indexOf(oldProduct);
-                Product updatedProduct = product;
-                updatedProduct.setId(id);
-                productList.set(index, updatedProduct);
+                productList.remove(getProduct(id));
+                productList.add(product);
             }
             else {
                 product.setId(++productId);
@@ -73,8 +74,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(Long id) throws ProductNotFoundException
-    {
+    public void delete(Long id) throws ProductNotFoundException {
         Lock writeLock = rwLock.writeLock();
         writeLock.lock();
         try {
