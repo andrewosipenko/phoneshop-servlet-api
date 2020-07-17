@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
 
     public ProductServiceImpl() {
@@ -17,6 +17,20 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProduct(Long id) throws NoSuchElementException {
         return productDao.get(id).get();
+    }
+
+
+    @Override
+    public Product getProduct(String id) throws NoSuchElementException {
+        long longId;
+        Product result;
+        try {
+            longId = Integer.parseInt(id.split("/")[1]);
+            result = productDao.get(longId).get();
+        } catch (NumberFormatException | NoSuchElementException e) {
+            throw new NoSuchElementException(id.split("/")[1]);
+        }
+        return result;
     }
 
     @Override
@@ -44,31 +58,33 @@ public class ProductServiceImpl implements ProductService{
 
         Comparator<Product> comparator = Comparator.comparing(product -> {
             //also could be used switch with enums
-            if(String.valueOf(SortField.description).equals(sort)){
+            if (String.valueOf(SortField.description).equals(sort)) {
                 return (Comparable) product.getDescription();
             }
-            if(String.valueOf(SortField.price).equals(sort)){
+            if (String.valueOf(SortField.price).equals(sort)) {
                 return ((Comparable) product.getPrice());
             }
             //default value
             return ((Comparable) Comparator.naturalOrder());
         });
 
-        if(String.valueOf(SortOrder.desc).equals(order)){
+        if (String.valueOf(SortOrder.desc).equals(order)) {
             comparator = comparator.reversed();
         }
 
         return productDao.find(query)
                 .stream()
+                .filter(this::isProductsPricePresent)
+                .filter(this::isProductInStock)
                 .sorted(comparator)
                 .collect(Collectors.toList());
     }
 
-    private boolean isProductsPricePresent(Product product){
+    private boolean isProductsPricePresent(Product product) {
         return product.getPrice() != null;
     }
 
-    private boolean isProductInStock(Product product){
+    private boolean isProductInStock(Product product) {
         return product.getStock() > 0;
     }
 }

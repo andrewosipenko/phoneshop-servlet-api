@@ -7,7 +7,7 @@
 
   <context-param>
     <param-name>insertDemoData</param-name>
-    <param-value>false</param-value>
+    <param-value>true</param-value>
   </context-param>
 
   <listener>
@@ -22,6 +22,26 @@
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
-    <url-pattern>/products/search</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>productDetails</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>productDetails</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
+    <exception-type>java.util.NoSuchElementException</exception-type>
+    <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+  </error-page>
+
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+  </error-page>
+
 </web-app>
