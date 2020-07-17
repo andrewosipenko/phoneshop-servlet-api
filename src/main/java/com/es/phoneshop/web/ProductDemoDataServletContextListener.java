@@ -1,6 +1,7 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.PriceHistory;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.ServletContextEvent;
@@ -33,7 +34,14 @@ public class ProductDemoDataServletContextListener implements ServletContextList
     private List<Product> getSampleProducts() {
         List<Product> products = new ArrayList<>();
         Currency usd = Currency.getInstance("USD");
-        products.add(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
+
+        List<PriceHistory> priceHistories = new ArrayList<>();
+        priceHistories.add(new PriceHistory("10 Jan 2019", new BigDecimal(100), usd));
+        priceHistories.add(new PriceHistory("10 Oct 2018", new BigDecimal(110), usd));
+        priceHistories.add(new PriceHistory("1 Sep 2018", new BigDecimal(150), usd));
+
+
+        products.add(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", priceHistories));
         products.add(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
         products.add(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
         products.add(new Product("iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
