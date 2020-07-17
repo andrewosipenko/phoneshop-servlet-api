@@ -10,7 +10,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductDao productDao;
 
     public ProductServiceImpl() {
-        this.productDao = new ArrayListProductDao();
+        this.productDao = ArrayListProductDao.getInstance();
     }
 
     //don't know what to return in nonpresent case to provide 404 code :)
