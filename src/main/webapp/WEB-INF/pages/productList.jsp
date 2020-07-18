@@ -8,6 +8,10 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input type="text" name="queryProduct" value="${param.queryProduct}" placeholder="Search product...">
+    <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>

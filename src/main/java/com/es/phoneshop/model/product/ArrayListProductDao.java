@@ -1,9 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -23,6 +21,17 @@ public class ArrayListProductDao implements ProductDao {
         this.productList = productList;
     }
 
+    private int wordsAmount(List<String> wordsList, Product product) {
+        List<String> descriptionWords = Arrays.asList(product.getDescription().split(" "));
+        int amount = 0;
+        for (String word : wordsList) {
+            if (descriptionWords.contains(word)) {
+                amount++;
+            }
+        }
+        return amount;
+    }
+
     @Override
     public Product getProduct(Long id) throws ProductNotFoundException {
         Lock readLock = rwLock.readLock();
@@ -39,13 +48,24 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String queryProduct) {
         Lock readLock = rwLock.readLock();
         readLock.lock();
         try {
-            return productList.stream()
+            if (queryProduct == null || queryProduct.isEmpty())
+                return productList;
+            List<Product> tempResult = productList.stream()
                     .filter((product) -> product.getPrice() != null)
                     .filter((product -> product.getStock() > 0))
+                    .collect(Collectors.toList());
+            String[] words = queryProduct.split(" ");
+            List<String> wordsList = Arrays.asList(words);
+            List<Product> result = new ArrayList<>();
+            for (Product product:tempResult)
+                if (wordsAmount(wordsList, product) > 0)
+                    result.add(product);
+            return result.stream()
+                    .sorted(Comparator.comparing((product -> wordsAmount(wordsList, product)), Comparator.reverseOrder()))
                     .collect(Collectors.toList());
         }
         finally {
