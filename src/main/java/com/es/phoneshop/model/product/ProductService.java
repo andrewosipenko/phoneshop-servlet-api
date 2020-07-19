@@ -6,7 +6,7 @@ public interface ProductService {
 
     Product getProduct(Long id);
 
-    Product getProduct(String id);
+    Product getProduct(String pathInfo);
 
     List<Product> findProducts();
 

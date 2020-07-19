@@ -21,14 +21,15 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product getProduct(String id) throws NoSuchElementException {
+    public Product getProduct(String pathInfo) throws NoSuchElementException {
         long longId;
         Product result;
         try {
-            longId = Integer.parseInt(id.split("/")[1]);
+            longId = Integer.parseInt(pathInfo.split("/")[1]);
             result = productDao.get(longId).get();
-        } catch (NumberFormatException | NoSuchElementException e) {
-            throw new NoSuchElementException(id.split("/")[1]);
+        } catch (NumberFormatException | NoSuchElementException | ArrayIndexOutOfBoundsException e) {
+            //could be created special IncorrectPathInfoException
+            throw new NoSuchElementException(pathInfo.split("/")[1]);
         }
         return result;
     }
