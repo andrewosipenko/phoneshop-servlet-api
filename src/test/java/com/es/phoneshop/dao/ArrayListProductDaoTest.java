@@ -56,14 +56,14 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testGetProduct() throws ProductNotFoundException {
+    public void testGetProduct() {
         Product actualProduct = productDao.getProduct(15L);
         assertEquals(product1, actualProduct);
 
     }
 
     @Test(expected = ProductNotFoundException.class)
-    public void testGetProductException() throws ProductNotFoundException {
+    public void testGetProductException() {
         productDao.getProduct(14L);
 
     }
@@ -78,7 +78,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testSaveNewProduct() throws ProductNotFoundException {
+    public void testSaveNewProduct() {
         productDao.save(productToSave);
         verify(productToSave).setId(anyLong());
         assertTrue(testProducts.contains(productToSave));
@@ -86,7 +86,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testSaveExistingProduct() throws ProductNotFoundException {
+    public void testSaveExistingProduct() {
         productDao.save(product1);
         verify(product1, never()).setId(anyLong());
         assertTrue(testProducts.contains(product1));
@@ -94,7 +94,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testDeleteProduct() throws ProductNotFoundException {
+    public void testDeleteProduct() {
         long idToDelete = 15L;
         productDao.delete(idToDelete);
         assertTrue(!testProducts.contains(product1));
