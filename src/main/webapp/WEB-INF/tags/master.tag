@@ -17,5 +17,8 @@
   <main>
     <jsp:doBody/>
   </main>
+  <p>
+    (c) Vlad Brown :)
+  </p>
 </body>
 </html>

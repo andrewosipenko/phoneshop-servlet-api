@@ -4,26 +4,53 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+
 <tags:master pageTitle="Product List">
+  <script>
+    function popUpFunction() {
+      let popup = document.getElementById("myPopup");
+      popup.classList.toggle("show");
+    }
+  </script>
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <div>
+    <form method="get">
+      <input type="text" name="query" value="${param.query}">
+      <button type="submit">Search</button>
+    </form>
+  </div>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td class="description">
+          Description
+          <tags:sortFields sort="description" order="asc"/>
+          <tags:sortFields sort="description" order="desc"/>
+        </td>
+        <td class="price">
+          Price
+          <tags:sortFields sort="price" order="asc"/>
+          <tags:sortFields sort="price" order="desc"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
       <tr>
         <td>
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+          <img class="product-tile" src=${product.imageUrl}>
         </td>
-        <td>${product.description}</td>
+        <td>
+          <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+              ${product.description}
+          </a>
+        </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <a href="${pageContext.servletContext.contextPath}/products/${product.id}/priceHistory">
+            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          </a>
         </td>
       </tr>
     </c:forEach>
