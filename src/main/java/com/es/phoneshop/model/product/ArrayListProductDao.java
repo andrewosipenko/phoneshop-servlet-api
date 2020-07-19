@@ -8,12 +8,12 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao implements ProductDao, TestableSingletonProductDao<List<Product>> {
     private static volatile ArrayListProductDao instance;
 
     private long maxID;
 
-    private final List<Product> products;
+    private List<Product> products;
 
     private final ReadWriteLock readWriteLock;
     private final Lock readLock;
@@ -138,7 +138,6 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-
     //all methods without locks are reentrant
     private boolean isPartlyContaining(String string, String[] terms) {
         for (var term : terms) {
@@ -170,5 +169,22 @@ public class ArrayListProductDao implements ProductDao {
     private boolean areBothContainingTerm(String first, String second, String term) {
         //!product1Description.contains(term) && !product2Description.contains(term) ||
         return first.contains(term) && second.contains(term);
+    }
+
+
+    @Override
+    public List<Product> get() {
+        return products;
+    }
+
+    @Override
+    public void set(List<Product> resource) {
+        products = resource;
+    }
+
+    @Override
+    public void dropToDefault() {
+        products = new ArrayList<>();
+        maxID = 0;
     }
 }
