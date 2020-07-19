@@ -1,5 +1,7 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
 
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.exception.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

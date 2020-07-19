@@ -1,4 +1,9 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
+
+import com.es.phoneshop.model.SortField;
+import com.es.phoneshop.model.SortOrder;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.exception.ProductNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -22,10 +27,10 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     private int wordsAmount(List<String> wordsList, Product product) {
-        List<String> descriptionWords = Arrays.asList(product.getDescription().split(" "));
+        String description = product.getDescription();
         int amount = 0;
         for (String word : wordsList) {
-            if (descriptionWords.contains(word)) {
+            if (description.contains(word)) {
                 amount++;
             }
         }
@@ -48,25 +53,44 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String queryProduct) {
+    public List<Product> findProducts(String queryProduct, SortField sortField, SortOrder sortOrder) {
         Lock readLock = rwLock.readLock();
         readLock.lock();
         try {
-            if (queryProduct == null || queryProduct.isEmpty())
-                return productList;
-            List<Product> tempResult = productList.stream()
-                    .filter((product) -> product.getPrice() != null)
-                    .filter((product -> product.getStock() > 0))
+            List<String> wordsList = new ArrayList<>();
+            if (queryProduct != null && !queryProduct.isEmpty()) {
+                wordsList = Arrays.asList(queryProduct.split(" "));
+            }
+            List<String> finalWordsList = wordsList;
+            Comparator comparator = Comparator.comparing(((product -> {
+                        if (sortField == SortField.description) {
+                            return (Comparable)((Product) product).getDescription();
+                        } else {
+                            if (sortField == SortField.price) {
+                                return (Comparable) ((Product) product).getPrice();
+                            } else {
+                                return (Comparable) 1;
+                            }
+                        }
+                    })));
+
+            List<Product> searchResults = productList.stream()
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getStock() > 0)
+                    .filter(product -> queryProduct == null || queryProduct.isEmpty() || wordsAmount(finalWordsList, product) > 0)
+                    .sorted(Comparator.comparing(product -> wordsAmount(finalWordsList, product), Comparator.reverseOrder()))
                     .collect(Collectors.toList());
-            String[] words = queryProduct.split(" ");
-            List<String> wordsList = Arrays.asList(words);
-            List<Product> result = new ArrayList<>();
-            for (Product product:tempResult)
-                if (wordsAmount(wordsList, product) > 0)
-                    result.add(product);
-            return result.stream()
-                    .sorted(Comparator.comparing((product -> wordsAmount(wordsList, product)), Comparator.reverseOrder()))
-                    .collect(Collectors.toList());
+
+            if (sortOrder == SortOrder.desc) {
+                return (List<Product>) searchResults.stream()
+                        .sorted(comparator.reversed())
+                        .collect(Collectors.toList());
+            }
+            else {
+                return (List<Product>) searchResults.stream()
+                        .sorted(comparator)
+                        .collect(Collectors.toList());
+            }
         }
         finally {
             readLock.unlock();
