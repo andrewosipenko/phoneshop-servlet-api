@@ -3,7 +3,6 @@ package com.es.phoneshop.dao;
 import com.es.phoneshop.model.SortField;
 import com.es.phoneshop.model.SortOrder;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.exception.ProductNotFoundException;
 
 import java.util.List;
 
