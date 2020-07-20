@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,10 +31,16 @@ public class CartPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Map<Long, String> errors = updateProductQuantity(req);
+        req.setAttribute("errors", errors);
+        doGet(req, resp);
+    }
+
+    protected Map<Long, String> updateProductQuantity(HttpServletRequest req) {
+        Map<Long, String> errors = new HashMap<>();
+
         String[] productId = req.getParameterValues("productId");
         String[] quantity = req.getParameterValues("quantity");
-
-        Map<Long, String> errors = new HashMap<>();
 
         for (int i = 0; i < productId.length; i++) {
             Long productIdL = Long.parseLong(productId[i]);
@@ -46,7 +51,6 @@ public class CartPageServlet extends HttpServlet {
                 errors.put(productIdL, e.getMessage());
             }
         }
-        req.setAttribute("errors", errors);
-        doGet(req, resp);
+        return errors;
     }
 }

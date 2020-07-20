@@ -8,20 +8,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao extends AbstractDefaultDao<Product> implements ProductDao {
-    private List<Product> products = new ArrayList<>();
-    private static ProductDao productDao = new ArrayListProductDao();
+    private ArrayList<Product> products;
 
-    public ArrayListProductDao(List<Product> products) {
-        this.products = products;
+
+    private ArrayListProductDao() {
+        this.products = new ArrayList<>();
         super.init(this.products);
+
     }
 
-    public ArrayListProductDao() {
-        super.init(this.products);
+    public static ArrayListProductDao getInstance() {
+        return ProductDaoHolder.instance;
     }
 
-    public static ProductDao getInstance() {
-        return productDao;
+    private static class ProductDaoHolder {
+        private static final ArrayListProductDao instance = new ArrayListProductDao();
     }
 
 
@@ -29,7 +30,6 @@ public class ArrayListProductDao extends AbstractDefaultDao<Product> implements 
         String[] words = query.toLowerCase().split(" ");
         return products.stream().filter(product -> Arrays.stream(words)
                 .anyMatch(word -> product.getDescription().toLowerCase().contains(word)))
-//                sorted my query
                 .sorted(Comparator.comparingInt(product -> (int) Arrays.stream(words)
                         .filter(word -> product.getDescription().toLowerCase().contains(word)).count()))
                 .collect(Collectors.toList());
@@ -37,26 +37,26 @@ public class ArrayListProductDao extends AbstractDefaultDao<Product> implements 
 
     @Override
     public synchronized List<Product> findProducts(String query, String order, String sort) {
-        List<Product> productss = products.stream()
+        List<Product> foundProducts = this.products.stream()
                 .filter(product -> product.getStock() > 0)
                 .filter(product -> product.getCurrentPrice() != null)
                 .collect(Collectors.toList());
         if (query != null) {
-            productss = findProductsByQuery(query, productss);
+            foundProducts = findProductsByQuery(query, foundProducts);
         }
         if (order != null) {
-            productss = sortProductsByOrderAndSort(productss, order, sort);
+            foundProducts = sortProductsByOrderAndSort(foundProducts, order, sort);
         }
-        return productss;
+        return foundProducts;
     }
 
     @Override
     public void reduceAmountProducts(Product orderProduct, Long val) {
-        Product currentProduct = productDao.getById(orderProduct.getId());
+        Product currentProduct = getById(orderProduct.getId());
         currentProduct.setStock(currentProduct.getStock() - val.intValue());
     }
 
-    private List<Product> sortProductsByOrderAndSort(List<Product> productss, String order, String sort) {
+    private List<Product> sortProductsByOrderAndSort(List<Product> products, String order, String sort) {
 
         Comparator<Product> productComparator = null;
         switch (ProductOrderBy.valueOf(order.toUpperCase())) {
@@ -68,10 +68,10 @@ public class ArrayListProductDao extends AbstractDefaultDao<Product> implements 
                 break;
         }
 
-        if (ProductSortBy.valueOf(sort.toUpperCase()) == ProductSortBy.ASC) {
+        if (ProductSortBy.valueOf(sort.toUpperCase()) == ProductSortBy.DESC) {
             productComparator = productComparator.reversed();
         }
-        return productss.stream().sorted(productComparator).collect(Collectors.toList());
+        return products.stream().sorted(productComparator).collect(Collectors.toList());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ArrayListProductDao extends AbstractDefaultDao<Product> implements 
         try {
             Product existProduct = getById(product.getId());
             update(product, existProduct);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | IllegalArgumentException illegalArgumentException) {
             product.setId(Integer.toUnsignedLong(products.size()));
             products.add(product);
         }
@@ -106,6 +106,6 @@ public class ArrayListProductDao extends AbstractDefaultDao<Product> implements 
 
     @Override
     public void saveAll(List<Product> newProducts) {
-        newProducts.stream().forEach(this::save);
+        newProducts.forEach(this::save);
     }
 }

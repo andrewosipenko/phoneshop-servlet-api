@@ -59,21 +59,20 @@ public class CheckoutPageServlet extends HttpServlet {
             } catch (Exception e) {
                 resp.sendError(UNPROCESSABLE_ENTITY, e.getMessage() + " make update your cart.");
             }
-
             Customer customer = saveCustomer(req);
-            HashMap additionalInformation = getAdditionalInformation(req);
+            HashMap<String, String> additionalInformation = getAdditionalInformation(req);
             Order order = orderService.generateOrder(cart, customer, additionalInformation);
             orderService.placeOrder(order);
             cartService.clearCart(cart);
             resp.sendRedirect(req.getContextPath() + "/order/overview/" + order.getSecureId());
         } else {
-            req.setAttribute("errors",errors);
+            req.setAttribute("errors", errors);
             doGet(req, resp);
         }
     }
 
-    private HashMap getAdditionalInformation(HttpServletRequest request) {
-        HashMap hashMap = new HashMap();
+    private HashMap<String, String> getAdditionalInformation(HttpServletRequest request) {
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("deliveryDate", request.getParameter("deliveryDate"));
         hashMap.put("deliveryAddress", request.getParameter("deliveryAddress"));
         hashMap.put("paymentMethod", request.getParameter("paymentMethod"));

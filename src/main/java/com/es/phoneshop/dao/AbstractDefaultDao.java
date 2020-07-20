@@ -21,10 +21,10 @@ public class AbstractDefaultDao<T extends DaoItem> implements DefaultDao<T> {
     @Override
     public T getById(Long id) {
         if (id == null) {
-            new IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
-        return items.stream()
+        return getAll().stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
@@ -33,33 +33,32 @@ public class AbstractDefaultDao<T extends DaoItem> implements DefaultDao<T> {
     @Override
     public void save(T object) {
         if (object == null) {
-            new IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
-        if (items.stream().noneMatch(t -> t.getId().equals(object.getId()))) {
-            items.add(object);
+        if (getAll().stream().noneMatch(t -> t.getId().equals(object.getId()))) {
+            getAll().add(object);
         } else {
-            new IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
     }
 
 
-    //todo think about realization
     @Override
     public void saveAll(List<T> objects) {
-        objects.stream().forEach(this::save);
+        objects.forEach(this::save);
     }
 
     @Override
     public void deleteById(Long id) {
         if (id == null) {
-            new IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
-        if (!items.stream().noneMatch(t -> t.getId().equals(id))) {
-            items.remove(id);
+        if (getAll().stream().anyMatch(t -> t.getId().equals(id))) {
+            getAll().remove(id);
         } else {
-            new IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
     }
 }

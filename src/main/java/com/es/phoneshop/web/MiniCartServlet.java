@@ -24,4 +24,11 @@ public class MiniCartServlet extends HttpServlet {
         req.setAttribute("cart", cart);
         req.getRequestDispatcher("/WEB-INF/pages/miniCart.jsp").include(req, resp);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Cart cart = cartService.getCart(req);
+        req.setAttribute("cart", cart);
+        req.getRequestDispatcher("/WEB-INF/pages/miniCart.jsp").include(req, resp);
+    }
 }

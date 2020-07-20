@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 public interface OrderService {
-    Order generateOrder(Cart cart, Customer customer, HashMap<String, Object> additionalInformation);
+    Order generateOrder(Cart cart, Customer customer, HashMap<String, String> additionalInformation);
 
     void placeOrder(Order order);
 

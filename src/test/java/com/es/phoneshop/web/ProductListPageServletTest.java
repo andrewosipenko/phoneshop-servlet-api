@@ -1,52 +1,79 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.Product;
+import com.es.phoneshop.services.RecentlyViewedService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
-//    @Mock
-//    private HttpServletRequest request;
-//    @Mock
-//    private HttpServletResponse response;
-//    @Mock
-//    private RequestDispatcher requestDispatcher;
-//    @Mock
-//    private ProductDao productDao;
-//
-//    @InjectMocks
-//    private ProductListPageServlet servlet;
-//
-//    private List<Product> getSampleProducts(){
-//        List<Product> result = new ArrayList<>();
-//
-//        Currency usd = Currency.getInstance("USD");
-//        result.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
-//        result.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-//        result.add(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
-//        result.add(new Product(4L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
-//        result.add(new Product(5L, "iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg"));
-//        result.add(new Product(6L, "htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));
-//        result.add(new Product(7L, "sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg"));
-//        result.add(new Product(8L, "xperiaxz", "Sony Xperia XZ", new BigDecimal(120), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Xperia%20XZ.jpg"));
-//        result.add(new Product(9L, "nokia3310", "Nokia 3310", new BigDecimal(70), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Nokia/Nokia%203310.jpg"));
-//        result.add(new Product(10L, "palmp", "Palm Pixi", new BigDecimal(170), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Palm/Palm%20Pixi.jpg"));
-//        result.add(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
-//        result.add(new Product(12L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
-//        result.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-//        return result;
-//    }
 
-//    @Before
-//    public void setup(){
-//        when(productDao.findProducts(null,null,null)).thenReturn(getSampleProducts());
-//        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-//    }
-//
-//
-//    @Test
-//    public void testDoGet() throws ServletException, IOException {
-//        servlet.doGet(request, response);
-//        verify(request).setAttribute("products",productDao.findProducts(null,null,null));
-//        verify(requestDispatcher).forward(request, response);
-//    }
+    @Mock
+    private ProductDao productDao;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpServletResponse response;
+
+    @Mock
+    private RequestDispatcher requestDispatcher;
+
+    @Mock
+    private RecentlyViewedService recentlyViewedService;
+
+    @InjectMocks
+    private ProductListPageServlet servlet;
+
+    @Mock
+    private Product product1;
+    @Mock
+    private Product product2;
+    @Mock
+    private Product product3;
+
+
+    private final String TEST_SEARCHER = "TEST_SEARCHER";
+    private final String TEST_ORDER = "TEST_ORDER";
+    private final String TEST_SORTER = "TEST_SORTER";
+    private final String PATH = "/WEB-INF/pages/productList.jsp";
+
+
+    @Before
+    public void setup() {
+        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getParameter("searcher")).thenReturn(TEST_SEARCHER);
+        when(request.getParameter("order")).thenReturn(TEST_ORDER);
+        when(request.getParameter("sort")).thenReturn(TEST_SORTER);
+        when(request.getRequestDispatcher(PATH)).thenReturn(requestDispatcher);
+        when(productDao.findProducts(TEST_SEARCHER, TEST_ORDER, TEST_SORTER)).thenReturn(Arrays.asList(product1, product2, product3));
+        when(recentlyViewedService.getViewedProducts(request)).thenReturn(Arrays.asList(product1, product2));
+    }
+
+    @Test
+    public void testDoGet() throws ServletException, IOException {
+        servlet.doGet(request, response);
+        verify(request).setAttribute("products", productDao.findProducts(TEST_SEARCHER, TEST_ORDER, TEST_SORTER));
+        verify(request).setAttribute("viewedProducts", recentlyViewedService.getViewedProducts(request));
+        verify(request, times(1)).getRequestDispatcher(PATH);
+        verify(requestDispatcher).forward(request, response);
+    }
 }

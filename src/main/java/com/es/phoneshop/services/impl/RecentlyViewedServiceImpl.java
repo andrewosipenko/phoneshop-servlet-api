@@ -1,8 +1,8 @@
 package com.es.phoneshop.services.impl;
 
 import com.es.phoneshop.dao.ArrayListProductDao;
-import com.es.phoneshop.model.Product;
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.Product;
 import com.es.phoneshop.services.RecentlyViewedService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,11 +43,12 @@ public class RecentlyViewedServiceImpl implements RecentlyViewedService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Product> getViewedProducts(HttpServletRequest request) {
         HttpSession httpSession = request.getSession();
         List<Product> recentlyViewedProducts = (List<Product>) httpSession.getAttribute(RECENTLY_VIEWED_KEY);
         if (recentlyViewedProducts == null) {
-            recentlyViewedProducts = new ArrayList<Product>();
+            recentlyViewedProducts = new ArrayList<>();
         }
         return recentlyViewedProducts;
     }

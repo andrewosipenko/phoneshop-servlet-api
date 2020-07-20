@@ -3,7 +3,9 @@ package com.es.phoneshop.services.impl;
 import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exceptions.NotEnoughElementsException;
-import com.es.phoneshop.model.*;
+import com.es.phoneshop.model.Cart;
+import com.es.phoneshop.model.CartItem;
+import com.es.phoneshop.model.Product;
 import com.es.phoneshop.services.CartService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,19 +17,19 @@ import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
 
-    private static CartService cartService;
-    private final String CART_SESSION = "keyCart";
-    ProductDao productDao;
+    public static final String CART_SESSION = "keyCart";
+    private ProductDao productDao;
 
-    public CartServiceImpl() {
+    private CartServiceImpl() {
         this.productDao = ArrayListProductDao.getInstance();
     }
 
     public static CartService getInstance() {
-        if (cartService == null) {
-            cartService = new CartServiceImpl();
-        }
-        return cartService;
+        return CartServiceHolder.instance;
+    }
+
+    private static class CartServiceHolder {
+        private static final CartService instance = new CartServiceImpl();
     }
 
     @Override

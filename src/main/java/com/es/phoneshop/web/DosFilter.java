@@ -18,6 +18,7 @@ public class DosFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        request.setCharacterEncoding("UTF-8");
         String ip = request.getLocalAddr();
         if (dosService.isAllowed(ip)) {
             chain.doFilter(request, response);

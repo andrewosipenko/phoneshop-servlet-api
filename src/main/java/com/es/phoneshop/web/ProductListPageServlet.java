@@ -29,7 +29,6 @@ public class ProductListPageServlet extends HttpServlet {
         String sort = request.getParameter("sort");
         request.setAttribute("products", productDao.findProducts(search, order, sort));
         request.setAttribute("viewedProducts", recentlyViewedService.getViewedProducts(request));
-        System.out.println(request.getAttributeNames());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

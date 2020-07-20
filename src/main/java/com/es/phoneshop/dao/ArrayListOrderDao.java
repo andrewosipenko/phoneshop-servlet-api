@@ -10,11 +10,6 @@ public class ArrayListOrderDao extends AbstractDefaultDao<Order> implements Orde
     private static OrderDao orderDao = new ArrayListOrderDao();
     private List<Order> orderList = new ArrayList<>();
 
-    public ArrayListOrderDao(List<Order> items) {
-        this.orderList = items;
-        super.init(items);
-    }
-
     public static OrderDao getInstance() {
         return orderDao;
     }
@@ -26,7 +21,7 @@ public class ArrayListOrderDao extends AbstractDefaultDao<Order> implements Orde
     @Override
     public Order getBySecretId(String secretKey) {
         if (secretKey == null) {
-            new IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
         return this.orderList.stream()
