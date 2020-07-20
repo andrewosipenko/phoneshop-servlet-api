@@ -24,4 +24,29 @@
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>productDetails</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>productDetails</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
+    <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+    <exception-type>java.lang.RuntimeException</exception-type>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/error.jsp</location>
+    <error-code>500</error-code>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/errorPageNotFound.jsp</location>
+    <error-code>404</error-code>
+  </error-page>
+
 </web-app>

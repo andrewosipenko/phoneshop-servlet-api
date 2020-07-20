@@ -3,7 +3,6 @@ package com.es.phoneshop.dao;
 import com.es.phoneshop.model.SortField;
 import com.es.phoneshop.model.SortOrder;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.exception.ProductNotFoundException;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -17,8 +16,16 @@ public class ArrayListProductDao implements ProductDao {
     private long productId;
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-    public ArrayListProductDao() {
+    private ArrayListProductDao() {
         productList = new ArrayList<>();
+    }
+
+    private static class SingletonHelper {
+        private static final ArrayListProductDao INSTANCE = new ArrayListProductDao();
+    }
+
+    public static ArrayListProductDao getInstance() {
+        return SingletonHelper.INSTANCE;
     }
 
     protected void setProductList(List<Product> productList) {

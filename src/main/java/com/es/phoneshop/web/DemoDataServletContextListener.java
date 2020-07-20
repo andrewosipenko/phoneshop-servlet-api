@@ -2,42 +2,53 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.PriceHistory;
 import com.es.phoneshop.model.product.Product;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DemoDataServletContextListener implements ServletContextListener {
+
     private ProductDao productDao;
 
     public DemoDataServletContextListener() {
-        this.productDao = new ArrayListProductDao();
+        this.productDao = ArrayListProductDao.getInstance();
     }
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
         boolean insertDemoData = Boolean.parseBoolean(event.getServletContext().getInitParameter("insertDemoData"));
         if (insertDemoData) {
-            for (Product product : getSampleProducts()) {
-                productDao.save(product);
+            try {
+                for (Product product : getSampleProducts()) {
+                    productDao.save(product);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent event) {
+    public void contextDestroyed(ServletContextEvent event) {    }
 
-    }
-
-    public List<Product> getSampleProducts() {
+    public List<Product> getSampleProducts() throws ParseException {
         List<Product> result = new ArrayList<>();
         Currency usd = Currency.getInstance("USD");
-        result.add(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        List<PriceHistory> historyList = new ArrayList<>(Arrays.asList(
+                new PriceHistory(format.format(format.parse ( "23-10-2000" )), new BigDecimal(230), usd),
+                new PriceHistory(format.format(format.parse ( "30-09-2002" )), new BigDecimal(190), usd),
+                new PriceHistory(format.format(format.parse ( "10-07-2020" )), new BigDecimal(100), usd)));
+        Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        product.setHistoryList(historyList);
+        result.add(product);
         result.add(new Product( "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
         result.add(new Product( "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
         result.add(new Product( "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
