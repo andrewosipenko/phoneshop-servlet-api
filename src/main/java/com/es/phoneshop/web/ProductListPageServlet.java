@@ -33,7 +33,7 @@ public class ProductListPageServlet extends HttpServlet {
         String searchParam = Optional.ofNullable(request.getParameter(String.valueOf(QUERY_PARAM_KEYS.query))).orElse(" ");
 
 
-        request.setAttribute("products", productService.findProduct(sortParam, orderParam, searchParam));
+        request.setAttribute("products", productService.findProducts(sortParam, orderParam, searchParam));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

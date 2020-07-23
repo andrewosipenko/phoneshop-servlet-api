@@ -37,10 +37,10 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
     public static ArrayListProductDao getInstance() {
         ArrayListProductDao result = instance;
         if (result != null) {
-            return  result;
+            return result;
         }
         synchronized (ArrayListProductDao.class) {
-            if(instance == null){
+            if (instance == null) {
                 instance = new ArrayListProductDao();
             }
             return instance;
@@ -50,10 +50,10 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
     public static ArrayListProductDao getInstance(List<Product> products) {
         ArrayListProductDao result = instance;
         if (result != null) {
-            return  result;
+            return result;
         }
         synchronized (ArrayListProductDao.class) {
-            if(instance == null){
+            if (instance == null) {
                 instance = new ArrayListProductDao(products);
             }
             return instance;
@@ -128,9 +128,10 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
                 String[] terms = query.toLowerCase().split(" ");
                 Arrays.stream(terms)
                         .forEach(term -> comparators.add(this.getDescriptionContainingComparator(term)));
+
                 return this.products.stream()
-                        .sorted(((Comparator<Product>) ComparatorUtils.chainedComparator(comparators)))
                         .filter(product -> isPartlyContaining(product.getDescription(), terms))
+                        .sorted(((Comparator<Product>) ComparatorUtils.chainedComparator(comparators)))
                         .collect(Collectors.toList());
             } else return products;
         } finally {

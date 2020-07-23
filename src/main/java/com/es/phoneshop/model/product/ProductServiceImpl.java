@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
     //Andrei wanted to use comparators chain but i think it would be overkill
     @Override
-    public List<Product> findProduct(String sort, String order, String query) {
+    public List<Product> findProducts(String sort, String order, String query) {
 
         Comparator<Product> comparator = Comparator.comparing(product -> {
             //also could be used switch with enums

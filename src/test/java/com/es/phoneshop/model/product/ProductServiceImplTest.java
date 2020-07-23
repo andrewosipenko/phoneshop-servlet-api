@@ -114,11 +114,11 @@ public class ProductServiceImplTest {
         productDao.set(testList);
         var expectedList = new ArrayList<>(List.of(validExample1, validExample2));
         Collections.reverse(expectedList);
-        var actual = productService.findProduct(String.valueOf(SortField.description), String.valueOf(SortOrder.asc), " ");
+        var actual = productService.findProducts(String.valueOf(SortField.description), String.valueOf(SortOrder.asc), " ");
         assertArrayEquals(expectedList.toArray(), actual.toArray());
 
         Collections.reverse(expectedList);
-        actual = productService.findProduct(String.valueOf(SortField.description), String.valueOf(SortOrder.desc), " ");
+        actual = productService.findProducts(String.valueOf(SortField.description), String.valueOf(SortOrder.desc), " ");
         assertArrayEquals(expectedList.toArray(), actual.toArray());
     }
 }
