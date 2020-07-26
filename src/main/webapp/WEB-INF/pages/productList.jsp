@@ -50,3 +50,4 @@
     </c:forEach>
   </table>
 </tags:master>
+<tags:recentlyViewed recentlyViewed="${recentlyViewed}"/>

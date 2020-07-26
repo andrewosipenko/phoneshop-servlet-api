@@ -89,3 +89,4 @@
         </p>
     </a>
 </tags:master>
+<tags:recentlyViewed recentlyViewed="${recentlyViewed}"/>
