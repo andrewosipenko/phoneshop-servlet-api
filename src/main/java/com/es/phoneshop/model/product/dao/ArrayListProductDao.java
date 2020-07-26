@@ -1,5 +1,6 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.dao;
 
+import com.es.phoneshop.model.product.entity.Product;
 import org.apache.commons.collections.ComparatorUtils;
 
 import java.util.*;
@@ -9,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao, TestableSingletonProductDao<List<Product>> {
+    //todo implement more elegant singleton :)
     private static volatile ArrayListProductDao instance;
 
     private long maxID;
@@ -82,7 +84,6 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
         }
     }
 
-    //in my humble opinion it is wrong implementation of create/update
     @Override
     public void save(Product product) {
         writeLock.lock();
@@ -168,7 +169,6 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
     }
 
     private boolean areBothContainingTerm(String first, String second, String term) {
-        //!product1Description.contains(term) && !product2Description.contains(term) ||
         return first.contains(term) && second.contains(term);
     }
 

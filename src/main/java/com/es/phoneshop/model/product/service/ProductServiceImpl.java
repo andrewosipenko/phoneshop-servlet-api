@@ -1,35 +1,44 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.service;
+
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.entity.Product;
+import com.es.phoneshop.model.product.sortEnums.SortField;
+import com.es.phoneshop.model.product.sortEnums.SortOrder;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+public enum  ProductServiceImpl implements ProductService {
 
-public class ProductServiceImpl implements ProductService {
-    private final ProductDao productDao;
+    INSTANCE;
 
-    public ProductServiceImpl() {
-        this.productDao = ArrayListProductDao.getInstance();
-    }
+    private final ProductDao productDao = ArrayListProductDao.getInstance();
 
-    //don't know what to return in nonpresent case to provide 404 code :)
     @Override
     public Product getProduct(Long id) throws NoSuchElementException {
-        return productDao.get(id).get();
+        try {
+            return productDao.get(id).get();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(String.valueOf(id));
+        }
     }
 
 
     @Override
     public Product getProduct(String pathInfo) throws NoSuchElementException {
-        long longId;
         Product result;
         try {
+            long longId;
             longId = Integer.parseInt(pathInfo.split("/")[1]);
             result = productDao.get(longId).get();
-        } catch (NumberFormatException | NoSuchElementException | ArrayIndexOutOfBoundsException e) {
+        } catch (NumberFormatException | NoSuchElementException e) {
             //could be created special IncorrectPathInfoException
             throw new NoSuchElementException(pathInfo.split("/")[1]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException(" ");
         }
         return result;
     }
@@ -53,7 +62,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    //Andrei wanted to use comparators chain but i think it would be overkill
     @Override
     public List<Product> findProducts(String sort, String order, String query) {
 

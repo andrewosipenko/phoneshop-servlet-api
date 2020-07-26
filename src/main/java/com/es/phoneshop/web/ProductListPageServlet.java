@@ -1,7 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ProductService;
-import com.es.phoneshop.model.product.ProductServiceImpl;
+import com.es.phoneshop.model.product.service.ProductService;
+import com.es.phoneshop.model.product.service.ProductServiceImpl;
+import com.es.phoneshop.model.recentlyViewed.HttpServletRecentlyViewedService;
+import com.es.phoneshop.model.recentlyViewed.RecentlyViewedService;
+import com.es.phoneshop.web.paramEnums.GetParamKeys;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,11 +17,13 @@ import java.util.Optional;
 public class ProductListPageServlet extends HttpServlet {
     //TODO Controller-layer
     private ProductService productService;
+    private RecentlyViewedService<HttpServletRequest> panelService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        productService = new ProductServiceImpl();
+        productService = ProductServiceImpl.INSTANCE;
+        panelService = HttpServletRecentlyViewedService.INSTANCE;
     }
 
     @Override
@@ -27,13 +32,13 @@ public class ProductListPageServlet extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
-        //could be used ternary expression to avoid null but i'm not sure if it's good decision
-        String sortParam = Optional.ofNullable(request.getParameter(String.valueOf(QUERY_PARAM_KEYS.sort))).orElse(" ");
-        String orderParam = Optional.ofNullable(request.getParameter(String.valueOf(QUERY_PARAM_KEYS.order))).orElse(" ");
-        String searchParam = Optional.ofNullable(request.getParameter(String.valueOf(QUERY_PARAM_KEYS.query))).orElse(" ");
+        String sortParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.sort))).orElse(" ");
+        String orderParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.order))).orElse(" ");
+        String searchParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.query))).orElse(" ");
 
 
         request.setAttribute("products", productService.findProducts(sortParam, orderParam, searchParam));
+        request.setAttribute("recentlyViewed", panelService.getList(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

@@ -1,4 +1,6 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.service;
+
+import com.es.phoneshop.model.product.entity.Product;
 
 import java.util.List;
 

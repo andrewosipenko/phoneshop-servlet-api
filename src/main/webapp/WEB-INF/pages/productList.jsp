@@ -6,12 +6,6 @@
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 
 <tags:master pageTitle="Product List">
-  <script>
-    function popUpFunction() {
-      let popup = document.getElementById("myPopup");
-      popup.classList.toggle("show");
-    }
-  </script>
   <p>
     Welcome to Expert-Soft training!
   </p>

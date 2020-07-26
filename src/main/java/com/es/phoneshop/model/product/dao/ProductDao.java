@@ -1,4 +1,7 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.dao;
+
+import com.es.phoneshop.model.DAO;
+import com.es.phoneshop.model.product.entity.Product;
 
 import java.util.List;
 import java.util.NoSuchElementException;
