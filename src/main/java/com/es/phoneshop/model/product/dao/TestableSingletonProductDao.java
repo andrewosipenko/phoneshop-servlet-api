@@ -1,4 +1,6 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.dao;
+
+import com.es.phoneshop.model.product.dao.ProductDao;
 
 public interface TestableSingletonProductDao<Resource> extends ProductDao {
     Resource get();

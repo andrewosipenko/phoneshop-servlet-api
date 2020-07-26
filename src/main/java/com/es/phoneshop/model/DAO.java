@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model;
 
 import java.util.List;
 import java.util.Optional;

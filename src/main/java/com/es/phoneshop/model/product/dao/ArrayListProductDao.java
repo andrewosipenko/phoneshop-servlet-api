@@ -1,5 +1,6 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.dao;
 
+import com.es.phoneshop.model.product.entity.Product;
 import org.apache.commons.collections.ComparatorUtils;
 
 import java.util.*;
@@ -9,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao, TestableSingletonProductDao<List<Product>> {
+    //todo implement more elegant singleton :)
     private static volatile ArrayListProductDao instance;
 
     private long maxID;
@@ -37,10 +39,10 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
     public static ArrayListProductDao getInstance() {
         ArrayListProductDao result = instance;
         if (result != null) {
-            return  result;
+            return result;
         }
         synchronized (ArrayListProductDao.class) {
-            if(instance == null){
+            if (instance == null) {
                 instance = new ArrayListProductDao();
             }
             return instance;
@@ -50,10 +52,10 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
     public static ArrayListProductDao getInstance(List<Product> products) {
         ArrayListProductDao result = instance;
         if (result != null) {
-            return  result;
+            return result;
         }
         synchronized (ArrayListProductDao.class) {
-            if(instance == null){
+            if (instance == null) {
                 instance = new ArrayListProductDao(products);
             }
             return instance;
@@ -82,7 +84,6 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
         }
     }
 
-    //in my humble opinion it is wrong implementation of create/update
     @Override
     public void save(Product product) {
         writeLock.lock();
@@ -128,9 +129,10 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
                 String[] terms = query.toLowerCase().split(" ");
                 Arrays.stream(terms)
                         .forEach(term -> comparators.add(this.getDescriptionContainingComparator(term)));
+
                 return this.products.stream()
-                        .sorted(((Comparator<Product>) ComparatorUtils.chainedComparator(comparators)))
                         .filter(product -> isPartlyContaining(product.getDescription(), terms))
+                        .sorted(((Comparator<Product>) ComparatorUtils.chainedComparator(comparators)))
                         .collect(Collectors.toList());
             } else return products;
         } finally {
@@ -167,7 +169,6 @@ public class ArrayListProductDao implements ProductDao, TestableSingletonProduct
     }
 
     private boolean areBothContainingTerm(String first, String second, String term) {
-        //!product1Description.contains(term) && !product2Description.contains(term) ||
         return first.contains(term) && second.contains(term);
     }
 

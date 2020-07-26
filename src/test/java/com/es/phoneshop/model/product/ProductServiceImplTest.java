@@ -1,6 +1,13 @@
 package com.es.phoneshop.model.product;
 
 import static org.junit.Assert.*;
+
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.TestableSingletonProductDao;
+import com.es.phoneshop.model.product.entity.Product;
+import com.es.phoneshop.model.product.service.ProductServiceImpl;
+import com.es.phoneshop.model.product.sortEnums.SortField;
+import com.es.phoneshop.model.product.sortEnums.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -114,11 +121,11 @@ public class ProductServiceImplTest {
         productDao.set(testList);
         var expectedList = new ArrayList<>(List.of(validExample1, validExample2));
         Collections.reverse(expectedList);
-        var actual = productService.findProduct(String.valueOf(SortField.description), String.valueOf(SortOrder.asc), " ");
+        var actual = productService.findProducts(String.valueOf(SortField.description), String.valueOf(SortOrder.asc), " ");
         assertArrayEquals(expectedList.toArray(), actual.toArray());
 
         Collections.reverse(expectedList);
-        actual = productService.findProduct(String.valueOf(SortField.description), String.valueOf(SortOrder.desc), " ");
+        actual = productService.findProducts(String.valueOf(SortField.description), String.valueOf(SortOrder.desc), " ");
         assertArrayEquals(expectedList.toArray(), actual.toArray());
     }
 }

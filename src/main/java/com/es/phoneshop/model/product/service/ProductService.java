@@ -1,4 +1,6 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.service;
+
+import com.es.phoneshop.model.product.entity.Product;
 
 import java.util.List;
 
@@ -14,5 +16,5 @@ public interface ProductService {
 
     void delete(Long id);
 
-    List<Product> findProduct(String sort, String order, String query);
+    List<Product> findProducts(String sort, String order, String query);
 }
