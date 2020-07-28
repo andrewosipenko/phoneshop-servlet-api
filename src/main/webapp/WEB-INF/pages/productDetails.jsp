@@ -88,5 +88,5 @@
             return to product list
         </p>
     </a>
-</tags:master>
 <tags:recentlyViewed recentlyViewed="${recentlyViewed}"/>
+</tags:master>

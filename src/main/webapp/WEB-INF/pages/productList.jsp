@@ -49,5 +49,5 @@
       </tr>
     </c:forEach>
   </table>
-</tags:master>
 <tags:recentlyViewed recentlyViewed="${recentlyViewed}"/>
+</tags:master>

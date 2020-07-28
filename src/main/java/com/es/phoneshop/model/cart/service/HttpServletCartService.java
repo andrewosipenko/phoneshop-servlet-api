@@ -33,6 +33,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         //some valid-checking should be here
+        //does it make sense to use Objects.requiresNonNull(cart)?
         synchronized (cart) {
             try {
                 Product product = productDao.get(productId).get();

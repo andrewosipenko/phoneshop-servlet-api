@@ -53,7 +53,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInto = Optional.ofNullable(request.getPathInfo())
                 .orElse(" ");
         String quantityParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.quantity)))
@@ -75,7 +75,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             cartService.add(cartService.getCart(request), parseId(pathInto), quantity);
         } catch (OutOfStockException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + parseId(pathInto) + "?error=Not a number");
+            response.sendRedirect(request.getContextPath() + "/products/" + parseId(pathInto) + "?error=Not enough stock");
             return;
         }
 

@@ -37,7 +37,7 @@ public class ProductServiceImplTest {
         testList.add(exampleWithNonPositiveStock);
         testList.add(validExample2);
         testList.add(exampleWithNullPrice);
-        productService = new ProductServiceImpl();
+        productService = ProductServiceImpl.INSTANCE;
         productDao.dropToDefault();
     }
 
