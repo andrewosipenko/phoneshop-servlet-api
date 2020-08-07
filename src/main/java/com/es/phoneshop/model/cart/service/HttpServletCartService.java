@@ -20,7 +20,6 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
 
     @Override
     public Cart getCart(HttpServletRequest request) {
-        //i heard about AtomicReference solution of thread safety problem but it seems to be next level of knowledge
         synchronized (request.getSession()) {
             Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
@@ -34,6 +33,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         //some valid-checking should be here
         //does it make sense to use Objects.requiresNonNull(cart)?
+        //todo refactoring
         synchronized (cart) {
             try {
                 Product product = productDao.get(productId).get();
@@ -46,7 +46,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
                 if (optionalCartItem.isPresent()) {
                     var cartItem = optionalCartItem.get();
                     if (product.getStock() >= cartItem.getQuantity() + quantity) {
-                        cartItem.increaseQuantity(quantity);
+                        increaseQuantity(cartItem, quantity);
                     } else {
                         throw new OutOfStockException();
                     }
@@ -63,6 +63,11 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
         return cart.getItems()
                 .stream()
                 .filter(existingCartItem -> existingCartItem.getProduct().getId().equals(productId))
-                .findFirst();
+                .findAny();
+    }
+
+    //unsafe, requires processing and checking out of stock exception case
+    private void increaseQuantity(CartItem cartItem, int quantity) {
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
     }
 }

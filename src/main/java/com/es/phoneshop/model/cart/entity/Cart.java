@@ -2,12 +2,11 @@ package com.es.phoneshop.model.cart.entity;
 
 import com.es.phoneshop.model.product.entity.Product;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cart {
-    //LinkedHashMap would be better?
-    //Can Entity-Bean contain some business-logic?
+public class Cart implements Serializable {
     private List<CartItem> cartItems;
 
     public Cart() {

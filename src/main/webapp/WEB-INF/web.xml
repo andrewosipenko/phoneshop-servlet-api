@@ -35,6 +35,16 @@
     <url-pattern>/add-product-to-cart/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>cartPageServlet</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>cartPageServlet</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <exception-type>java.util.NoSuchElementException</exception-type>
     <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
