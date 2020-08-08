@@ -4,7 +4,8 @@ import com.es.phoneshop.model.product.service.ProductService;
 import com.es.phoneshop.model.product.service.ProductServiceImpl;
 import com.es.phoneshop.model.recentlyViewed.HttpServletRecentlyViewedService;
 import com.es.phoneshop.model.recentlyViewed.RecentlyViewedService;
-import com.es.phoneshop.web.paramEnums.GetParamKeys;
+import com.es.phoneshop.web.constants.ControllerConstants;
+import com.es.phoneshop.web.constants.GetParamKeys;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -39,6 +40,6 @@ public class ProductListPageServlet extends HttpServlet {
 
         request.setAttribute("products", productService.findProducts(sortParam, orderParam, searchParam));
         request.setAttribute("recentlyViewed", panelService.getList(request));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.getRequestDispatcher(ControllerConstants.PRODUCT_LIST_JSP_PATH).forward(request, response);
     }
 }

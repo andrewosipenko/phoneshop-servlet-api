@@ -59,6 +59,31 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
         }
     }
 
+    @Override
+    public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
+        try {
+            Product product = productDao.get(productId).get();
+
+            if (quantity > product.getStock()) {
+                throw new OutOfStockException();
+            }
+
+            Optional<CartItem> optionalCartItem = findItemInCart(cart, productId);
+            if (optionalCartItem.isPresent()) {
+                var cartItem = optionalCartItem.get();
+                if (product.getStock() >= cartItem.getQuantity()) {
+                    cartItem.setQuantity(quantity);
+                } else {
+                    throw new OutOfStockException();
+                }
+            } else {
+                cart.add(product, quantity);
+            }
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException(String.valueOf(productId));
+        }
+    }
+
     private Optional<CartItem> findItemInCart(Cart cart, Long productId) {
         return cart.getItems()
                 .stream()

@@ -1,4 +1,4 @@
-package com.es.phoneshop.web.paramEnums;
+package com.es.phoneshop.web.constants;
 
 public enum GetParamKeys {
     query, sort, order

@@ -8,32 +8,26 @@
 <tags:master pageTitle="Product Details">
 
 
-    <c:if test="${not empty param.message}">
-        <div class="success">
-                ${param.message}
-        </div>
-    </c:if>
-
-    <c:if test="${not empty param.error}">
-        <div class="error">
-                ${param.error}
-        </div>
-    </c:if>
-
 
     <div>
         <h1>
             Cart
         </h1>
     </div>
-    <a href=${pageContext.servletContext.contextPath}/products>
-        <p>
-            return to product list
-        </p>
-    </a>
+    <c:if test="${not empty param.message}">
+        <div class="success">
+                ${param.message}
+        </div>
+    </c:if>
+
+    <c:if test="${not empty errors}">
+        <div class="error">
+                There were errors updating cart
+        </div>
+    </c:if>
 
     <%--todo move into tag--%>
-    <form method="post" action="">
+    <form method="post" action="${pageContext.servletContext.contextPath}/cart">
         <div>
             <table>
                 <thead>
@@ -50,7 +44,7 @@
                     </td>
                 </tr>
                 </thead>
-                <c:forEach var="cartItem" items="${cart.items}">
+                <c:forEach var="cartItem" items="${cart.items}" varStatus="status">
                     <tr>
                         <td>
                             <img class="product-tile" src=${cartItem.product.imageUrl}>
@@ -63,7 +57,13 @@
                         </td>
                         <td>
                             <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
-                            <input class="quantity" type="text" name="quantity" value="${cartItem.quantity}">
+                            <c:set var="error" value="${errors[cartItem.product.id]}"/>
+                            <input class="quantity" type="text" name="quantity" value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity}"/>
+                            <c:if test="${not empty error}">
+                                <div class="error">
+                                    ${error}
+                                </div>
+                            </c:if>
                             <input type="hidden" name="productId" value="${cartItem.product.id}"/>
                         </td>
                     </tr>
@@ -76,5 +76,10 @@
             </button>
         </p>
     </form>
+    <a href=${pageContext.servletContext.contextPath}/products>
+        <p>
+            return to product list
+        </p>
+    </a>
     <tags:recentlyViewed recentlyViewed="${recentlyViewed}"/>
 </tags:master>
