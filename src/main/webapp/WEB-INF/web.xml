@@ -11,12 +11,12 @@
   </context-param>
 
   <listener>
-    <listener-class>com.es.phoneshop.web.ProductDemoDataServletContextListener</listener-class>
+    <listener-class>com.es.phoneshop.web.listeners.ProductDemoDataServletContextListener</listener-class>
   </listener>
   
   <servlet>
     <servlet-name>productList</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlets.ProductListPageServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -26,7 +26,7 @@
   
   <servlet>
     <servlet-name>productDetails</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlets.ProductDetailsPageServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -37,12 +37,22 @@
 
   <servlet>
     <servlet-name>cartPageServlet</servlet-name>
-    <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlets.CartPageServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>cartPageServlet</servlet-name>
     <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>deleteCartItemServlet</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlets.DeleteCartItemServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>deleteCartItemServlet</servlet-name>
+    <url-pattern>/cart/deleteCartItem/*</url-pattern>
   </servlet-mapping>
 
   <error-page>

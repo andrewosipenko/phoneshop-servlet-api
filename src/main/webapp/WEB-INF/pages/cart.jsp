@@ -26,7 +26,6 @@
         </div>
     </c:if>
 
-    <%--todo move into tag--%>
     <form method="post" action="${pageContext.servletContext.contextPath}/cart">
         <div>
             <table>
@@ -66,6 +65,12 @@
                             </c:if>
                             <input type="hidden" name="productId" value="${cartItem.product.id}"/>
                         </td>
+                        <td>
+                            <button form="deleteCartItem"
+                                    formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${cartItem.product.id}">
+                                Delete
+                            </button>
+                        </td>
                     </tr>
                 </c:forEach>
             </table>
@@ -76,6 +81,10 @@
             </button>
         </p>
     </form>
+
+    <form id="deleteCartItem" method="post"></form>
+
+    <%--todo move into tag--%>
     <a href=${pageContext.servletContext.contextPath}/products>
         <p>
             return to product list

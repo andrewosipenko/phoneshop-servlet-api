@@ -84,6 +84,12 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
         }
     }
 
+    @Override
+    public void delete(Cart cart, Long productID) {
+        cart.getItems().removeIf(cartItem ->
+                cartItem.getProduct().getId().equals(productID));
+    }
+
     private Optional<CartItem> findItemInCart(Cart cart, Long productId) {
         return cart.getItems()
                 .stream()

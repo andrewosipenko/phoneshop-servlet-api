@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlets;
 
 import com.es.phoneshop.model.cart.service.CartService;
 import com.es.phoneshop.model.cart.service.HttpServletCartService;
@@ -35,7 +35,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInto = Optional.ofNullable(request.getPathInfo())
                 .orElse(" ");
 
@@ -54,7 +54,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInto = Optional.ofNullable(request.getPathInfo())
                 .orElse(" ");
         String quantityParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.quantity)))

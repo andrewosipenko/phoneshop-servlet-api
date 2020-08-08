@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlets;
 
 import com.es.phoneshop.model.cart.service.CartService;
 import com.es.phoneshop.model.cart.service.HttpServletCartService;
@@ -30,14 +30,14 @@ public class CartPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("cart", cartService.getCart(request));
         request.setAttribute("recentlyViewed", recentlyViewedService.getList(request));
         request.getRequestDispatcher(ControllerConstants.CART_JSP_PATH).forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Map<Long, String> errors = new HashMap<>();
 
         String[] productIds = request.getParameterValues(String.valueOf(PostParamKeys.productId));
