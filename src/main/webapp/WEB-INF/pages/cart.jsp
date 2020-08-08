@@ -6,13 +6,10 @@
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.entity.Cart" scope="request"/>
 
 <tags:master pageTitle="Product Details">
-
-
-
     <div>
-        <h1>
-            Cart
-        </h1>
+        <h3>
+            Cart: ${cart}, total quantity: ${cart.totalQuantity}, total price: ${cart.totalCost}
+        </h3>
     </div>
     <c:if test="${not empty param.message}">
         <div class="success">
@@ -41,6 +38,7 @@
                     <td>
                         Quantity
                     </td>
+                    <td></td>
                 </tr>
                 </thead>
                 <c:forEach var="cartItem" items="${cart.items}" varStatus="status">
@@ -49,10 +47,10 @@
                             <img class="product-tile" src=${cartItem.product.imageUrl}>
                         </td>
                         <td>
-                                ${cartItem.product.description}
+                            ${cartItem.product.description}
                         </td>
                         <td>
-                                ${cartItem.product.price}
+                            ${cartItem.product.price}
                         </td>
                         <td>
                             <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
@@ -73,6 +71,13 @@
                         </td>
                     </tr>
                 </c:forEach>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Total cost</td>
+                    <td>${cart.totalCost}</td>
+                    <td></td>
+                </tr>
             </table>
         </div>
         <p>

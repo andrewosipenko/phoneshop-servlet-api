@@ -8,6 +8,7 @@ import com.es.phoneshop.model.product.entity.Product;
 import com.es.phoneshop.web.exceptions.OutOfStockException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,8 +32,6 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
 
     @Override
     public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
-        //some valid-checking should be here
-        //does it make sense to use Objects.requiresNonNull(cart)?
         //todo refactoring
         synchronized (cart) {
             try {
@@ -51,8 +50,10 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
                         throw new OutOfStockException();
                     }
                 } else {
-                    cart.add(product, quantity);
+                    cart.getItems().add(new CartItem(product, quantity));
                 }
+
+                recalculateCart(cart);
             } catch (NoSuchElementException e) {
                 throw new NoSuchElementException(String.valueOf(productId));
             }
@@ -77,8 +78,10 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
                     throw new OutOfStockException();
                 }
             } else {
-                cart.add(product, quantity);
+                cart.getItems().add(new CartItem(product, quantity));
             }
+
+            recalculateCart(cart);
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException(String.valueOf(productId));
         }
@@ -88,6 +91,29 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
     public void delete(Cart cart, Long productID) {
         cart.getItems().removeIf(cartItem ->
                 cartItem.getProduct().getId().equals(productID));
+        recalculateCart(cart);
+    }
+
+    //this method must be called in all public methods, it's a pity that there is no any contract to guarantee it
+    private void recalculateCart(Cart cart) {
+        recalculateTotalCost(cart);
+        recalculateTotalQuantity(cart);
+    }
+
+    private void recalculateTotalCost(Cart cart) {
+        cart.setTotalCost(cart.getItems()
+                .stream()
+                .map(cartItem -> cartItem.getProduct().getPrice())
+                .reduce(BigDecimal::add)
+                .get());
+    }
+
+    private void recalculateTotalQuantity(Cart cart) {
+        cart.setTotalQuantity(cart.getItems()
+                .stream()
+                .map(CartItem::getQuantity)
+                .reduce(Integer::sum)
+                .get());
     }
 
     private Optional<CartItem> findItemInCart(Cart cart, Long productId) {
