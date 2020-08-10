@@ -43,7 +43,7 @@
     <p>
             ${product.description}
     </p>
-    <form method="post" action="${pageContext.servletContext.contextPath}/add-product-to-cart/${product.id}">
+    <form method="post" action="${pageContext.servletContext.contextPath}/productDetails/add-product-to-cart/${product.id}">
         <table>
             <tr>
                 <td>Image</td>
