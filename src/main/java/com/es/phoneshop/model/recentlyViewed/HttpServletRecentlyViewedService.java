@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public enum HttpServletRecentlyViewedService implements RecentlyViewedService<HttpServletRequest>{
     INSTANCE;
-
+    
     private static final int DEFAULT_NUMBER_OF_PRODUCTS = 3;
 
     private static final String RECENTLY_VIEWED_SESSION_ATTRIBUTE = HttpServletRecentlyViewedService.class.getName() + ".queue";

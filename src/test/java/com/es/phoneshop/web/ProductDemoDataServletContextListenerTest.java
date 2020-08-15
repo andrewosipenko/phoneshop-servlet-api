@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.entity.Product;
 import com.es.phoneshop.model.product.dao.TestableSingletonProductDao;
+import com.es.phoneshop.web.listeners.ProductDemoDataServletContextListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,12 +2,16 @@ package com.es.phoneshop.model.cart.entity;
 
 import com.es.phoneshop.model.product.entity.Product;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cart {
-    //LinkedHashMap would be better?
-    //Can Entity-Bean contain some business-logic?
+public class Cart implements Serializable {
+    private int totalQuantity;
+
+    private BigDecimal totalCost;
+
     private List<CartItem> cartItems;
 
     public Cart() {
@@ -18,16 +22,24 @@ public class Cart {
         return this.cartItems;
     }
 
-    public void add(Product product, int quantity) {
-        cartItems.add(new CartItem(product, quantity));
+    public int getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void add(CartItem cartItem){
-        cartItems.add(cartItem);
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 
     @Override
     public String toString() {
-        return "Cart[" + cartItems + ']';
+        return cartItems.toString();
     }
 }
