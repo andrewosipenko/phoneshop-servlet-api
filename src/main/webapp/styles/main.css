@@ -21,13 +21,20 @@ td {
   border : 1px solid gray;
   vertical-align: top;
 }
-.price {
+.price, .quantity, .stock{
   text-align: right;
 }
 img.product-tile {
   max-width: 64px;
 }
 
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
 /* Page specific styles */
 body.product-list {
 
