@@ -43,7 +43,7 @@
     <p>
             ${product.description}
     </p>
-    <form method="post" action="${pageContext.servletContext.contextPath}/productDetails/add-product-to-cart/${product.id}">
+    <form method="post" action="${pageContext.servletContext.contextPath}/add-product-to-cart/${product.id}">
         <table>
             <tr>
                 <td>Image</td>
@@ -76,6 +76,7 @@
                 <td>quantity</td>
                 <td>
                     <input class="quantity" type="text" name="quantity" value=${not empty param.quantity ? param.quantity : 1}>
+                    <input type="hidden" name="redirect" value="PDP">
                 </td>
             </tr>
         </table>

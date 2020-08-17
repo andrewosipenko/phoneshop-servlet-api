@@ -41,47 +41,6 @@ public class ProductListPageServlet extends HttpServlet {
         processDoGetRequest(request, response);
     }
 
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInto = Optional.ofNullable(request.getPathInfo())
-                .orElse(" ");
-        String quantityParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.quantity)))
-                .orElse(" ");
-        String productIdParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.productId)))
-                .orElse(" ");
-
-
-        int quantity;
-
-        try {
-            NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
-            quantity = numberFormat.parse(quantityParam).intValue();
-        } catch (ParseException e) {
-            response.sendRedirect(request.getContextPath()
-                    + "/products"
-                    + "?productId=" + productIdParam
-                    + "&quantity=" + quantityParam
-                    + "&error=" + ControllerConstants.NOT_A_NUMBER_ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            cartService.add(cartService.getCart(request), parseId(pathInto), quantity);
-        } catch (OutOfStockException e) {
-            response.sendRedirect(request.getContextPath()
-                    + "/products"
-                    + "?productId=" + productIdParam
-                    + "&quantity=" + quantityParam
-                    + "&error=" + ControllerConstants.OUT_OF_STOCK_ERROR_MESSAGE);
-            return;
-        }
-
-        response.sendRedirect(request.getContextPath()
-                + "/products?productId=" + productIdParam
-                + "&quantity=" + quantityParam
-                + "&message=" + ControllerConstants.ADDING_TO_CART_SUCCESS_MESSAGE);
-    }
-
     private void processDoGetRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
         String sortParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.sort))).orElse(" ");
         String orderParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.order))).orElse(" ");
@@ -91,15 +50,5 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute("products", productService.findProducts(sortParam, orderParam, searchParam));
         request.setAttribute("recentlyViewed", panelService.getList(request));
         request.getRequestDispatcher(ControllerConstants.PRODUCT_LIST_JSP_PATH).forward(request, response);
-    }
-
-    private long parseId(String pathInfo) {
-        try {
-            return Integer.parseInt(pathInfo.split("/")[1]);
-        } catch (NumberFormatException e) {
-            throw new NoSuchElementException(pathInfo.split("/")[1]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new NoSuchElementException(" ");
-        }
     }
 }

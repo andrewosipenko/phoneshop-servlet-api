@@ -52,47 +52,4 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
 
     }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String pathInto = Optional.ofNullable(request.getPathInfo())
-                .orElse(" ");
-        String quantityParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.quantity)))
-                .orElse(" ");
-
-
-        //imho it's bad, i'll think how to implement it better
-        //? maybe move try-catch block into separate methods?
-        int quantity;
-
-        try {
-            NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
-            quantity = numberFormat.parse(quantityParam).intValue();
-        } catch (ParseException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + parseId(pathInto)
-                    + "?error=" + ControllerConstants.NOT_A_NUMBER_ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            cartService.add(cartService.getCart(request), parseId(pathInto), quantity);
-        } catch (OutOfStockException e) {
-            response.sendRedirect(request.getContextPath() + "/products/" + parseId(pathInto)
-                    + "?error=" + ControllerConstants.OUT_OF_STOCK_ERROR_MESSAGE);
-            return;
-        }
-
-        response.sendRedirect(request.getContextPath() + "/products/" + parseId(pathInto)
-                + "?message=" + ControllerConstants.ADDING_TO_CART_SUCCESS_MESSAGE);
-    }
-
-    private long parseId(String pathInfo) {
-        try {
-            return Integer.parseInt(pathInfo.split("/")[1]);
-        } catch (NumberFormatException e) {
-            throw new NoSuchElementException(pathInfo.split("/")[1]);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new NoSuchElementException(" ");
-        }
-    }
 }

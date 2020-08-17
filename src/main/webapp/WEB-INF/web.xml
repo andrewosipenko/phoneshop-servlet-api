@@ -22,7 +22,6 @@
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
-    <url-pattern>/products/add-product-to-cart/*</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -33,7 +32,6 @@
   <servlet-mapping>
     <servlet-name>productDetails</servlet-name>
     <url-pattern>/products/*</url-pattern>
-    <url-pattern>/productDetails/add-product-to-cart/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -64,6 +62,16 @@
   <servlet-mapping>
     <servlet-name>miniCartServlet</servlet-name>
     <url-pattern>/cart/minicart</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>addCartItemServlet</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlets.AddCartItemServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>addCartItemServlet</servlet-name>
+    <url-pattern>/add-product-to-cart/*</url-pattern>
   </servlet-mapping>
 
   <error-page>
