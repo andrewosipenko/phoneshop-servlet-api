@@ -76,6 +76,10 @@
                            type="hidden"
                            name="productId"
                            value="${product.id}"/>
+                    <input form="addItemToCart/${product.id}"
+                           type="hidden"
+                           name="redirect"
+                           value="PLP"/>
                 </td>
                 <td class="price">
                     <a href="${pageContext.servletContext.contextPath}/products/${product.id}/priceHistory">
@@ -85,7 +89,7 @@
                 </td>
                 <td>
                     <button form="addItemToCart/${product.id}"
-                            formaction="${pageContext.servletContext.contextPath}/products/add-product-to-cart/${product.id}">
+                            formaction="${pageContext.servletContext.contextPath}/add-product-to-cart/${product.id}">
                         Add to cart
                     </button>
                 </td>
