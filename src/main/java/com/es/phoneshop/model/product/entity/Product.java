@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.product.entity;
 
+import com.es.phoneshop.model.IEntity;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product implements Serializable {
+public class Product implements IEntity, Serializable {
     private Long id;
     private String code;
     private String description;

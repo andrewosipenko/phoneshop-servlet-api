@@ -7,9 +7,7 @@ import com.es.phoneshop.model.product.service.ProductServiceImpl;
 import com.es.phoneshop.model.recentlyViewed.HttpServletRecentlyViewedService;
 import com.es.phoneshop.model.recentlyViewed.RecentlyViewedService;
 import com.es.phoneshop.web.constants.ControllerConstants;
-import com.es.phoneshop.web.constants.GetParamKeys;
-import com.es.phoneshop.web.constants.PostParamKeys;
-import com.es.phoneshop.web.exceptions.OutOfStockException;
+import com.es.phoneshop.web.constants.GetProductParamKeys;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,13 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
-    //TODO Controller-layer
     private ProductService productService;
     private CartService<HttpServletRequest> cartService;
     private RecentlyViewedService<HttpServletRequest> panelService;
@@ -42,9 +36,9 @@ public class ProductListPageServlet extends HttpServlet {
     }
 
     private void processDoGetRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
-        String sortParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.sort))).orElse(" ");
-        String orderParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.order))).orElse(" ");
-        String searchParam = Optional.ofNullable(request.getParameter(String.valueOf(GetParamKeys.query))).orElse(" ");
+        String sortParam = Optional.ofNullable(request.getParameter(String.valueOf(GetProductParamKeys.sort))).orElse(" ");
+        String orderParam = Optional.ofNullable(request.getParameter(String.valueOf(GetProductParamKeys.order))).orElse(" ");
+        String searchParam = Optional.ofNullable(request.getParameter(String.valueOf(GetProductParamKeys.query))).orElse(" ");
 
 
         request.setAttribute("products", productService.findProducts(sortParam, orderParam, searchParam));

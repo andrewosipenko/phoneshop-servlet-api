@@ -5,7 +5,7 @@
 
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.entity.Cart" scope="request"/>
 
-<tags:master pageTitle="Product Details">
+<tags:master pageTitle="Cart">
     <div>
         <h3>
             Cart: ${cart}, total quantity: ${cart.totalQuantity}, total price: ${cart.totalCost}
@@ -74,8 +74,26 @@
                 <tr>
                     <td></td>
                     <td></td>
-                    <td>Total cost</td>
-                    <td>${cart.totalCost}</td>
+                    <td>
+                        Total quantity:
+                    </td>
+                    <td class="quantity">
+                            ${cart.totalQuantity}
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        Total cost:
+                    </td>
+                    <td class="price">
+                        <p>
+                            <fmt:formatNumber value="${cart.totalCost}" type="currency"
+                                              currencySymbol="${cart.currency.symbol}"/>
+                        </p>
+                    </td>
                     <td></td>
                 </tr>
             </table>
@@ -85,6 +103,12 @@
                 Update
             </button>
         </p>
+    </form>
+
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+        <button>
+            Checkout
+        </button>
     </form>
 
     <form id="deleteCartItem" method="post"></form>

@@ -13,4 +13,5 @@ public interface CartService<SessionResource> {
 
     void delete(Cart cart, Long productID);
 
+    void clearCart(Cart cart);
 }

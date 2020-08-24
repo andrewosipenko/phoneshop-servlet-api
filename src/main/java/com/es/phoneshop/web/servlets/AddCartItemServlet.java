@@ -4,8 +4,10 @@ import com.es.phoneshop.model.cart.service.CartService;
 import com.es.phoneshop.model.cart.service.HttpServletCartService;
 import com.es.phoneshop.web.PageUrlHelper;
 import com.es.phoneshop.web.constants.ControllerConstants;
-import com.es.phoneshop.web.constants.PostParamKeys;
+import com.es.phoneshop.web.constants.GetProductParamKeys;
+import com.es.phoneshop.web.constants.PostProductParamKeys;
 import com.es.phoneshop.web.exceptions.OutOfStockException;
+import com.es.phoneshop.web.utils.UrlParamsSection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -31,11 +33,11 @@ public class AddCartItemServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pathInto = Optional.ofNullable(request.getPathInfo())
                 .orElse(" ");
-        String quantityParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.quantity)))
+        String quantityParam = Optional.ofNullable(request.getParameter(String.valueOf(PostProductParamKeys.quantity)))
                 .orElse(" ");
-        String productIdParam = Optional.ofNullable(request.getParameter(String.valueOf(PostParamKeys.productId)))
+        String productIdParam = Optional.ofNullable(request.getParameter(String.valueOf(PostProductParamKeys.productId)))
                 .orElse(" ");
-        String redirectPath = PageUrlHelper.getPageUrl(request.getParameter(String.valueOf(PostParamKeys.redirect)), String.valueOf(parseId(pathInto)));
+        String redirectPath = PageUrlHelper.getPageUrl(request.getParameter(String.valueOf(PostProductParamKeys.redirect)), String.valueOf(parseId(pathInto)));
 
         int quantity;
 
@@ -45,9 +47,11 @@ public class AddCartItemServlet extends HttpServlet {
         } catch (ParseException e) {
             response.sendRedirect(request.getContextPath()
                     + redirectPath
-                    + "?productId=" + productIdParam
-                    + "&quantity=" + quantityParam
-                    + "&error=" + ControllerConstants.NOT_A_NUMBER_ERROR_MESSAGE);
+                    + new UrlParamsSection()
+                    .appendParam(String.valueOf(PostProductParamKeys.productId), productIdParam)
+                    .appendParam(String.valueOf(PostProductParamKeys.quantity), quantityParam)
+                    .appendParam(String.valueOf(PostProductParamKeys.error), ControllerConstants.NOT_A_NUMBER_ERROR_MESSAGE)
+                    .build());
             return;
         }
 
@@ -56,17 +60,21 @@ public class AddCartItemServlet extends HttpServlet {
         } catch (OutOfStockException e) {
             response.sendRedirect(request.getContextPath()
                     + redirectPath
-                    + "?productId=" + productIdParam
-                    + "&quantity=" + quantityParam
-                    + "&error=" + ControllerConstants.OUT_OF_STOCK_ERROR_MESSAGE);
+                    + new UrlParamsSection()
+                    .appendParam(String.valueOf(PostProductParamKeys.productId), productIdParam)
+                    .appendParam(String.valueOf(PostProductParamKeys.quantity), quantityParam)
+                    .appendParam(String.valueOf(PostProductParamKeys.error), ControllerConstants.OUT_OF_STOCK_ERROR_MESSAGE)
+                    .build());
             return;
         }
 
         response.sendRedirect(request.getContextPath()
                 + redirectPath
-                + "?productId=" + productIdParam
-                + "&quantity=" + quantityParam
-                + "&message=" + ControllerConstants.ADDING_TO_CART_SUCCESS_MESSAGE);
+                + new UrlParamsSection()
+                .appendParam(String.valueOf(PostProductParamKeys.productId), productIdParam)
+                .appendParam(String.valueOf(PostProductParamKeys.quantity), quantityParam)
+                .appendParam(String.valueOf(PostProductParamKeys.message), ControllerConstants.ADDING_TO_CART_SUCCESS_MESSAGE)
+                .build());
     }
 
     private long parseId(String pathInfo) {

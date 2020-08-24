@@ -30,15 +30,15 @@ public class ArrayListProductDaoTest
     @Test(expected = NoSuchElementException.class)
     public void testGetNoResults() {
         productDao.set(testList);
-        assertFalse(productDao.get(Long.MAX_VALUE).isPresent());
-        productDao.get(Long.MAX_VALUE).get();
+        assertFalse(productDao.getItem(Long.MAX_VALUE).isPresent());
+        productDao.getItem(Long.MAX_VALUE).get();
     }
 
     @Test
     public void get() {
         productDao.set(testList);
-        assertEquals(Optional.of(example), productDao.get(example.getId()));
-        assertNotEquals(Optional.of(example), productDao.get(2L));
+        assertEquals(Optional.of(example), productDao.getItem(example.getId()));
+        assertNotEquals(Optional.of(example), productDao.getItem(2L));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ArrayListProductDaoTest
         productDao.set(testList);
         List<Product> copyList = new ArrayList<>(testList);
 
-        assertEquals(Optional.of(example), productDao.get(1L));
+        assertEquals(Optional.of(example), productDao.getItem(1L));
         productDao.delete(1L);
         copyList.remove(example);
         assertArrayEquals(copyList.toArray(), testList.toArray());

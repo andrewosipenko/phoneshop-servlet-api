@@ -74,9 +74,39 @@
     <url-pattern>/add-product-to-cart/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>checkout</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlets.CheckoutPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>checkout</servlet-name>
+    <url-pattern>/checkout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>overview</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlets.OrderOverviewPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>overview</servlet-name>
+    <url-pattern>/order/overview/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>dosFilter</filter-name>
+    <filter-class>com.es.phoneshop.web.filters.DosFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>dosFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <error-page>
     <exception-type>java.util.NoSuchElementException</exception-type>
-    <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+    <location>/WEB-INF/pages/errorItemNotFound.jsp</location>
   </error-page>
 
   <error-page>

@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ProductService {
 
+    List<Product> findProducts();
+
     Product getProduct(Long id);
 
     Product getProduct(String pathInfo);
-
-    List<Product> findProducts();
 
     void save(Product product);
 

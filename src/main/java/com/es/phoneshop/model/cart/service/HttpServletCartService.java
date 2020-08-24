@@ -35,7 +35,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
         //todo refactoring
         synchronized (cart) {
             try {
-                Product product = productDao.get(productId).get();
+                Product product = productDao.getItem(productId).get();
 
                 if (quantity > product.getStock()) {
                     throw new OutOfStockException();
@@ -62,35 +62,42 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
 
     @Override
     public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
-        try {
-            Product product = productDao.get(productId).get();
+        synchronized (cart) {
+            try {
+                Product product = productDao.getItem(productId).get();
 
-            if (quantity > product.getStock()) {
-                throw new OutOfStockException();
-            }
-
-            Optional<CartItem> optionalCartItem = findItemInCart(cart, productId);
-            if (optionalCartItem.isPresent()) {
-                var cartItem = optionalCartItem.get();
-                if (product.getStock() >= cartItem.getQuantity()) {
-                    cartItem.setQuantity(quantity);
-                } else {
+                if (quantity > product.getStock()) {
                     throw new OutOfStockException();
                 }
-            } else {
-                cart.getItems().add(new CartItem(product, quantity));
-            }
 
-            recalculateCart(cart);
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException(String.valueOf(productId));
+                Optional<CartItem> optionalCartItem = findItemInCart(cart, productId);
+                if (optionalCartItem.isPresent()) {
+                    var cartItem = optionalCartItem.get();
+                    if (product.getStock() >= cartItem.getQuantity()) {
+                        cartItem.setQuantity(quantity);
+                    } else {
+                        throw new OutOfStockException();
+                    }
+                }
+                recalculateCart(cart);
+            } catch (NoSuchElementException e) {
+                throw new NoSuchElementException(String.valueOf(productId));
+            }
         }
     }
 
     @Override
     public void delete(Cart cart, Long productID) {
-        cart.getItems().removeIf(cartItem ->
-                cartItem.getProduct().getId().equals(productID));
+        synchronized (cart) {
+            cart.getItems().removeIf(cartItem ->
+                    cartItem.getProduct().getId().equals(productID));
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getItems().clear();
         recalculateCart(cart);
     }
 
@@ -103,9 +110,9 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
     private void recalculateTotalCost(Cart cart) {
         cart.setTotalCost(cart.getItems()
                 .stream()
-                .map(cartItem -> cartItem.getProduct().getPrice())
+                .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
                 .reduce(BigDecimal::add)
-                .get());
+                .orElse(BigDecimal.ZERO));
     }
 
     private void recalculateTotalQuantity(Cart cart) {
@@ -113,7 +120,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
                 .stream()
                 .map(CartItem::getQuantity)
                 .reduce(Integer::sum)
-                .get());
+                .orElse(0));
     }
 
     private Optional<CartItem> findItemInCart(Cart cart, Long productId) {

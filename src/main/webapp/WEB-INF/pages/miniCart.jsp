@@ -6,5 +6,7 @@
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.entity.Cart" scope="request"/>
 
 <c:if test="${not empty cart.items}">
-    Cart: ${cart.totalQuantity} items
+    <a href="${pageContext.servletContext.contextPath}/cart">
+        Cart: ${cart.totalQuantity} items
+    </a>
 </c:if>

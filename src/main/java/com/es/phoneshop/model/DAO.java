@@ -3,14 +3,13 @@ package com.es.phoneshop.model;
 import java.util.List;
 import java.util.Optional;
 
-public interface DAO<Entity, KeyValue> {
+public interface DAO<Entity> {
 
-    Optional<Entity> get(KeyValue primaryKey);
+    Optional<Entity> getItem(Long id);
 
     List<Entity> getAll();
 
-    //why not create and update? updated entity should be returned
     void save(Entity entity);
 
-    void delete(KeyValue keyValue);
+    void delete(Long id);
 }
