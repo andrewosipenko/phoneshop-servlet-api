@@ -1,5 +1,5 @@
 package com.es.phoneshop.web.constants;
 
-public enum GetParamKeys {
+public enum GetProductParamKeys {
     query, sort, order
 }

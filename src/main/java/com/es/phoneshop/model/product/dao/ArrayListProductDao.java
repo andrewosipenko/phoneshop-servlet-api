@@ -1,128 +1,25 @@
 package com.es.phoneshop.model.product.dao;
 
+import com.es.phoneshop.model.GenericArrayListDao;
 import com.es.phoneshop.model.product.entity.Product;
 import org.apache.commons.collections.ComparatorUtils;
 
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao, TestableSingletonProductDao<List<Product>> {
-    //todo implement more elegant singleton :)
-    private static volatile ArrayListProductDao instance;
+public class ArrayListProductDao extends GenericArrayListDao<Product> implements TestableSingletonProductDao<List<Product>> {
 
-    private long maxID;
-
-    private List<Product> products;
-
-    private final ReadWriteLock readWriteLock;
-    private final Lock readLock;
-    private final Lock writeLock;
-
-    {
-        readWriteLock = new ReentrantReadWriteLock();
-        readLock = readWriteLock.readLock();
-        writeLock = readWriteLock.writeLock();
+    private static class SingletonHelper {
+        private static final ArrayListProductDao INSTANCE = new ArrayListProductDao();
     }
 
-    private ArrayListProductDao() {
-        this.products = new ArrayList<>();
-    }
-
-    private ArrayListProductDao(List<Product> products) {
-        this.products = products;
-    }
-
-    //threadsafe singleton with DCL
     public static ArrayListProductDao getInstance() {
-        ArrayListProductDao result = instance;
-        if (result != null) {
-            return result;
-        }
-        synchronized (ArrayListProductDao.class) {
-            if (instance == null) {
-                instance = new ArrayListProductDao();
-            }
-            return instance;
-        }
-    }
-
-    public static ArrayListProductDao getInstance(List<Product> products) {
-        ArrayListProductDao result = instance;
-        if (result != null) {
-            return result;
-        }
-        synchronized (ArrayListProductDao.class) {
-            if (instance == null) {
-                instance = new ArrayListProductDao(products);
-            }
-            return instance;
-        }
-    }
-
-    @Override
-    public Optional<Product> get(Long id) {
-        readLock.lock();
-        try {
-            return products.stream()
-                    .filter(product -> id.equals(product.getId()))
-                    .findAny();
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public List<Product> getAll() {
-        readLock.lock();
-        try {
-            return products;
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public void save(Product product) {
-        writeLock.lock();
-        try {
-            product.setId(++maxID);
-            products.stream()
-                    .filter(productFromList -> productFromList.getId().equals(product.getId()))
-                    .findAny()
-                    .ifPresentOrElse
-                    //if product already exist in collection swap them
-                            (productFromList -> {
-                                        products.remove(productFromList);
-                                        products.add(product);
-                                    },
-                                    //else if product isn't exist in collection simply add it
-                                    () -> products.add(product));
-        } finally {
-            writeLock.unlock();
-        }
-
-    }
-
-    @Override
-    public void delete(Long id) {
-        writeLock.lock();
-        try {
-            products.stream()
-                    .filter(product -> id.equals(product.getId()))
-                    .findFirst()
-                    .ifPresent(products::remove);
-        } finally {
-            writeLock.unlock();
-        }
-
+        return SingletonHelper.INSTANCE;
     }
 
     @Override
     public List<Product> find(String query) {
-        readLock.lock();
+        super.readLock.lock();
         try {
             List<Comparator<Product>> comparators = new LinkedList<>();
             if (query != null && !query.equals(" ")) {

@@ -1,14 +1,15 @@
 package com.es.phoneshop.model.cart.entity;
 
-import com.es.phoneshop.model.product.entity.Product;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
-public class Cart implements Serializable {
+public class Cart implements Serializable, Cloneable {
     private int totalQuantity;
+    private final Currency currency = Currency.getInstance(Locale.US);
 
     private BigDecimal totalCost;
 
@@ -16,6 +17,10 @@ public class Cart implements Serializable {
 
     public Cart() {
         this.cartItems = new ArrayList<>();
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 
     public List<CartItem> getItems() {
@@ -41,5 +46,9 @@ public class Cart implements Serializable {
     @Override
     public String toString() {
         return cartItems.toString();
+    }
+
+    public Currency getCurrency() {
+        return currency;
     }
 }

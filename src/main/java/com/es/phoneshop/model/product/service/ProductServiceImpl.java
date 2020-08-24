@@ -20,9 +20,9 @@ public enum ProductServiceImpl implements ProductService {
     @Override
     public Product getProduct(Long id) throws NoSuchElementException {
         try {
-            return productDao.get(id).get();
+            return productDao.getItem(id).get();
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException(String.valueOf(id));
+            throw new NoSuchElementException("Product with id " + id + "not found");
         }
     }
 
@@ -33,7 +33,7 @@ public enum ProductServiceImpl implements ProductService {
         try {
             long longId;
             longId = Integer.parseInt(pathInfo.split("/")[1]);
-            result = productDao.get(longId).get();
+            result = productDao.getItem(longId).get();
         } catch (NumberFormatException | NoSuchElementException e) {
             //could be created special IncorrectPathInfoException
             throw new NoSuchElementException(pathInfo.split("/")[1]);

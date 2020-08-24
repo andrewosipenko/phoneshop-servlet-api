@@ -5,7 +5,7 @@
 <tags:master pageTitle="Product List">
 <head>
     <title>
-        Product not found error
+        Page not found error
     </title>
 </head>
 <body>
@@ -13,7 +13,7 @@
     404
 </h1>
 <h2>
-    Product with id ${pageContext.exception.message} not found
+    ${pageContext.exception.message}
 </h2>
 <a href=${pageContext.servletContext.contextPath}/products>
     <p>

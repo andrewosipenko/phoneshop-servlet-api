@@ -6,7 +6,7 @@ import com.es.phoneshop.model.recentlyViewed.HttpServletRecentlyViewedService;
 import com.es.phoneshop.model.recentlyViewed.RecentlyViewedService;
 import com.es.phoneshop.web.constants.ControllerConstants;
 import com.es.phoneshop.web.exceptions.OutOfStockException;
-import com.es.phoneshop.web.constants.PostParamKeys;
+import com.es.phoneshop.web.constants.PostProductParamKeys;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -40,8 +40,8 @@ public class CartPageServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Map<Long, String> errors = new HashMap<>();
 
-        String[] productIds = request.getParameterValues(String.valueOf(PostParamKeys.productId));
-        String[] quantities = request.getParameterValues(String.valueOf(PostParamKeys.quantity));
+        String[] productIds = request.getParameterValues(String.valueOf(PostProductParamKeys.productId));
+        String[] quantities = request.getParameterValues(String.valueOf(PostProductParamKeys.quantity));
 
         for (int i = 0; i < productIds.length; i++) {
             try {
