@@ -10,7 +10,7 @@ public abstract class ControllerConstants {
     public static final String PRODUCT_DETAILS_PAGE_PATH = "/products/";
     public static final String CART_PAGE_PATH = "/cart";
     public static final String CHECKOUT_PAGE_PATH = "/checkout";
-    public static final String ORDER_OVERVIEW_PAGE_PATH = "/overview/";
+    public static final String ORDER_OVERVIEW_PAGE_PATH = "/order/overview/";
 
     public static final String PRODUCT_LIST_JSP_PATH = "/WEB-INF/pages/productList.jsp";
     public static final String PRICE_HISTORY_JSP_PATH = "/WEB-INF/pages/priceHistoryPage.jsp";
@@ -18,6 +18,7 @@ public abstract class ControllerConstants {
     public static final String MINI_CART_JSP_PATH = "/WEB-INF/pages/miniCart.jsp";
     public static final String CART_JSP_PATH = "/WEB-INF/pages/cart.jsp";
     public static final String CHECKOUT_JSP_PATH = "/WEB-INF/pages/checkout.jsp";
+    public static final String ORDER_OVERVIEW_JSP_PATH = "/WEB-INF/pages/orderOverview.jsp";
 
     public static final String NOT_A_NUMBER_ERROR_MESSAGE = "Not a number";
     public static final String OUT_OF_STOCK_ERROR_MESSAGE = "Not enough stock";

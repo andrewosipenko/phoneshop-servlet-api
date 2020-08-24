@@ -22,7 +22,7 @@ public enum ProductServiceImpl implements ProductService {
         try {
             return productDao.getItem(id).get();
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Product with id " + id + "not found");
+            throw new NoSuchElementException("Product with id " + id + " not found");
         }
     }
 

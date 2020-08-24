@@ -8,6 +8,6 @@
 <tr>
     <td>${label}</td>
     <td>
-        <${order[name]}">
+        ${order[name]}
     </td>
 </tr>

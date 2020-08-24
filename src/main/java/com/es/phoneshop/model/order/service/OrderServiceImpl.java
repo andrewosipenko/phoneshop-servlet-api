@@ -5,6 +5,7 @@ import com.es.phoneshop.model.cart.entity.Cart;
 import com.es.phoneshop.model.cart.entity.CartItem;
 import com.es.phoneshop.model.cart.service.CartService;
 import com.es.phoneshop.model.order.dao.ArrayListOrderDao;
+import com.es.phoneshop.model.order.dao.OrderDAO;
 import com.es.phoneshop.model.order.entity.Order;
 import com.es.phoneshop.model.order.entity.PaymentMethod;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
@@ -17,21 +18,21 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public enum OrderServiceImpl implements OrderService {
 
     INSTANCE;
 
-    private final GenericArrayListDao<Order> orderDao = ArrayListOrderDao.getInstance();
+    private final OrderDAO orderDao = ArrayListOrderDao.getInstance();
 
     @Override
     public Order getOrder(Long id) {
         try {
             return orderDao.getItem(id).get();
         } catch (NoSuchElementException e) {
-            //todo refactor errorItemNotFound.jsp to show info not only about product
-            throw new NoSuchElementException("Order with id " + id + "not found");
+            throw new NoSuchElementException("Order with id " + id + " not found");
         }
     }
 
@@ -58,7 +59,17 @@ public enum OrderServiceImpl implements OrderService {
 
     @Override
     public void placeOrder(Order order) {
+        order.setSecureId(UUID.randomUUID().toString());
         orderDao.save(order);
+    }
+
+    @Override
+    public Order getOrderBySecureId(String secureOrderId) {
+        try {
+            return orderDao.getOrderBySecureId(secureOrderId).get();
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Order with id " + secureOrderId + "not found");
+        }
     }
 
     private BigDecimal calculateDeliveryCost() {

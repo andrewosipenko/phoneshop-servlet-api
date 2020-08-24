@@ -91,7 +91,7 @@
 
   <servlet-mapping>
     <servlet-name>overview</servlet-name>
-    <url-pattern>/overview/*</url-pattern>
+    <url-pattern>/order/overview/*</url-pattern>
   </servlet-mapping>
 
   <error-page>

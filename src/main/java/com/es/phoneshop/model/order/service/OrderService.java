@@ -17,4 +17,6 @@ public interface OrderService {
     List<PaymentMethod> getPaymentMethods();
 
     void placeOrder(Order order);
+
+    Order getOrderBySecureId(String secureOrderId);
 }

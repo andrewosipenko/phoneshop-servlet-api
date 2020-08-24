@@ -1,5 +1,6 @@
 package com.es.phoneshop.web.servlets;
 
+import com.es.phoneshop.model.cart.entity.Cart;
 import com.es.phoneshop.model.cart.service.CartService;
 import com.es.phoneshop.model.cart.service.HttpServletCartService;
 import com.es.phoneshop.model.order.entity.Order;
@@ -51,7 +52,8 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Map<String, String> errors = new HashMap<>();
-        Order order = orderService.getOrder(cartService.getCart(request));
+        Cart cart = cartService.getCart(request);
+        Order order = orderService.getOrder(cart);
 
         setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.firstName), errors, order::setFirstName);
         setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.lastName), errors, order::setLastName);
@@ -62,9 +64,10 @@ public class CheckoutPageServlet extends HttpServlet {
 
         if(errors.isEmpty()){
             orderService.placeOrder(order);
+            cartService.clearCart(cart);
             response.sendRedirect(request.getContextPath()
                     + ControllerConstants.ORDER_OVERVIEW_PAGE_PATH
-                    + order.getId());
+                    + order.getSecureId());
         } else {
             request.setAttribute("errors", errors);
             request.setAttribute(ORDER_ATTRIBUTE_NAME, orderService.getOrder(cartService.getCart(request)));

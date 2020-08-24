@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 public class Order extends Cart implements IEntity {
     private Long id;
+    private String secureId;
 
     private BigDecimal subtotal;
     private BigDecimal deliveryCost;
@@ -84,6 +85,14 @@ public class Order extends Cart implements IEntity {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getSecureId() {
+        return secureId;
+    }
+
+    public void setSecureId(String secureId) {
+        this.secureId = secureId;
     }
 
     @Override

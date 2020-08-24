@@ -97,6 +97,12 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
         }
     }
 
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getItems().clear();
+        recalculateCart(cart);
+    }
+
     //this method must be called in all public methods, it's a pity that there is no any contract to guarantee it
     private void recalculateCart(Cart cart) {
         recalculateTotalCost(cart);
@@ -108,7 +114,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
                 .stream()
                 .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
                 .reduce(BigDecimal::add)
-                .get());
+                .orElse(BigDecimal.ZERO));
     }
 
     private void recalculateTotalQuantity(Cart cart) {
@@ -116,7 +122,7 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
                 .stream()
                 .map(CartItem::getQuantity)
                 .reduce(Integer::sum)
-                .get());
+                .orElse(0));
     }
 
     private Optional<CartItem> findItemInCart(Cart cart, Long productId) {
