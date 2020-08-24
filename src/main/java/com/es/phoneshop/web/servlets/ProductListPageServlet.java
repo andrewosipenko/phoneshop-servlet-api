@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
-    //TODO Controller-layer
     private ProductService productService;
     private CartService<HttpServletRequest> cartService;
     private RecentlyViewedService<HttpServletRequest> panelService;

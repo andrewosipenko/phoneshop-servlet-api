@@ -60,8 +60,6 @@ public enum HttpServletCartService implements CartService<HttpServletRequest> {
         }
     }
 
-
-    //todo refactor
     @Override
     public void update(Cart cart, Long productId, int quantity) throws OutOfStockException {
         synchronized (cart) {

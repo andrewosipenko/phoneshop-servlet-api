@@ -26,4 +26,5 @@ public abstract class ControllerConstants {
     public static final String REQUIRED_VALUE_ERROR_MESSAGE = "Value is required";
     public static final String WRONG_DATE_INPUT_ERROR_MESSAGE = "Incorrect date input, please follow YYYY-MM-DD format";
     public static final String PAST_DATE_ERROR_MESSAGE = "This date is no longer relevant, check your calendar :)";
+    public static final String WRONG_PHONE_FORMAT_ERROR_MESSAGE = "Wrong phone number format, e.g. +375(17)7777777";
 }

@@ -9,8 +9,6 @@ import com.es.phoneshop.model.order.service.OrderService;
 import com.es.phoneshop.model.order.service.OrderServiceImpl;
 import com.es.phoneshop.web.constants.CheckoutParamKeys;
 import com.es.phoneshop.web.constants.ControllerConstants;
-import com.es.phoneshop.web.constants.PostProductParamKeys;
-import com.es.phoneshop.web.utils.UrlParamsSection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,15 +16,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class CheckoutPageServlet extends HttpServlet {
     private static final String ORDER_ATTRIBUTE_NAME = "order";
@@ -57,7 +52,8 @@ public class CheckoutPageServlet extends HttpServlet {
 
         setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.firstName), errors, order::setFirstName);
         setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.lastName), errors, order::setLastName);
-        setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.phone), errors, order::setPhone);
+        setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.phone), errors, order::setPhone,
+                this::BYphoneNumberValidationPredicate, ControllerConstants.WRONG_PHONE_FORMAT_ERROR_MESSAGE);
         setRequiredDeliveryDate(request, errors, order);
         setRequiredStringParameter(request, String.valueOf(CheckoutParamKeys.deliveryAddress), errors, order::setDeliveryAddress);
         setRequiredPaymentMethod(request, errors, order);
@@ -76,12 +72,26 @@ public class CheckoutPageServlet extends HttpServlet {
         }
     }
 
-    //todo add validation predicate
+    boolean BYphoneNumberValidationPredicate(String phoneNumber) {
+        return phoneNumber.matches("^[+]375[(](17|29|33|44)[)]*[\\s\\./0-9]{7}$");
+    }
+
     private void setRequiredStringParameter(HttpServletRequest request, String parameter, Map<String, String> errors,
                                             Consumer<String> consumer) {
         String requiredValue = request.getParameter(parameter);
         if(requiredValue == null || requiredValue.isEmpty()) {
             errors.put(parameter, ControllerConstants.REQUIRED_VALUE_ERROR_MESSAGE);
+        } else {
+            consumer.accept(requiredValue);
+        }
+    }
+
+    //don't know how to avoid 6 parameter to make generic method
+    private void setRequiredStringParameter(HttpServletRequest request, String parameter, Map<String, String> errors,
+                                            Consumer<String> consumer, Predicate<String> predicate, String errorMessage) {
+        String requiredValue = request.getParameter(parameter);
+        if(requiredValue == null || requiredValue.isEmpty() || !predicate.test(requiredValue)) {
+            errors.put(parameter, errorMessage);
         } else {
             consumer.accept(requiredValue);
         }

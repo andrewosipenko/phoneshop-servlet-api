@@ -11,5 +11,10 @@
     <td>
         <c:set var="error" value="${errors[name]}"/>
         <input name=${name} value="${not empty error ? param[name] : order[name]}">
+        <c:if test="${not empty errors}">
+            <div class="error">
+                    ${error}
+            </div>
+        </c:if>
     </td>
 </tr>
