@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class GenericArrayListDao<Entity extends IEntity> implements DAO<Entity> {
     protected long maxID;
 
-    protected List<Entity> products;
+    protected List<Entity> items;
 
     protected final ReadWriteLock readWriteLock;
     protected final Lock readLock;
@@ -23,18 +23,18 @@ public class GenericArrayListDao<Entity extends IEntity> implements DAO<Entity> 
     }
 
     protected GenericArrayListDao() {
-        this.products = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
-    protected GenericArrayListDao(List<Entity> products) {
-        this.products = products;
+    protected GenericArrayListDao(List<Entity> items) {
+        this.items = items;
     }
 
     @Override
     public Optional<Entity> getItem(Long id) {
         readLock.lock();
         try {
-            return products.stream()
+            return items.stream()
                     .filter(entity -> id.equals(entity.getId()))
                     .findAny();
         } finally {
@@ -46,7 +46,7 @@ public class GenericArrayListDao<Entity extends IEntity> implements DAO<Entity> 
     public List<Entity> getAll() {
         readLock.lock();
         try {
-            return products;
+            return items;
         } finally {
             readLock.unlock();
         }
@@ -57,17 +57,17 @@ public class GenericArrayListDao<Entity extends IEntity> implements DAO<Entity> 
         writeLock.lock();
         try {
             item.setId(++maxID);
-            products.stream()
+            items.stream()
                     .filter(productFromList -> productFromList.getId().equals(item.getId()))
                     .findAny()
                     .ifPresentOrElse
                     //if product already exist in collection swap them
                             (productFromList -> {
-                                        products.remove(productFromList);
-                                        products.add(item);
+                                        items.remove(productFromList);
+                                        items.add(item);
                                     },
                                     //else if product isn't exist in collection simply add it
-                                    () -> products.add(item));
+                                    () -> items.add(item));
         } finally {
             writeLock.unlock();
         }
@@ -78,10 +78,10 @@ public class GenericArrayListDao<Entity extends IEntity> implements DAO<Entity> 
     public void delete(Long id) {
         writeLock.lock();
         try {
-            products.stream()
+            items.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findFirst()
-                    .ifPresent(products::remove);
+                    .ifPresent(items::remove);
         } finally {
             writeLock.unlock();
         }

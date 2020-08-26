@@ -28,6 +28,9 @@
             <button type="submit">Search</button>
         </form>
     </div>
+    <a href="${pageContext.servletContext.contextPath}/products/advancedSearch">
+        Advanced search
+    </a>
     <table>
         <thead>
         <tr>

@@ -19,7 +19,7 @@ public class ArrayListOrderDao extends GenericArrayListDao<Order> implements Ord
     public Optional<Order> getOrderBySecureId(String secureId) {
         readLock.lock();
         try {
-            return products.stream()
+            return items.stream()
                     .filter(entity -> secureId.equals(entity.getSecureId()))
                     .findAny();
         } finally {

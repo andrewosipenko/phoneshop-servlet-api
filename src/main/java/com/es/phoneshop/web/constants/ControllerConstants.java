@@ -19,6 +19,7 @@ public abstract class ControllerConstants {
     public static final String CART_JSP_PATH = "/WEB-INF/pages/cart.jsp";
     public static final String CHECKOUT_JSP_PATH = "/WEB-INF/pages/checkout.jsp";
     public static final String ORDER_OVERVIEW_JSP_PATH = "/WEB-INF/pages/orderOverview.jsp";
+    public static final String ADVANCED_SEARCH_PAGE_JSP_PATH = "/WEB-INF/pages/advancedSearchPage.jsp";
 
     public static final String NOT_A_NUMBER_ERROR_MESSAGE = "Not a number";
     public static final String OUT_OF_STOCK_ERROR_MESSAGE = "Not enough stock";

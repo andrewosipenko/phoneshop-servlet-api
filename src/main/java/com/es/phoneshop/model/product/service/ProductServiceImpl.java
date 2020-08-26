@@ -6,9 +6,8 @@ import com.es.phoneshop.model.product.entity.Product;
 import com.es.phoneshop.model.product.sortEnums.SortField;
 import com.es.phoneshop.model.product.sortEnums.SortOrder;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public enum ProductServiceImpl implements ProductService {
@@ -87,6 +86,12 @@ public enum ProductServiceImpl implements ProductService {
                 .filter(this::isProductInStock)
                 .sorted(comparator)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> advancedSearch(String productCode, BigDecimal minPrice, BigDecimal maxPrice, Integer minStock) {
+        //i would like to implement complicated search logic here, but our project does such stuff in dao
+        return productDao.advancedSearch(productCode, minPrice, maxPrice, minStock);
     }
 
     private boolean isProductsPricePresent(Product product) {

@@ -4,8 +4,11 @@ import com.es.phoneshop.model.GenericArrayListDao;
 import com.es.phoneshop.model.product.entity.Product;
 import org.apache.commons.collections.ComparatorUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ArrayListProductDao extends GenericArrayListDao<Product> implements TestableSingletonProductDao<List<Product>> {
 
@@ -27,11 +30,11 @@ public class ArrayListProductDao extends GenericArrayListDao<Product> implements
                 Arrays.stream(terms)
                         .forEach(term -> comparators.add(this.getDescriptionContainingComparator(term)));
 
-                return this.products.stream()
+                return this.items.stream()
                         .filter(product -> isPartlyContaining(product.getDescription(), terms))
                         .sorted(((Comparator<Product>) ComparatorUtils.chainedComparator(comparators)))
                         .collect(Collectors.toList());
-            } else return products;
+            } else return items;
         } finally {
             readLock.unlock();
         }
@@ -69,20 +72,48 @@ public class ArrayListProductDao extends GenericArrayListDao<Product> implements
         return first.contains(term) && second.contains(term);
     }
 
+    @Override
+    public List<Product> advancedSearch(String productCode, BigDecimal minPrice, BigDecimal maxPrice, Integer minStock) {
+        super.readLock.lock();
+        try {
+            if (productCode != null && !productCode.equals(" ")) {
+                return this.items.stream()
+                        .filter(product -> product.getCode().equals(productCode))
+                        .findAny()
+                        .map(List::of)
+                        .orElseGet(ArrayList::new);
+            }
+            //i know this solution violates Stream API semantics but i  did not have time to think of the best option
+            //but i will, honestly :)
+            //P.S i'd like to make something like chain
+            Stream<Product> result = filterIfValuePresent(items.stream(), minPrice, product -> minPrice.compareTo(product.getPrice()) < 0);
+            result = filterIfValuePresent(result, maxPrice, product -> maxPrice.compareTo(product.getPrice()) > 0);
+            result = filterIfValuePresent(result, minStock, product -> product.getStock() > minStock);
+            return result.collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    private Stream<Product> filterIfValuePresent(Stream<Product> productStream, Object value, Predicate<? super Product> predicate) {
+        if(value != null) {
+            return productStream.filter(predicate);
+        } else return productStream;
+    }
 
     @Override
     public List<Product> get() {
-        return products;
+        return items;
     }
 
     @Override
     public void set(List<Product> resource) {
-        products = resource;
+        items = resource;
     }
 
     @Override
     public void dropToDefault() {
-        products = new ArrayList<>();
+        items = new ArrayList<>();
         maxID = 0;
     }
 }
