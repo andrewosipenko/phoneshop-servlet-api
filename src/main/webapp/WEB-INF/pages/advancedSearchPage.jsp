@@ -10,6 +10,10 @@
         Welcome to Expert-Soft training!
     </p>
 
+
+    <p>
+       Found ${products.size()} products
+    </p>
     <div>
         <form method="get">
             <table>
