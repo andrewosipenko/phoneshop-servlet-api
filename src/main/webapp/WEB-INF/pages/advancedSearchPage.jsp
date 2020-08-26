@@ -10,10 +10,6 @@
         Welcome to Expert-Soft training!
     </p>
 
-
-    <p>
-       Found ${products.size()} products
-    </p>
     <div>
         <form method="get">
             <table>
@@ -27,6 +23,11 @@
             <button type="submit">Search</button>
         </form>
     </div>
+
+    <div class="message">
+        Found ${products.size()} products
+    </div>
+    
     <table>
         <thead>
         <tr>
