@@ -24,10 +24,10 @@
         </form>
     </div>
 
-    <div class="message">
+    <div class="success">
         Found ${products.size()} products
     </div>
-    
+
     <table>
         <thead>
         <tr>
