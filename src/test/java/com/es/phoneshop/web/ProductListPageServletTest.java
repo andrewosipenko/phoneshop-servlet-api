@@ -25,7 +25,7 @@ public class ProductListPageServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private final ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
     public void setup(){
