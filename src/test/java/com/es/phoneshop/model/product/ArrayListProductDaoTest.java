@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -25,12 +26,11 @@ public class ArrayListProductDaoTest
         assertFalse(productDao.findProducts().isEmpty());
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void testDeleteProduct() {
 
-        long size = productDao.getSize();
         productDao.delete(1L);
-        assertEquals(productDao.getSize(),size - 1);
+        productDao.getProduct(1L);
     }
 
     @Test
