@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
     private List<Product> products;
     private long lastId;
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public ArrayListProductDao() {
 
@@ -20,44 +23,79 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized Product getProduct(Long id) throws NoSuchElementException {
+    public Product getProduct(Long id) throws NoSuchElementException {
 
-        return products.stream().filter(product -> product.getId().equals(id))
-                .findAny()
-                .orElseThrow(NoSuchElementException::new);
-    }
-
-    @Override
-    public synchronized List<Product> findProducts() {
-
-        return products.stream()
-                .filter(product -> product.getPrice() != null)
-                .filter(product -> product.getStock() > 0)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public synchronized void save(Product product) {
-
-        if (product.getId() != null) {
-            Product sameIdProduct = getProduct(product.getId());
-            products.remove(sameIdProduct);
+        lock.readLock().lock();
+        try {
+            return products.stream().filter(product -> product.getId().equals(id))
+                    .findAny()
+                    .orElseThrow(NoSuchElementException::new);
         }
-        else {
-            product.setId(lastId++);
+        finally {
+            lock.readLock().unlock();
         }
-        products.add(product);
     }
 
     @Override
-    public synchronized void delete(Long id) {
+    public List<Product> findProducts() {
 
-        products.remove(getProduct(id));
+        lock.readLock().lock();
+        try {
+            return products.stream()
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getStock() > 0)
+                    .collect(Collectors.toList());
+        }
+        finally {
+            lock.readLock().unlock();
+        }
+
     }
 
     @Override
-    public synchronized long getSize() {
-        return products.size();
+    public void save(Product product) {
+
+        lock.writeLock().lock();
+        try {
+            if (product.getId() != null) {
+                Product sameIdProduct = getProduct(product.getId());
+                products.remove(sameIdProduct);
+            }
+            else {
+                product.setId(lastId++);
+            }
+            products.add(product);
+        }
+        finally {
+            lock.writeLock().unlock();
+        }
+
+    }
+
+    @Override
+    public void delete(Long id) {
+
+        lock.writeLock().lock();
+        try {
+            products.remove(getProduct(id));
+        }
+        finally {
+            lock.writeLock().unlock();
+        }
+
+    }
+
+    @Override
+    public long getSize() {
+
+        lock.readLock().lock();
+        try {
+            return products.size();
+        }
+        finally {
+            lock.readLock().unlock();
+        }
+
     }
 
     private void saveSampleProducts() {
