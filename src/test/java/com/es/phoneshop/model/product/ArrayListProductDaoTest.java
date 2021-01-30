@@ -45,7 +45,7 @@ public class ArrayListProductDaoTest {
         productDao.save(product);
         assertEquals(product,productDao.getProduct(id));
     }
-
+    
     @Test
     public void testSuccessfulDeleteProduct() {
         int sizeBefore = productDao.findProducts().size();
@@ -68,4 +68,8 @@ public class ArrayListProductDaoTest {
         assertNotNull(product);
     }
 
+    @Test(expected = ProductNotFoundException.class)
+    public void testUnsuccessfulGetProduct() throws ProductNotFoundException {
+        productDao.getProduct(-5L);
+    }
 }
