@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -26,14 +27,16 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFoundException {
-        if (id == null) throw new ProductNotFoundException();
+    public Product getProduct(Long id) {
+        if (id == null) throw new NoSuchElementException();
         readLock.lock();
         try {
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
+                    .filter(product -> product.getStock() > 0)
+                    .filter(product -> product.getPrice() != null)
                     .findAny()
-                    .orElseThrow(ProductNotFoundException::new);
+                    .orElseThrow(NoSuchElementException::new);
         } finally {
             readLock.unlock();
         }
@@ -54,34 +57,41 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product) {
-        if (product != null) {
-            writeLock.lock();
+        if (product == null) throw new RuntimeException("Attempt to save null");
+        writeLock.lock();
+        try {
             if (product.getId() != null) {
-                products.stream()
-                        .filter(p -> product.getId().equals(p.getId()))
-                        .findAny()
-                        .ifPresentOrElse(val -> products.set(products.indexOf(val), product),
-                                () -> products.add(product));
+                updateProducts(product);
             } else {
-                try {
-                    product.setId(maxId++);
-                    products.add(product);
-                } finally {
-                    writeLock.unlock();
-                }
+                addProduct(product);
             }
+        } finally {
+            writeLock.unlock();
         }
+    }
+
+
+    private void addProduct(Product product) {
+        product.setId(maxId++);
+        products.add(product);
+    }
+
+    private void updateProducts(Product product) {
+        products.stream()
+                .filter(p -> product.getId().equals(p.getId()))
+                .findAny()
+                .ifPresentOrElse(val -> products.set(products.indexOf(val), product),
+                        () -> products.add(product));
     }
 
     @Override
     public void delete(Long id) {
-        if (id != null) {
-            writeLock.lock();
-            try {
-                products.removeIf(product -> id.equals(product.getId()));
-            } finally {
-                writeLock.unlock();
-            }
+        if (id == null) throw new RuntimeException("Attempt to delete product with null id");
+        writeLock.lock();
+        try {
+            products.removeIf(product -> id.equals(product.getId()));
+        } finally {
+            writeLock.unlock();
         }
     }
 

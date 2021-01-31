@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -24,7 +25,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testSaveProduct() throws ProductNotFoundException {
+    public void testSaveProduct() {
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
         assertNotNull(product.getId());
@@ -32,26 +33,34 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testUpdateProduct() throws ProductNotFoundException {
-        productDao.save((new Product(0L, "updated", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg")));
+    public void testUpdateProduct() {
         Product product = productDao.getProduct(0L);
+        assertEquals("sgs", product.getCode());
+        productDao.save((new Product(0L, "updated", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg")));
+        product = productDao.getProduct(0L);
         assertEquals("updated", product.getCode());
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testTrySaveNull() {
+        productDao.save(null);
+    }
+
     @Test
-    public void testSaveProductWithExistingUniqueId() throws ProductNotFoundException {
+    public void testSaveProductWithExistingUniqueId() {
         long id = ((ArrayListProductDao) productDao).getMaxId() + 5L;
         Product product = new Product(id, "updated", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
-        assertEquals(product,productDao.getProduct(id));
+        assertEquals(product, productDao.getProduct(id));
     }
-    
-    @Test
+
+    @Test(expected = NoSuchElementException.class)
     public void testSuccessfulDeleteProduct() {
         int sizeBefore = productDao.findProducts().size();
         productDao.delete(2L);
         int sizeAfter = productDao.findProducts().size();
         assertEquals(sizeBefore, sizeAfter + 1);
+        productDao.getProduct(2L);
     }
 
     @Test
@@ -63,13 +72,27 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testGetProduct() throws ProductNotFoundException {
+    public void testGetProduct() {
         Product product = productDao.getProduct(2L);
         assertNotNull(product);
     }
 
-    @Test(expected = ProductNotFoundException.class)
-    public void testUnsuccessfulGetProduct() throws ProductNotFoundException {
+    @Test(expected = NoSuchElementException.class)
+    public void testUnsuccessfulGetProduct() {
         productDao.getProduct(-5L);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testGetProductWithZeroStock() {
+        Product product = new Product("updated", "Samsung Galaxy S", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+        productDao.getProduct(product.getId());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testGetProductWithNullPrice() {
+        Product product = new Product("updated", "Samsung Galaxy S", null, usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+        productDao.getProduct(product.getId());
     }
 }

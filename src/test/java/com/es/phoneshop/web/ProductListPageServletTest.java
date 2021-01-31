@@ -25,7 +25,6 @@ public class ProductListPageServletTest {
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
-
     @Mock
     private ServletConfig servletConfig;
 
