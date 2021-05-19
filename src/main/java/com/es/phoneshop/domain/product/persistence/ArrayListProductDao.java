@@ -9,18 +9,23 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private List<Product> products;
+    private final List<Product> products;
 
-    private LongIdGenerator idGenerator;
+    private final LongIdGenerator idGenerator;
+
+    private final ReadWriteLock lock;
 
     public ArrayListProductDao(LongIdGenerator idGenerator) {
+        this.products = getSampleProducts();
         this.idGenerator = idGenerator;
-        products = getSampleProducts();
+        this.lock = new ReentrantReadWriteLock();
     }
 
     private static List<Product> getSampleProducts() {
@@ -45,38 +50,68 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public @Nullable Product getByIdOrNull(@NotNull Long id) {
-        return products.stream()
-                .filter(it -> id.equals(it.getId()))
-                .findFirst().orElse(null);
+        Product result;
+        lock.readLock().lock();
+        try {
+            result = products.stream()
+                    .filter(it -> id.equals(it.getId()))
+                    .findFirst().orElse(null);
+        } finally {
+            lock.readLock().unlock();
+        }
+        return result;
     }
 
     @Override
     public List<Product> getAllAvailable() {
-        return products.stream()
-                .filter(it -> it.getStock() > 0)
-                .filter(it -> it.getPrice() != null)
-                .collect(Collectors.toList());
+        List<Product> result;
+        lock.readLock().lock();
+        try {
+            result = products.stream()
+                    .filter(it -> it.getStock() > 0)
+                    .filter(it -> it.getPrice() != null)
+                    .collect(Collectors.toList());
+        } finally {
+            lock.readLock().unlock();
+        }
+        return result;
     }
 
     @Override
     public void update(@NotNull Product product) {
-        int foundIndex = IntStream.range(0, products.size())
-                .filter(i -> product.getId().equals(products.get(i).getId()))
-                .findFirst().orElseThrow(ProductPresistenceException::new);
-        products.set(foundIndex, product);
+        lock.writeLock().lock();
+        try {
+            int foundIndex = IntStream.range(0, products.size())
+                    .filter(i -> product.getId().equals(products.get(i).getId()))
+                    .findFirst().orElseThrow(ProductPresistenceException::new);
+            products.set(foundIndex, product);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     @Override
     public void create(@NotNull Product product) {
         product.setId(idGenerator.getId());
-        products.add(product);
+        lock.writeLock().lock();
+        try {
+            products.add(product);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     @Override
     public void delete(@NotNull Long id) {
-        int foundIndex = IntStream.range(0, products.size())
-                .filter(i -> id.equals(products.get(i).getId()))
-                .findFirst().orElseThrow(ProductPresistenceException::new);
-        products.remove(foundIndex);
+        lock.writeLock().lock();
+        try {
+            int foundIndex = IntStream.range(0, products.size())
+                    .filter(i -> id.equals(products.get(i).getId()))
+                    .findFirst().orElseThrow(ProductPresistenceException::new);
+            products.remove(foundIndex);
+        } finally {
+            lock.writeLock().unlock();
+        }
+
     }
 }
