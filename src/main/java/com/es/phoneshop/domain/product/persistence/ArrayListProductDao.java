@@ -82,7 +82,7 @@ public class ArrayListProductDao implements ProductDao {
         lock.writeLock().lock();
         try {
             int foundIndex = IntStream.range(0, products.size())
-                    .filter(i -> product.getId().equals(products.get(i).getId()))
+                    .filter(i ->product.getId().equals(products.get(i).getId()))
                     .findFirst().orElseThrow(ProductPresistenceException::new);
             products.set(foundIndex, product);
         } finally {
