@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.domain.product.model;
 
 import java.math.BigDecimal;
 import java.util.Currency;
