@@ -17,8 +17,28 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product( final Long id,
+                    final String code,
+                    final String description,
+                    final BigDecimal price,
+                    final Currency currency,
+                    final int stock,
+                    final String imageUrl ) {
         this.id = id;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+    }
+
+    public Product( final String code,
+                    final String description,
+                    final BigDecimal price,
+                    final Currency currency,
+                    final int stock,
+                    final String imageUrl ) {
         this.code = code;
         this.description = description;
         this.price = price;
