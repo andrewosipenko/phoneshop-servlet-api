@@ -48,7 +48,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void save(Product product) {
+    public void save(Product product) {
         lock.writeLock().lock();
         try {
             product.setId(maxId++);
@@ -59,7 +59,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void delete(Long id) {
+    public void delete(Long id) {
         lock.writeLock().lock();
         try {
             products.removeIf(product ->
@@ -70,7 +70,7 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private synchronized void saveSampleProducts() {
+    private void saveSampleProducts() {
         Currency usd = Currency.getInstance("USD");
         save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
