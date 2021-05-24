@@ -5,6 +5,7 @@ import java.util.List;
 public class ArrayListProductDao implements ProductDao {
     @Override
     public Product getProduct(Long id) {
+        System.out.println("123");
         throw new RuntimeException("Not implemented");
     }
 
