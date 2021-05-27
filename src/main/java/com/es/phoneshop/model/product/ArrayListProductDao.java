@@ -21,21 +21,24 @@ public class ArrayListProductDao implements ProductDao {
 	@Override
 	public synchronized Optional<Product> getProduct(final Long id) {
 		return products.stream()
-				.filter(product -> product.getId()
-						.equals(id))
+				.filter(product -> product.getId().equals(id))
 				.findAny();
 	}
 
 	@Override
 	public synchronized List<Product> findProducts() {
 		return List.copyOf(products.stream()
-				.filter(product -> product.getPrice() != null)
+				.filter(this::nonNullPrice)
 				.filter(this::productIsInStock)
 				.collect(Collectors.toList()));
 	}
 
 	private boolean productIsInStock(@NonNull final Product product) {
 		return product.getStock() > 0;
+	}
+
+	private boolean nonNullPrice(@NonNull final Product product) {
+		return product.getPrice() != null;
 	}
 
 	@Override
@@ -51,9 +54,10 @@ public class ArrayListProductDao implements ProductDao {
 
 	@Override
 	public synchronized void delete(final Long id) {
-		Optional<Product> product = getProduct(id);
-		product.ifPresent(products::remove);
-		// products.remove(id);
+		Optional<Product> optProduct = products.stream()
+				.filter(product -> product.getId().equals(id))
+				.findAny();
+		optProduct.ifPresent(products::remove);
 	}
 
 	private void saveSampleProducts() {

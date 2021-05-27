@@ -23,8 +23,7 @@ public class ArrayListProductDaoTest {
 		Product product = new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
 		productDao.save(product);
 
-		assertTrue(productDao.findProducts()
-				.contains(product));
+		assertTrue(productDao.findProducts().contains(product));
 	}
 
 	@Test
@@ -37,10 +36,8 @@ public class ArrayListProductDaoTest {
 		Product updProduct = new Product(id, "siemens75", "Siemens SXG75", new BigDecimal(200), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
 		productDao.save(updProduct);
 
-		assertFalse(productDao.findProducts()
-				.contains(product));
-		assertTrue(productDao.findProducts()
-				.contains(updProduct));
+		assertFalse(productDao.findProducts().contains(product));
+		assertTrue(productDao.findProducts().contains(updProduct));
 	}
 
 	@Test
@@ -50,8 +47,7 @@ public class ArrayListProductDaoTest {
 		productDao.save(product);
 
 		final long id = product.getId();
-		assertTrue(productDao.getProduct(id)
-				.isPresent());
+		assertTrue(productDao.getProduct(id).isPresent());
 	}
 
 	@Test
@@ -60,12 +56,10 @@ public class ArrayListProductDaoTest {
 		Product product = new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
 		productDao.save(product);
 		final long id = product.getId();
-		assertTrue(productDao.getProduct(id)
-				.isPresent());
+		assertTrue(productDao.getProduct(id).isPresent());
 
 		productDao.delete(id);
-		assertFalse(productDao.getProduct(id)
-				.isPresent());
+		assertFalse(productDao.getProduct(id).isPresent());
 	}
 
 	@Test
@@ -74,10 +68,8 @@ public class ArrayListProductDaoTest {
 		Product product = new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
 		productDao.save(product);
 
-		assertFalse(productDao.findProducts()
-				.isEmpty());
-		assertTrue(productDao.findProducts()
-				.contains(product));
+		assertFalse(productDao.findProducts().isEmpty());
+		assertTrue(productDao.findProducts().contains(product));
 	}
 
 	@Test
@@ -87,9 +79,7 @@ public class ArrayListProductDaoTest {
 		productDao.save(product);
 		final long id = product.getId();
 
-		assertTrue(productDao.getProduct(id)
-				.isPresent());
-		assertFalse(productDao.findProducts()
-				.contains(product));
+		assertTrue(productDao.getProduct(id).isPresent());
+		assertFalse(productDao.findProducts().contains(product));
 	}
 }
