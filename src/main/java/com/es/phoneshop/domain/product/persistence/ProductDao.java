@@ -1,19 +1,22 @@
 package com.es.phoneshop.domain.product.persistence;
 
 import com.es.phoneshop.domain.product.model.Product;
-import org.jetbrains.annotations.NotNull;
+import com.es.phoneshop.domain.product.model.ProductPrice;
+import com.es.phoneshop.domain.product.model.ProductRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductDao {
-    Optional<Product> getById(@NotNull Long id);
+    Optional<Product> getById(Long id);
 
-    List<Product> getAllAvailable();
+    List<Product> getAllByRequest(ProductRequest productRequest);
 
     List<Product> getAll();
 
-    Long save(@NotNull Product product);
+    Long save(Product product);
 
-    void delete(@NotNull Long id);
+    void delete(Long id);
+
+    List<ProductPrice> getPricesHistoryByProductId(Long id);
 }

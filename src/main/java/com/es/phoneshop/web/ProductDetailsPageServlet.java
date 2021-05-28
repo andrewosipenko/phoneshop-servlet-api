@@ -1,10 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.domain.common.model.SortingOrder;
 import com.es.phoneshop.infra.config.Configuration;
 import com.es.phoneshop.infra.config.ConfigurationImpl;
-import com.es.phoneshop.domain.product.model.ProductRequest;
-import com.es.phoneshop.domain.product.model.ProductSortingCriteria;
 import com.es.phoneshop.domain.product.persistence.ProductDao;
 
 import javax.servlet.ServletConfig;
@@ -13,8 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
-public class ProductListPageServlet extends HttpServlet {
+public class ProductDetailsPageServlet extends HttpServlet {
 
     private Configuration configuration;
 
@@ -29,11 +27,14 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String query = request.getParameter("searchQuery");
-        ProductSortingCriteria sortingCriteria = ProductSortingCriteria.fromString(request.getParameter("sortingCriteria"));
-        SortingOrder sortingOrder = SortingOrder.fromString(request.getParameter("sortingOrder"));
-
-        request.setAttribute("products", productDao.getAllByRequest(new ProductRequest(query, sortingCriteria, sortingOrder, 1)));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        String productIdStr = request.getPathInfo().substring(1);
+        try {
+            request.setAttribute("product", productDao.getById(Long.valueOf(productIdStr)).get());
+            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+        } catch (NumberFormatException | NoSuchElementException e){
+            request.setAttribute("productIdStr", productIdStr);
+            response.setStatus(404);
+            request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);
+        }
     }
 }

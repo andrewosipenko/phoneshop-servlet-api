@@ -1,28 +1,58 @@
 package com.es.phoneshop.domain.product.persistence;
 
 import com.es.phoneshop.domain.product.model.Product;
+import com.es.phoneshop.domain.product.model.ProductRequest;
 import com.es.phoneshop.utils.LongIdGeneratorImpl;
+import com.es.phoneshop.web.contextListeners.SampleDataServletContextListener;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Currency;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 
 public class ArrayListProductDaoTest {
 
-    private ProductDao productDao;
+    private static ProductDao productDao;
+    private static List<Product> sampleProducts;
+
+    @BeforeClass
+    public static void setupAll() {
+        sampleProducts = SampleDataServletContextListener.getSampleProducts();
+    }
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao(new LongIdGeneratorImpl());
+        productDao = new ArrayListProductDao(
+                new LongIdGeneratorImpl(0L),
+                Clock.fixed(
+                        Instant.parse("2021-01-01T00:00:00.00Z"),
+                        ZoneId.of("Europe/London")
+                )
+        );
+        sampleProducts.forEach(it -> productDao.save(
+                new Product(
+                        it.getId(),
+                        it.getCode(),
+                        it.getDescription(),
+                        it.getPrice(),
+                        it.getCurrency(),
+                        it.getStock(),
+                        it.getImageUrl())
+                )
+        );
     }
 
     @Test
-    public void testGetAllAvailableProducts() {
-        assertFalse(productDao.getAll().isEmpty());
+    public void testGetAllByRequest() {
+        assertFalse(productDao.getAllByRequest(new ProductRequest(null, null, null, 1)).isEmpty());
     }
 
     @Test
@@ -33,7 +63,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testGetProductByWrongIdNoResult() {
-        Long id = 50L;
+        Long id = 500L;
         assertFalse(productDao.getById(id).isPresent());
     }
 
@@ -47,10 +77,16 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testGetAllAvailable() {
+    public void testGetAllWithRequest() {
         int actualSize = productDao.getAll().size();
-        int availableSize = productDao.getAllAvailable().size();
-        assertEquals(actualSize - 1, availableSize);
+        int resultSize = productDao.getAllByRequest(new ProductRequest(null, null, null, 1)).size();
+        assertEquals(actualSize - 1, resultSize);
+    }
+
+    @Test
+    public void testGetAllWithSearchQuery() {
+        int productsSize = productDao.getAllByRequest(new ProductRequest("Samsung", null, null, 1)).size();
+        assertEquals(2, productsSize);
     }
 
     @Test
@@ -62,13 +98,13 @@ public class ArrayListProductDaoTest {
 
     @Test(expected = ProductPresistenceException.class)
     public void testDeleteProductWrongId() {
-        Long id = 0L;
+        Long id = 500L;
         productDao.delete(id);
     }
 
     @Test(expected = ProductPresistenceException.class)
     public void testUpdateProductWrongId() {
-        Long id = 0L;
+        Long id = 500L;
         Product toUpdate = new Product(id, "code", "description", new BigDecimal(100), Currency.getInstance("USD"), 10, "");
         productDao.save(toUpdate);
     }
@@ -107,7 +143,7 @@ public class ArrayListProductDaoTest {
 
         for (int i = 0; i < threads.length; i++) {
             int finalI = i;
-            threads[i] = new Thread(() -> productDao.delete(finalI + 1L));
+            threads[i] = new Thread(() -> productDao.delete((long) finalI));
             threads[i].start();
         }
 
@@ -117,6 +153,24 @@ public class ArrayListProductDaoTest {
 
         int resultSize = productDao.getAll().size();
         assertEquals(initialSize - threadsCount, resultSize);
+    }
+
+    @Test
+    public void testGetPricesHistoryByProductId(){
+        Long productId = 0L;
+        assertEquals(1, productDao.getPricesHistoryByProductId(productId).size());
+
+        productDao.save(new Product(productId, "code", "description", new BigDecimal(1000), Currency.getInstance("USD"), 12, null));
+        assertEquals(2, productDao.getPricesHistoryByProductId(productId).size());
+
+        productDao.save(new Product(productId, "code", "description", new BigDecimal(1000), Currency.getInstance("INR"), 12, null));
+        assertEquals(3, productDao.getPricesHistoryByProductId(productId).size());
+
+        productDao.save(new Product(productId, "code", "description", new BigDecimal(100), Currency.getInstance("INR"), 12, null));
+        assertEquals(4, productDao.getPricesHistoryByProductId(productId).size());
+
+        productDao.save(new Product(productId, "code", "description", new BigDecimal(1000), Currency.getInstance("USD"), 12, null));
+        assertEquals(5, productDao.getPricesHistoryByProductId(productId).size());
     }
 
 

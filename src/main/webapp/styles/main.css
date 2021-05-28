@@ -24,6 +24,9 @@ td {
 .price {
   text-align: right;
 }
+.stock {
+  text-align: right;
+}
 img.product-tile {
   max-width: 64px;
 }
