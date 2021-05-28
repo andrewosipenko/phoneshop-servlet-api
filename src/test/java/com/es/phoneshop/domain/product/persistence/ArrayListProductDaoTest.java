@@ -1,6 +1,7 @@
 package com.es.phoneshop.domain.product.persistence;
 
 import com.es.phoneshop.domain.product.model.Product;
+import com.es.phoneshop.domain.product.model.ProductRequest;
 import com.es.phoneshop.utils.LongIdGeneratorImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +48,16 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testGetAllAvailable() {
+    public void testGetAllWithRequest() {
         int actualSize = productDao.getAll().size();
-        int availableSize = productDao.getAllAvailable().size();
-        assertEquals(actualSize - 1, availableSize);
+        int resultSize = productDao.getAll(new ProductRequest(null, null, null)).size();
+        assertEquals(actualSize - 1, resultSize);
+    }
+
+    @Test
+    public void testGetAllWithSearchQuery() {
+        int availableSize = productDao.getAll(new ProductRequest("Samsung", null, null)).size();
+        assertEquals(2, availableSize);
     }
 
     @Test

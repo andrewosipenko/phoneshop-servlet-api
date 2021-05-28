@@ -1,15 +1,14 @@
 package com.es.phoneshop.domain.product.persistence;
 
+import com.es.phoneshop.domain.common.model.SortingOrder;
 import com.es.phoneshop.domain.product.model.Product;
+import com.es.phoneshop.domain.product.model.ProductRequest;
 import com.es.phoneshop.utils.LongIdGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -51,50 +50,53 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Optional<Product> getById(@NotNull Long id) {
-        Optional<Product> result;
         lock.readLock().lock();
         try {
-            result = products.stream()
+            return products.stream()
                     .filter(it -> id.equals(it.getId()))
                     .findFirst();
         } finally {
             lock.readLock().unlock();
         }
-        return result;
     }
 
     @Override
-    public List<Product> getAllAvailable() {
-        List<Product> result;
+    public List<Product> getAll(@NotNull ProductRequest productRequest) {
+
+        Comparator<Product> descriptionComparator = Comparator.comparing(Product::getDescription);
+
+
         lock.readLock().lock();
         try {
-            result = products.stream()
+            return products.stream()
                     .filter(it -> it.getStock() > 0)
                     .filter(it -> it.getPrice() != null)
+                    .filter(it -> productRequest.getQuery() == null || it.getDescription().contains(productRequest.getQuery()))
+                    .sorted(productRequest.getDescriptionSort() == SortingOrder.ASC ?
+                            Comparator.comparing(Product::getDescription) :
+                            Comparator.comparing(Product::getDescription).reversed()
+                    )
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
         }
-        return result;
     }
 
     @Override
     public List<Product> getAll() {
-        List<Product> result;
         lock.readLock().lock();
         try {
-            result = new ArrayList<>(products);
+            return new ArrayList<>(products);
         } finally {
             lock.readLock().unlock();
         }
-        return result;
     }
 
     @Override
     public Long save(@NotNull Product product) {
         lock.writeLock().lock();
         try {
-            if (product.getId() != null){
+            if (product.getId() != null) {
                 int insertingPosition = IntStream.range(0, products.size())
                         .filter(i -> product.getId().equals(products.get(i).getId()))
                         .findFirst().orElseThrow(ProductPresistenceException::new);

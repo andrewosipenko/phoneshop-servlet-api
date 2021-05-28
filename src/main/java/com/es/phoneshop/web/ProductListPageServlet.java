@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.domain.common.model.SortingOrder;
+import com.es.phoneshop.domain.product.model.ProductRequest;
 import com.es.phoneshop.domain.product.persistence.ArrayListProductDao;
 import com.es.phoneshop.domain.product.persistence.ProductDao;
 import com.es.phoneshop.utils.LongIdGeneratorImpl;
@@ -23,7 +25,11 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productDao.getAllAvailable());
+        String query = request.getParameter("searchQuery");
+        SortingOrder descriptionSort = SortingOrder.fromString(request.getParameter("descriptionSort"));
+        SortingOrder priceSort = SortingOrder.fromString(request.getParameter("priceSort"));
+
+        request.setAttribute("products", productDao.getAll(new ProductRequest(query, descriptionSort, priceSort)));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }
