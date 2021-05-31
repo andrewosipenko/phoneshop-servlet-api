@@ -74,6 +74,7 @@ public class ArrayListProductDaoTest {
         productDao.save(toUpdate);
         Product updated = productDao.getById(id).get();
         assertEquals(toUpdate, updated);
+        assertEquals(2L, productDao.getPricesHistoryByProductId(id).size());
     }
 
     @Test
@@ -94,6 +95,7 @@ public class ArrayListProductDaoTest {
         Long id = 1L;
         productDao.delete(id);
         assertFalse(productDao.getById(id).isPresent());
+        assertEquals(0, productDao.getPricesHistoryByProductId(id).size());
     }
 
     @Test(expected = ProductPresistenceException.class)
@@ -113,6 +115,7 @@ public class ArrayListProductDaoTest {
     public void testCreateProduct() {
         Long id = productDao.save(new Product(null, "code", "description", new BigDecimal(100), Currency.getInstance("USD"), 10, ""));
         assertTrue(productDao.getById(id).isPresent());
+        assertEquals(1, productDao.getPricesHistoryByProductId(id).size());
     }
 
     @Test
@@ -122,7 +125,10 @@ public class ArrayListProductDaoTest {
         Thread[] threads = new Thread[threadsCount];
 
         for (int i = 0; i < threads.length; i++) {
-            threads[i] = new Thread(() -> productDao.save(new Product(null, "code", "description", new BigDecimal(100), Currency.getInstance("USD"), 10, null)));
+            threads[i] = new Thread(() -> {
+                Long id = productDao.save(new Product(null, "code", "description", new BigDecimal(100), Currency.getInstance("USD"), 10, null));
+                assertEquals(1, productDao.getPricesHistoryByProductId(id).size());
+            });
             threads[i].start();
         }
 
@@ -150,6 +156,9 @@ public class ArrayListProductDaoTest {
         for (Thread thread : threads) {
             thread.join();
         }
+        for (long i = 0; i < threads.length; i++) {
+            assertEquals(0, productDao.getPricesHistoryByProductId(i).size());
+        }
 
         int resultSize = productDao.getAll().size();
         assertEquals(initialSize - threadsCount, resultSize);
@@ -173,5 +182,10 @@ public class ArrayListProductDaoTest {
         assertEquals(5, productDao.getPricesHistoryByProductId(productId).size());
     }
 
+    @Test
+    public void testGetPricesHistoryByWrongProductId(){
+        Long productId = 500L;
+        assertEquals(0, productDao.getPricesHistoryByProductId(productId).size());
+    }
 
 }

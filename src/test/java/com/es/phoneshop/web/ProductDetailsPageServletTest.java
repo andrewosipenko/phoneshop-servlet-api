@@ -4,6 +4,7 @@ import com.es.phoneshop.domain.product.persistence.ProductDao;
 import com.es.phoneshop.infra.config.Configuration;
 import com.es.phoneshop.infra.config.ConfigurationImpl;
 import com.es.phoneshop.web.contextListeners.SampleDataServletContextListener;
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest extends TestCase {
+
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -33,7 +35,7 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
 
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
+    private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @BeforeClass
     public static void setupAll() {
@@ -50,8 +52,18 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        when(request.getPathInfo()).thenReturn("/0");
         servlet.doGet(request, response);
         verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("products"), any());
+        verify(request).setAttribute(eq("product"), any());
     }
+    @Test
+    public void testDoGetWrongProductId() throws ServletException, IOException {
+        when(request.getPathInfo()).thenReturn("/asd");
+        servlet.doGet(request, response);
+        verify(requestDispatcher).forward(request, response);
+        verify(request).setAttribute(eq("productIdStr"), any());
+        verify(response).setStatus(404);
+    }
+
 }

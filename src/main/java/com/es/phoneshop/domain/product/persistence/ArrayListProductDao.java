@@ -8,7 +8,6 @@ import com.es.phoneshop.domain.product.model.ProductSortingCriteria;
 import com.es.phoneshop.utils.LongIdGenerator;
 
 import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -142,6 +141,11 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(i -> id.equals(products.get(i).getId()))
                     .findFirst().orElseThrow(ProductPresistenceException::new);
             products.remove(foundIndex);
+            int historySize = pricesHistory.size();
+            IntStream.range(0, historySize)
+                    .map(i -> historySize - 1 - i)
+                    .filter(i -> id.equals(pricesHistory.get(i).getProductId()))
+                    .forEach(pricesHistory::remove);
         } finally {
             lock.writeLock().unlock();
         }
