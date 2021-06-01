@@ -3,10 +3,7 @@ package com.es.phoneshop.model.product;
 import lombok.NonNull;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -39,10 +36,27 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized List<Product> findProducts(String searchQuery, SortField sortField, SortOrder sortOrder) {
+    public synchronized List<Product> findProducts(@NonNull final String searchQuery,
+                                                   @NonNull final SortField sortField,
+                                                   @NonNull final SortOrder sortOrder) {
+        Comparator<Product> comparator = Comparator.comparing(product -> {
+            if (sortField != null && SortField.description == sortField) {
+                return (Comparable) product.getDescription();
+            } else {
+                return (Comparable) product.getPrice();
+            }
+        });
+
+        if (sortOrder != null && SortOrder.desc == sortOrder) {
+            comparator = comparator.reversed();
+        }
+
         return List.copyOf(products.stream()
+                .filter((product -> searchQuery == null || searchQuery.isEmpty() ||
+                        product.getDescription().contains(searchQuery)))
                 .filter(this::nonNullPrice)
                 .filter(this::productIsInStock)
+                .sorted(comparator)
                 .collect(Collectors.toList()));
     }
 
