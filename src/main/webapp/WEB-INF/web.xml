@@ -36,5 +36,10 @@
 
   <error-page>
     <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+    <error-code>404</error-code>
+  </error-page>
+  <error-page>
+    <location>/WEB-INF/pages/errorServer.jsp</location>
+    <error-code>500</error-code>
   </error-page>
 </web-app>
