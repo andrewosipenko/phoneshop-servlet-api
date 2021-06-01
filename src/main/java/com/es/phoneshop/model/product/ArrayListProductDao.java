@@ -4,6 +4,9 @@ import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -11,9 +14,11 @@ public class ArrayListProductDao implements ProductDao {
     private long maxId;
 
     private static ArrayListProductDao instance;
+    private ReadWriteLock rwLock;
 
     private ArrayListProductDao() {
         this.products = new ArrayList<>();
+        this.rwLock = new ReentrantReadWriteLock();
         this.saveSampleProducts();
     }
 
@@ -30,34 +35,46 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized Optional<Product> getProduct(final Long id) {
-        return products.stream()
-                .filter(product -> product.getId().equals(id))
-                .findAny();
+        Lock readLock = rwLock.readLock();
+        readLock.lock();
+        try {
+            return products.stream()
+                    .filter(product -> product.getId().equals(id))
+                    .findAny();
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
     public synchronized List<Product> findProducts(@NonNull final String searchQuery,
                                                    @NonNull final SortField sortField,
                                                    @NonNull final SortOrder sortOrder) {
-        Comparator<Product> comparator = Comparator.comparing(product -> {
-            if (sortField != null && SortField.description == sortField) {
-                return (Comparable) product.getDescription();
-            } else {
-                return (Comparable) product.getPrice();
+        Lock readLock = rwLock.readLock();
+        readLock.lock();
+        try {
+            Comparator<Product> comparator = Comparator.comparing(product -> {
+                if (sortField != null && SortField.description == sortField) {
+                    return (Comparable) product.getDescription();
+                } else {
+                    return (Comparable) product.getPrice();
+                }
+            });
+
+            if (sortOrder != null && SortOrder.desc == sortOrder) {
+                comparator = comparator.reversed();
             }
-        });
 
-        if (sortOrder != null && SortOrder.desc == sortOrder) {
-            comparator = comparator.reversed();
+            return List.copyOf(products.stream()
+                    .filter((product -> searchQuery == null || searchQuery.isEmpty() ||
+                            product.getDescription().contains(searchQuery)))
+                    .filter(this::nonNullPrice)
+                    .filter(this::productIsInStock)
+                    .sorted(comparator)
+                    .collect(Collectors.toList()));
+        } finally {
+            readLock.unlock();
         }
-
-        return List.copyOf(products.stream()
-                .filter((product -> searchQuery == null || searchQuery.isEmpty() ||
-                        product.getDescription().contains(searchQuery)))
-                .filter(this::nonNullPrice)
-                .filter(this::productIsInStock)
-                .sorted(comparator)
-                .collect(Collectors.toList()));
     }
 
     private boolean productIsInStock(@NonNull final Product product) {
@@ -70,21 +87,33 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void save(@NonNull final Product product) {
-        if (product.getId() != null) {
-            Optional<Product> optProduct = getProduct(product.getId());
-            optProduct.ifPresent(products::remove);
-        } else {
-            product.setId(maxId++);
+        Lock writeLock = rwLock.writeLock();
+        writeLock.lock();
+        try {
+            if (product.getId() != null) {
+                Optional<Product> optProduct = getProduct(product.getId());
+                optProduct.ifPresent(products::remove);
+            } else {
+                product.setId(maxId++);
+            }
+            products.add(product);
+        } finally {
+            writeLock.unlock();
         }
-        products.add(product);
     }
 
     @Override
     public synchronized void delete(final Long id) {
-        Optional<Product> optProduct = products.stream()
-                .filter(product -> product.getId().equals(id))
-                .findAny();
-        optProduct.ifPresent(products::remove);
+        Lock writeLock = rwLock.writeLock();
+        writeLock.lock();
+        try {
+            Optional<Product> optProduct = products.stream()
+                    .filter(product -> product.getId().equals(id))
+                    .findAny();
+            optProduct.ifPresent(products::remove);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     private void saveSampleProducts() {
