@@ -68,7 +68,7 @@ public class ArrayListProductDao implements ProductDao {
 
             return List.copyOf(products.stream()
                     .filter((product -> searchQuery == null || searchQuery.isEmpty() ||
-                            product.getDescription().contains(searchQuery)))
+                            product.getDescription().toUpperCase().contains(searchQuery.toUpperCase())))
                     .filter(this::nonNullPrice)
                     .filter(this::productIsInStock)
                     .sorted(comparator)
