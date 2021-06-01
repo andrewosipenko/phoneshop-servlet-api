@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,17 +16,23 @@ public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private List<PriceHistory> priceHistory = new ArrayList<>();
 
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
+                   String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -30,6 +40,7 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+        this.priceHistory.add(new PriceHistory(Date.valueOf(LocalDate.now()), price));
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -40,5 +51,11 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+        this.priceHistory.add(new PriceHistory(Date.valueOf(LocalDate.now()), price));
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+        this.priceHistory.add(new PriceHistory(Date.valueOf(LocalDate.now()), price));
     }
 }
