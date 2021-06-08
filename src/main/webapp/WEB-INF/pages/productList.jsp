@@ -44,5 +44,19 @@
                 </td>
             </tr>
         </c:forEach>
+
+        <c:if test="${not empty recentViews}">
+            <c:forEach var="view" items="${recentViews}">
+                <tr>
+                    <td>
+                        <img class="product-tile"
+                             src="${view.imageUrl}">
+                    </td>
+                    <td>
+                        <a href="${pageContext.servletContext.contextPath}/products/${view.id}"
+                            ${view.description}</td>
+                </tr>
+            </c:forEach>
+        </c:if>
     </table>
 </tags:master>
