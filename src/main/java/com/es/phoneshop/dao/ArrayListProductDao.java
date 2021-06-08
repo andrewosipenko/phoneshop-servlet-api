@@ -1,11 +1,13 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
 
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.sortenum.SortField;
+import com.es.phoneshop.model.sortenum.SortOrder;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -34,8 +36,35 @@ public class ArrayListProductDao implements ProductDao {
         return instance;
     }
 
+    private long countWordsAmount(String searchQuery, Product product) {
+        List<String> wordsList = new ArrayList<>();
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            wordsList = Arrays.asList(searchQuery.split(" "));
+        }
+        String description = product.getDescription();
+        return wordsList.stream()
+                .filter(description::contains)
+                .count();
+    }
+
+    private Comparator<Product> getComparator(String searchQuery, SortField sortField, SortOrder sortOrder) {
+        Comparator<Product> comparator;
+        if (sortField == SortField.DESCRIPTION) {
+            comparator = Comparator.comparing(Product::getDescription);
+        } else if (sortField == SortField.PRICE) {
+            comparator = Comparator.comparing(Product::getPrice);
+        } else {
+            comparator = Comparator.comparing(product -> countWordsAmount(searchQuery, product), Comparator.reverseOrder());
+        }
+        if (sortOrder == SortOrder.DESC) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
+    }
+
+
     @Override
-    public Optional<Product> getProduct(final Long id) {
+    public Optional<Product> getProduct(@NonNull final Long id) {
         Lock readLock = rwLock.readLock();
         readLock.lock();
         try {
@@ -54,25 +83,12 @@ public class ArrayListProductDao implements ProductDao {
         Lock readLock = rwLock.readLock();
         readLock.lock();
         try {
-            Comparator<Product> comparator = Comparator.comparing(product -> {
-                if (sortField != null && SortField.description == sortField) {
-                    return (Comparable) product.getDescription();
-                } else {
-                    return (Comparable) product.getPrice();
-                }
-            });
-
-            if (sortOrder != null && SortOrder.desc == sortOrder) {
-                comparator = comparator.reversed();
-            }
-
-            return List.copyOf(products.stream()
-                    .filter((product -> searchQuery == null || searchQuery.isEmpty() ||
-                            product.getDescription().toUpperCase().contains(searchQuery.toUpperCase())))
+            return products.stream()
                     .filter(this::nonNullPrice)
                     .filter(this::productIsInStock)
-                    .sorted(comparator)
-                    .collect(Collectors.toList()));
+                    .filter(product -> StringUtils.isBlank(searchQuery) || countWordsAmount(searchQuery, product) > 0)
+                    .sorted(this.getComparator(searchQuery, sortField, sortOrder))
+                    .collect(Collectors.toList());
         } finally {
             readLock.unlock();
         }
@@ -92,7 +108,10 @@ public class ArrayListProductDao implements ProductDao {
         writeLock.lock();
         try {
             if (product.getId() != null) {
-                Optional<Product> optProduct = getProduct(product.getId());
+                Optional<Product> optProduct = products.stream()
+                        .filter(prod -> prod.getId().equals(product.getId()))
+                        .findAny();
+
                 optProduct.ifPresent(products::remove);
             } else {
                 product.setId(maxId++);
@@ -104,7 +123,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(final Long id) {
+    public void delete(@NonNull final Long id) {
         Lock writeLock = rwLock.writeLock();
         writeLock.lock();
         try {
@@ -112,6 +131,19 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(product -> product.getId().equals(id))
                     .findAny();
             optProduct.ifPresent(products::remove);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public void changePrice(@NonNull final Long id, @NonNull final BigDecimal price) {
+        Lock writeLock = rwLock.writeLock();
+        writeLock.lock();
+        try {
+            products.stream()
+                    .filter(product -> product.getId().equals(id))
+                    .forEach(product -> product.setPrice(price));
         } finally {
             writeLock.unlock();
         }

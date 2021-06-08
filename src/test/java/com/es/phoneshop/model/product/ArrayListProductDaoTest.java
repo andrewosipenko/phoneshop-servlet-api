@@ -1,5 +1,9 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.dao.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.sortenum.SortField;
+import com.es.phoneshop.model.sortenum.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +27,7 @@ public class ArrayListProductDaoTest {
         Product product = new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
         productDao.save(product);
 
-        assertTrue(productDao.findProducts("", SortField.description, SortOrder.asc).contains(product));
+        assertTrue(productDao.findProducts("", SortField.DESCRIPTION, SortOrder.ASC).contains(product));
     }
 
     @Test
@@ -36,8 +40,8 @@ public class ArrayListProductDaoTest {
         Product updProduct = new Product(id, "siemens75", "Siemens SXG75", new BigDecimal(200), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
         productDao.save(updProduct);
 
-        assertFalse(productDao.findProducts("nokia", SortField.description, SortOrder.asc).contains(product));
-        assertTrue(productDao.findProducts("siemens", SortField.description, SortOrder.asc).contains(updProduct));
+        assertFalse(productDao.findProducts("nokia", SortField.DESCRIPTION, SortOrder.ASC).contains(product));
+        assertTrue(productDao.findProducts("siemens", SortField.DESCRIPTION, SortOrder.ASC).contains(updProduct));
     }
 
     @Test
@@ -68,12 +72,12 @@ public class ArrayListProductDaoTest {
         Product product = new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
         productDao.save(product);
 
-        assertTrue(productDao.findProducts("siemens", SortField.description, SortOrder.asc).contains(product));
+        assertTrue(productDao.findProducts("siemens", SortField.DESCRIPTION, SortOrder.ASC).contains(product));
     }
 
     @Test
     public void testFindProductsNoResultsWithThisSearchQuery() {
-        assertTrue(productDao.findProducts("nokia", SortField.description, SortOrder.asc).isEmpty());
+        assertTrue(productDao.findProducts("nokia", SortField.DESCRIPTION, SortOrder.ASC).isEmpty());
     }
 
     @Test
@@ -84,6 +88,6 @@ public class ArrayListProductDaoTest {
         final long id = product.getId();
 
         assertTrue(productDao.getProduct(id).isPresent());
-        assertFalse(productDao.findProducts("siemens", SortField.description, SortOrder.asc).contains(product));
+        assertFalse(productDao.findProducts("siemens", SortField.DESCRIPTION, SortOrder.ASC).contains(product));
     }
 }
