@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 public class PriceHistory implements Comparable<PriceHistory> {
-    private Date dateTime;
+    private LocalDate dateTime;
     private BigDecimal price;
 
     @Override

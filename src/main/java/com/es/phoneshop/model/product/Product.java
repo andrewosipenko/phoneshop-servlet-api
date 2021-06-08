@@ -1,10 +1,10 @@
 package com.es.phoneshop.model.product;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -40,7 +40,7 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-        this.priceHistory.add(new PriceHistory(Date.valueOf(LocalDate.now()), price));
+        this.priceHistory.add(new PriceHistory(LocalDate.now(), price));
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -51,11 +51,11 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-        this.priceHistory.add(new PriceHistory(Date.valueOf(LocalDate.now()), price));
+        this.priceHistory.add(new PriceHistory(LocalDate.now(), price));
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(@NonNull final BigDecimal price) {
         this.price = price;
-        this.priceHistory.add(new PriceHistory(Date.valueOf(LocalDate.now()), price));
+        this.priceHistory.add(new PriceHistory(LocalDate.now(), price));
     }
 }
