@@ -28,13 +28,13 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String searchQuery = request.getParameter("query");
-        SortField sortField = SortField.valueOf(request.getParameter("sort"));
-        SortOrder sortOrder = SortOrder.valueOf(request.getParameter("order"));
+        String searchQuery = request.getParameter(RequestParameter.QUERY);
+        SortField sortField = SortField.valueOf(request.getParameter(RequestParameter.SORT));
+        SortOrder sortOrder = SortOrder.valueOf(request.getParameter(RequestParameter.ORDER));
         RecentView recentView = recentViewService.getRecentView(request);
 
-        request.setAttribute("recentViews", recentView.getRecentlyViewed());
-        request.setAttribute("products", productDao.findProducts(searchQuery, sortField, sortOrder));
+        request.setAttribute(RequestParameter.RECENT_VIEWS, recentView.getRecentlyViewed());
+        request.setAttribute(RequestParameter.PRODUCTS, productDao.findProducts(searchQuery, sortField, sortOrder));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

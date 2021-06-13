@@ -36,38 +36,44 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String productInfo = "";
+        String productInfo;
+        Product product = null;
+        Long id;
+        RecentView recentView = recentViewService.getRecentView(request);
+        productInfo = request.getPathInfo().substring(1);
+
         try {
-            productInfo = request.getPathInfo().substring(1);
-            Long id = Long.valueOf(productInfo);
-            Product product = productDao.getProduct(id)
+            id = Long.valueOf(productInfo);
+            product = productDao.getProduct(id)
                     .orElseThrow(() -> new ProductNotFoundException(id));
-
-            RecentView recentView = recentViewService.getRecentView(request);
-            recentViewService.add(recentView, product);
-
-            request.setAttribute("product", product);
-            request.setAttribute("recentViews", recentView.getRecentlyViewed());
-            request.setAttribute("cart", cartService.getCart(request));
-            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
-        } catch (ProductNotFoundException | NumberFormatException ex) {
-            request.setAttribute("message", "Product " + productInfo + " not found");
+        } catch (NumberFormatException ex) {
+            request.setAttribute(RequestParameter.ERROR, "Number format exception");
+        } catch (ProductNotFoundException ex) {
+            request.setAttribute(RequestParameter.MESSAGE, "Product " + productInfo + " not found");
             response.sendError(404);
         }
+
+        recentViewService.add(recentView, product);
+        request.setAttribute(RequestParameter.PRODUCT, product);
+        request.setAttribute(RequestParameter.RECENT_VIEWS, recentView.getRecentlyViewed());
+        request.setAttribute(RequestParameter.CART, cartService.getCart(request));
+        request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws
+            ServletException, IOException {
         String productInfo = request.getPathInfo().substring(1);
         Long productId = Long.valueOf(productInfo);
-        String quantityStr = request.getParameter("quantity");
+        String quantityStr = request.getParameter(RequestParameter.QUANTITY);
         int quantity;
 
         try {
             NumberFormat format = NumberFormat.getInstance(request.getLocale());
             quantity = format.parse(quantityStr).intValue();
         } catch (ParseException ex) {
-            request.setAttribute("error", "Number format exception");
+            request.setAttribute(RequestParameter.ERROR, "Number format exception");
             doGet(request, response);
             return;
         }
@@ -76,7 +82,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             cartService.add(cart, productId, quantity);
         } catch (OutOfStockException e) {
-            request.setAttribute("error", "Out of stock, available " + e.getStockAvailable());
+            request.setAttribute(RequestParameter.ERROR, "Out of stock, available " + e.getStockAvailable());
             doGet(request, response);
             return;
         }
