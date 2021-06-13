@@ -1,8 +1,6 @@
 package com.es.phoneshop.model.product;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,6 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 public class Product {
     private Long id;
     private String code;
