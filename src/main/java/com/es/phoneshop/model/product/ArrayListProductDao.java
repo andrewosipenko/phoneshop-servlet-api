@@ -4,33 +4,88 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 	
 	private List<Product> products;
+	private final Object lock = new Object();
 	
 	public ArrayListProductDao() {
 		products = getSampleProducts();
 	}
 	
     @Override
-    public Product getProduct(Long id) {
-        throw new RuntimeException("Not implemented");
+    public Product getProduct(Long id) throws IdIsNotValidException, NoElementsFoundException {
+    	
+    	synchronized(lock){
+			if (id == null) {
+				throw new IdIsNotValidException("Id is null");
+			}
+
+			try {
+				return products.stream()
+						.filter(p -> id.equals(p.getId()))
+						.findAny()
+						.get();
+			} catch (NoSuchElementException ex) {
+				throw new NoElementsFoundException("No elements with current id were found");
+			}
+		}
     }
 
     @Override
     public List<Product> findProducts() {
-        return products;
+       
+    	synchronized(lock) {
+			return products.stream()
+					.filter(p -> p.getStock() > 0)
+					.filter(p -> p.getPrice() != null)
+					.collect(Collectors.toList());
+		}	
     }
 
     @Override
-    public void save(Product product) {
-        throw new RuntimeException("Not implemented");
+    public void save(Product product) throws ProductIsNullException {
+        
+    	if(product == null) {
+			throw new ProductIsNullException("Product is null");
+		}
+		
+		List<Product> sameIdProducts;
+		
+		synchronized(lock) {
+			sameIdProducts = products.stream()
+					.filter(p -> product.getId().equals(p.getId()))
+					.collect(Collectors.toList());
+			
+			if(sameIdProducts.size()<1) {
+				products.add(product);
+			} else {
+				products.set(products.indexOf(sameIdProducts.get(0)), product);
+				
+			}
+		}
     }
 
     @Override
-    public void delete(Long id) {
-        throw new RuntimeException("Not implemented");
+    public void delete(Long id) throws IdIsNotValidException {
+        
+    	if(id == null) {
+			throw new IdIsNotValidException("Id is null");
+		}
+		
+		synchronized(lock) {
+			try {
+				products.remove(products.stream()
+						.filter(p -> id.equals(p.getId()))
+						.findFirst()
+						.get());
+			}catch(NoSuchElementException ex) {
+				throw new IdIsNotValidException("No elements with current id were found");
+			}
+		}
     }
 
     private List<Product> getSampleProducts(){
