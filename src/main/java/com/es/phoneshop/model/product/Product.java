@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class Product {
+    static private Long maxId = 1L;
     private Long id;
     private String code;
     private String description;
@@ -17,7 +18,17 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        this.id = maxId++;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+    }
+
+    public Product(long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -81,5 +92,33 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Product product = (Product) o;
+
+        if (stock != product.stock) return false;
+        if (!id.equals(product.id)) return false;
+        if (!code.equals(product.code)) return false;
+        if (!description.equals(product.description)) return false;
+        if (!price.equals(product.price)) return false;
+        if (!currency.equals(product.currency)) return false;
+        return imageUrl.equals(product.imageUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + code.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + price.hashCode();
+        result = 31 * result + currency.hashCode();
+        result = 31 * result + stock;
+        result = 31 * result + imageUrl.hashCode();
+        return result;
     }
 }
