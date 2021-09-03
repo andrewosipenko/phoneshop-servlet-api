@@ -66,27 +66,20 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void saveProduct(Product product) {
+    public synchronized void saveProduct(Product product) {
         if (product.getId() == null) {
-            lock.writeLock().lock();
             product.setId(maxId++);
             result.add(product);
-            lock.writeLock().unlock();
         } else {
             try {
-                lock.readLock().lock();
                 getProduct(product.getId());
                 long productId = product.getId();
-                lock.readLock().unlock();
-                lock.writeLock().lock();
                 deleteProduct(productId);
                 product.setId(productId);
                 result.add(product);
             } catch (NoSuchElementException exception) {
                 product.setId(maxId++);
                 result.add(product);
-            } finally {
-                lock.writeLock().unlock();
             }
         }
     }
