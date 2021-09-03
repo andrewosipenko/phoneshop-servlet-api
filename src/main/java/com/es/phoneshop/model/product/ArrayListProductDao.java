@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
@@ -55,7 +56,10 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts() {
         lock.readLock().lock();
         try {
-            return result;
+            return result.stream().
+                    filter(product -> product.getPrice() != null).
+                    filter(product -> product.getStock() > 0).
+                    collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
         }
