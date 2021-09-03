@@ -4,22 +4,21 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class Product {
-    static private Long maxId = 1L;
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
 
-    public Product() {
-    }
-
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = maxId++;
         this.code = code;
         this.description = description;
         this.price = price;
@@ -120,5 +119,18 @@ public class Product {
         result = 31 * result + stock;
         result = 31 * result + imageUrl.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", currency=" + currency +
+                ", stock=" + stock +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
     }
 }
