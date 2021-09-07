@@ -24,8 +24,12 @@ public class ArrayListProductDaoTest {
         assertFalse(productDao.findProducts().isEmpty());
     }
 
+    @Test(expected = ProductNotFoundException.class)
+    public void testFindProductWithNullId() throws ProductNotFoundException {
+        productDao.getProduct(null);
+    }
     @Test
-    public void testSaveNewProduct() {
+    public void testSaveNewProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("sgs1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
@@ -36,8 +40,8 @@ public class ArrayListProductDaoTest {
         assertEquals("sgs1", result.getCode());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testSaveNewProductZeroStock() {
+    @Test(expected = ProductNotFoundException.class)
+    public void testSaveNewProductZeroStock() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("zero-stock-test", "Samsung Galaxy S", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
@@ -45,8 +49,8 @@ public class ArrayListProductDaoTest {
         productDao.getProduct(product.getId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testDeleteNewProduct() {
+    @Test(expected = ProductNotFoundException.class)
+    public void testDeleteNewProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("deleted-product", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
