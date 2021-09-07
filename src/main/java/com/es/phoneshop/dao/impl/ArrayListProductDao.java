@@ -1,8 +1,11 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao.impl;
 
-import com.es.phoneshop.exceptions.ProductNotFindException;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.exceptions.ProductNotFoundException;
+import com.es.phoneshop.model.product.Product;
 
 import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.IntStream;
+
 
 public class ArrayListProductDao implements ProductDao {
 
@@ -25,16 +29,19 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFindException {
+    public Product getProduct(Long id) throws ProductNotFoundException, InvalidParameterException {
         readLock.lock();
         try {
-            Product requiredProduct;
-            requiredProduct = products.stream().
-                    filter((product -> id.equals(product.getId()))).
-                    findFirst().orElseThrow(() -> new ProductNotFindException());
-            return requiredProduct;
-        } catch (ProductNotFindException e) {
-            throw new ProductNotFindException();
+            if (id != null) {
+                Product requiredProduct;
+                requiredProduct = products.stream().
+                        filter((product -> id.equals(product.getId())
+                                && product.getPrice() != null
+                                && product.getStock() > 0)).
+                        findFirst().orElseThrow(() -> new ProductNotFoundException(id));
+                return requiredProduct;
+            } else
+                throw new InvalidParameterException();
         } finally {
             readLock.unlock();
         }
@@ -63,7 +70,7 @@ public class ArrayListProductDao implements ProductDao {
                     products.add(product);
                 }
             }
-        }finally {
+        } finally {
             writeLock.unlock();
         }
     }
@@ -93,7 +100,7 @@ public class ArrayListProductDao implements ProductDao {
                     products.set(replace, product);
                 }
             }
-        }finally {
+        } finally {
             writeLock.unlock();
         }
     }
@@ -115,3 +122,4 @@ public class ArrayListProductDao implements ProductDao {
         save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
     }
 }
+
