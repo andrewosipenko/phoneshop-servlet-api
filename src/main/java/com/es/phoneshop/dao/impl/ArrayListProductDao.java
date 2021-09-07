@@ -1,91 +1,103 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
+
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.exception.ProductNotFoundException;
+import com.es.phoneshop.model.product.Product;
 
 public class ArrayListProductDao implements ProductDao {
 	
 	private List<Product> products;
-	private final Object lock = new Object();
+	public final ReadWriteLock readWriteLock;
 	
 	public ArrayListProductDao() {
 		products = getSampleProducts();
+		this.readWriteLock = new ReentrantReadWriteLock();
 	}
 	
     @Override
-    public Product getProduct(Long id) throws IdIsNotValidException, NoElementsFoundException {
+    public Product getProduct(Long id) {
     	
-    	synchronized(lock){
-			if (id == null) {
-				throw new IdIsNotValidException("Id is null");
+		if (id == null) {
+			throw new IllegalArgumentException("Id is null");
 			}
-
-			try {
-				return products.stream()
-						.filter(p -> id.equals(p.getId()))
-						.findAny()
-						.get();
-			} catch (NoSuchElementException ex) {
-				throw new NoElementsFoundException("No elements with current id were found");
-			}
+		
+		readWriteLock.readLock().lock();
+		try {
+			return products.stream()
+					.filter(p -> id.equals(p.getId()))
+					.findAny()
+					.get();
+		} catch (NoSuchElementException ex) {
+			throw new ProductNotFoundException("No products with current id were found");
+		} finally {
+			readWriteLock.readLock().unlock();
 		}
+		
     }
 
     @Override
     public List<Product> findProducts() {
        
-    	synchronized(lock) {
-			return products.stream()
-					.filter(p -> p.getStock() > 0)
-					.filter(p -> p.getPrice() != null)
-					.collect(Collectors.toList());
-		}	
+    	readWriteLock.readLock().lock();
+		List<Product> prods = products.stream()
+				.filter(p -> p.getStock() > 0)
+				.filter(p -> p.getPrice() != null)
+				.collect(Collectors.toList());
+		readWriteLock.readLock().unlock();
+		
+		return prods;
     }
 
     @Override
-    public void save(Product product) throws ProductIsNullException {
+    public void save(Product product) {
         
     	if(product == null) {
-			throw new ProductIsNullException("Product is null");
-		}
+    		throw new IllegalArgumentException("Product is null");
+    	}
+	
+    	List<Product> sameIdProducts;
+
+    	readWriteLock.writeLock().lock();
+    	sameIdProducts = products.stream()
+    			.filter(p -> product.getId().equals(p.getId()))
+    			.collect(Collectors.toList());
 		
-		List<Product> sameIdProducts;
-		
-		synchronized(lock) {
-			sameIdProducts = products.stream()
-					.filter(p -> product.getId().equals(p.getId()))
-					.collect(Collectors.toList());
-			
-			if(sameIdProducts.size()<1) {
-				products.add(product);
-			} else {
-				products.set(products.indexOf(sameIdProducts.get(0)), product);
-				
-			}
+    	if(sameIdProducts.size()<1) {
+    		products.add(product);
+    	} else {
+    		products.set(products.indexOf(sameIdProducts.get(0)), product);
 		}
+    	readWriteLock.writeLock().unlock();
     }
 
     @Override
-    public void delete(Long id) throws IdIsNotValidException {
+    public void delete(Long id) {
         
     	if(id == null) {
-			throw new IdIsNotValidException("Id is null");
+			throw new IllegalArgumentException("Id is null");
 		}
 		
-		synchronized(lock) {
-			try {
-				products.remove(products.stream()
-						.filter(p -> id.equals(p.getId()))
-						.findFirst()
-						.get());
-			}catch(NoSuchElementException ex) {
-				throw new IdIsNotValidException("No elements with current id were found");
-			}
+    	readWriteLock.writeLock().lock();
+		try {
+			products.remove(products.stream()
+					.filter(p -> id.equals(p.getId()))
+					.findFirst()
+					.get());
+		}catch(NoSuchElementException ex) {
+			throw new ProductNotFoundException("No products with current id were found");
+		} finally {
+			readWriteLock.writeLock().unlock();
 		}
+		
     }
 
     private List<Product> getSampleProducts(){

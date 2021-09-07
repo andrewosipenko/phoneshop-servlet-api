@@ -5,6 +5,9 @@ import java.util.Currency;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -31,7 +34,7 @@ public class ArrayListProductDaoTest
     }
     
     @Test
-	public void testSavingAndGettingProduct() throws NoElementsFoundException, IdIsNotValidException, ProductIsNullException {
+	public void testSavingAndGettingProduct() {
 		productDao.save(newProduct);
 		
 		assertEquals(newProduct, productDao.getProduct(newProduct.getId()));
@@ -44,7 +47,7 @@ public class ArrayListProductDaoTest
 	}
 
 	@Test
-	public void testSavingDifferentProductsWithOneId() throws NoElementsFoundException, IdIsNotValidException, ProductIsNullException {
+	public void testSavingDifferentProductsWithOneId() {
 		Product oldProduct = new Product(17L, "htces4g", "HTC UVO Short 5G", new BigDecimal(42),
 				Currency.getInstance("USD"), 8, "HTC/HTC%20EVO%20Shift%204G.jpg");
 		productDao.save(oldProduct);
