@@ -1,7 +1,9 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
+
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.exception.ProductNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductDao {
     Product getProduct(Long id) throws ProductNotFoundException;
