@@ -34,27 +34,37 @@ public class ArrayListProductDaoTest
     }
     
     @Test
+    public void testSavingProduct() {
+    	Long id = ArrayListProductDao.getMaxId();
+    	productDao.save(newProduct);
+    	
+    	assertTrue(productDao.getProduct(id).getId().equals(id));
+    }
+    
+    @Test
 	public void testSavingAndGettingProduct() {
+    	Long id = ArrayListProductDao.getMaxId();
 		productDao.save(newProduct);
 		
-		assertEquals(newProduct, productDao.getProduct(newProduct.getId()));
+		assertEquals(new Product(id, newProduct), productDao.getProduct(id));
 		assertNotNull(productDao.getProduct(newProduct.getId()));
 	}
 
 	@Test
-	public void testGettingProductAfterDeleting() {
-		
-	}
-
-	@Test
 	public void testSavingDifferentProductsWithOneId() {
-		Product oldProduct = new Product(17L, "htces4g", "HTC UVO Short 5G", new BigDecimal(42),
+		Long id = ArrayListProductDao.getMaxId();
+		Product someOldProduct = new Product("htces4g", "HTC UVO Short 5G", new BigDecimal(42),
 				Currency.getInstance("USD"), 8, "HTC/HTC%20EVO%20Shift%204G.jpg");
-		productDao.save(oldProduct);
-		productDao.save(newProduct);
+		Product someNewProduct = new Product(id, "htces7g", "HpC UVO Short 5G", new BigDecimal(42),
+				Currency.getInstance("USD"), 8, "HTC/HTC%20EVO%20Shift%204G.jpg");
 		
-		assertEquals(productDao.getProduct(17L), newProduct);
-		assertNotEquals(productDao.getProduct(17L),oldProduct);
+		productDao.save(someOldProduct);
+		someOldProduct.setId(id);
+		productDao.save(someNewProduct);
+
+		assertNotNull(productDao.getProduct(id).getId());
+		assertEquals(productDao.getProduct(id), someNewProduct);
+		assertNotEquals(productDao.getProduct(id), someOldProduct);
 	}
 
 	@Test

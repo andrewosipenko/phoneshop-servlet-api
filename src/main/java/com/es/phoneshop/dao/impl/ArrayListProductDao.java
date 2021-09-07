@@ -17,10 +17,14 @@ public class ArrayListProductDao implements ProductDao {
 	
 	private List<Product> products;
 	public final ReadWriteLock readWriteLock;
+	private static Long maxId;
 	
 	public ArrayListProductDao() {
 		products = getSampleProducts();
 		this.readWriteLock = new ReentrantReadWriteLock();
+		if(maxId == null) {
+			maxId = (long) products.size() + 1;
+		}
 	}
 	
     @Override
@@ -49,8 +53,7 @@ public class ArrayListProductDao implements ProductDao {
        
     	readWriteLock.readLock().lock();
 		List<Product> prods = products.stream()
-				.filter(p -> p.getStock() > 0)
-				.filter(p -> p.getPrice() != null)
+				.filter(p -> p.getStock() > 0 && p.getPrice() != null)
 				.collect(Collectors.toList());
 		readWriteLock.readLock().unlock();
 		
@@ -67,16 +70,21 @@ public class ArrayListProductDao implements ProductDao {
     	List<Product> sameIdProducts;
 
     	readWriteLock.writeLock().lock();
-    	sameIdProducts = products.stream()
-    			.filter(p -> product.getId().equals(p.getId()))
-    			.collect(Collectors.toList());
-		
-    	if(sameIdProducts.size()<1) {
-    		products.add(product);
+    	if(product.getId() == null) {
+    		products.add(new Product(maxId++, product));
     	} else {
-    		products.set(products.indexOf(sameIdProducts.get(0)), product);
-		}
+    		sameIdProducts = products.stream()
+        			.filter(p -> product.getId().equals(p.getId()))
+        			.collect(Collectors.toList());
+    		
+        	if(sameIdProducts.size()<1) {
+        		throw new ProductNotFoundException("No products with current id were found");
+        	} else {
+        		products.set(products.indexOf(sameIdProducts.get(0)), product);
+    		}
+    	}
     	readWriteLock.writeLock().unlock();
+    	
     }
 
     @Override
@@ -118,6 +126,10 @@ public class ArrayListProductDao implements ProductDao {
         result.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "/Siemens/Siemens%20SXG75.jpg"));
 
         return result;
+    }
+    
+    public static Long getMaxId() {
+    	return ArrayListProductDao.maxId;
     }
 
 }
