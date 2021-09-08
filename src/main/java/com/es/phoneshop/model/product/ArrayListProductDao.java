@@ -1,10 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -53,16 +50,36 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(List<String> searchTextList, SortField sortField, SortOrder sortOrder) {
         lock.readLock().lock();
         try {
-            return result.stream().
+            List<Product> products = result.stream().
+                    filter(product -> searchTextList == null || searchTextList.isEmpty() || searchTextList.stream().anyMatch(searchText ->
+                            product.getDescription().toLowerCase(Locale.ROOT).contains(searchText.toLowerCase(Locale.ROOT)))).
                     filter(product -> product.getPrice() != null).
                     filter(product -> product.getStock() > 0).
                     collect(Collectors.toList());
+            return sortProducts(products, sortField, sortOrder);
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    private List<Product> sortProducts(List<Product> products, SortField sortField, SortOrder sortOrder) {
+        Comparator<Product> comparator;
+        if (sortField == SortField.price) {
+            comparator = Comparator.comparing(Product::getPrice);
+        } else if (sortField == SortField.description) {
+            comparator = Comparator.comparing(Product::getDescription);
+        } else {
+            return products;
+        }
+        products = products.stream().
+                sorted(comparator).
+                collect(Collectors.toList());
+        return (sortOrder == SortOrder.asc) ?
+                products :
+                products.stream().sorted(comparator.reversed()).collect(Collectors.toList());
     }
 
     @Override

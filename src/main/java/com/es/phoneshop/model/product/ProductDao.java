@@ -5,7 +5,7 @@ import java.util.List;
 public interface ProductDao {
     Product getProduct(Long id);
 
-    List<Product> findProducts();
+    List<Product> findProducts(List<String> searchTextList, SortField sortField, SortOrder sortOrder);
 
     void saveProduct(Product product);
 

@@ -9,11 +9,23 @@
     Welcome to Expert-Soft training!
   </p>
   <table>
+    <form>
+      <input name="searchText" value="${param.searchText}">
+      <button>Search</button>
+    </form>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <tags:sortLink sortField="description" sortOrder="asc"/>
+          <tags:sortLink sortField="description" sortOrder="desc"/>
+        </td>
+        <td class="price">
+          Price
+          <tags:sortLink sortField="price" sortOrder="asc"/>
+          <tags:sortLink sortField="price" sortOrder="desc"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
