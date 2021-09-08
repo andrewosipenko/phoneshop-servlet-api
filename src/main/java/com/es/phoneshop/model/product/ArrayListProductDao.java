@@ -59,12 +59,7 @@ public class ArrayListProductDao implements ProductDao {
         products.add(product);
       } else {
         Product productToUpdate = getProduct(productId);
-        productToUpdate.setCode(product.getCode());
-        productToUpdate.setCurrency(product.getCurrency());
-        productToUpdate.setPrice(product.getPrice());
-        productToUpdate.setStock(product.getStock());
-        productToUpdate.setDescription(product.getDescription());
-        productToUpdate.setImageUrl(product.getImageUrl());
+        populateExistingProduct(product, productToUpdate);
       }
     } catch (ProductNotFoundException e) {
       products.add(product);
@@ -81,6 +76,15 @@ public class ArrayListProductDao implements ProductDao {
     } finally {
       lock.writeLock().unlock();
     }
+  }
+
+  private void populateExistingProduct(Product product, Product productToUpdate) {
+    productToUpdate.setCode(product.getCode());
+    productToUpdate.setCurrency(product.getCurrency());
+    productToUpdate.setPrice(product.getPrice());
+    productToUpdate.setStock(product.getStock());
+    productToUpdate.setDescription(product.getDescription());
+    productToUpdate.setImageUrl(product.getImageUrl());
   }
 
   private void saveSampleProducts() {
