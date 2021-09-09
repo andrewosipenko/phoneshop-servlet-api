@@ -35,17 +35,13 @@ public class ArrayListProductDao implements ProductDao {
 			}
 		
 		readWriteLock.readLock().lock();
-		try {
-			return products.stream()
-					.filter(p -> id.equals(p.getId()))
-					.findAny()
-					.get();
-		} catch (NoSuchElementException ex) {
-			throw new ProductNotFoundException("No products with current id were found");
-		} finally {
-			readWriteLock.readLock().unlock();
-		}
 		
+		return products.stream()
+				.filter(p -> id.equals(p.getId()))
+				.findAny()
+				.orElseThrow( new ProductNotFoundException("No products with current id were found"));
+		
+	    	readWriteLock.readLock().unlock();
     }
 
     @Override
@@ -95,16 +91,11 @@ public class ArrayListProductDao implements ProductDao {
 		}
 		
     	readWriteLock.writeLock().lock();
-		try {
-			products.remove(products.stream()
-					.filter(p -> id.equals(p.getId()))
-					.findFirst()
-					.get());
-		}catch(NoSuchElementException ex) {
-			throw new ProductNotFoundException("No products with current id were found");
-		} finally {
-			readWriteLock.writeLock().unlock();
-		}
+		
+	products.removeIf(p -> id.equals(p.getId())
+		
+	readWriteLock.writeLock().unlock();
+	
 		
     }
 
