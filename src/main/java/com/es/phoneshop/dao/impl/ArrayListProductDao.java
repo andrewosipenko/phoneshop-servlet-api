@@ -92,7 +92,7 @@ public class ArrayListProductDao implements ProductDao {
 		
     	readWriteLock.writeLock().lock();
 		
-	products.removeIf(p -> id.equals(p.getId())
+	products.removeIf(p -> id.equals(p.getId());
 		
 	readWriteLock.writeLock().unlock();
 	
