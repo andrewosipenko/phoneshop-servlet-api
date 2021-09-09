@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
+import com.es.phoneshop.model.filter.Filter;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
@@ -49,12 +50,26 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(Filter filter) {
        
     	readWriteLock.readLock().lock();
-		List<Product> prods = products.stream()
+    	
+    	List<Product> prods = products.stream()
+    			.filter(p -> {
+    				if(filter.getQueryWords().size() == 0) {
+    					return true;
+    				} else {
+    					return filter.percentOfWords(p) > 0 ?
+    		    				true : false;
+    				}})
+    			.sorted((p1, p2) -> {
+    			return (int)(10*(filter.percentOfWords(p2)-filter.percentOfWords(p1)));
+    			})
+    			.collect(Collectors.toList());
+    	
+	/*	List<Product> prods = products.stream()
 				.filter(p -> p.getStock() > 0 && p.getPrice() != null)
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
 		readWriteLock.readLock().unlock();
 		
 		return prods;

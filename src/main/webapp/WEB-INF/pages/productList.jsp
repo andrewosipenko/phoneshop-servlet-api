@@ -8,11 +8,19 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  
+  <form>
+  <input name="query" value="${param.query}">
+  <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
+        <td>
+        Description
+		<!-- <a href="?field=description&order=asc">&uarr;</a>  -->
+        </td>
         <td class="price">Price</td>
       </tr>
     </thead>
