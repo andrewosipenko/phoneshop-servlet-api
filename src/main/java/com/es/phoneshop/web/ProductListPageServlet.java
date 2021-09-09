@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 public class ProductListPageServlet extends HttpServlet {
 	
@@ -28,7 +27,15 @@ public class ProductListPageServlet extends HttpServlet {
 	
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Filter filter = new Filter(SortField.DESCRIPTION, SortOrder.ASC, (String)request.getParameter("query"));
+    	//For situations, when there's no such parameteres
+        String field = request.getParameter("field");
+        String order = request.getParameter("order");
+        
+    	Filter filter = new Filter(
+        		(field != null) ? SortField.valueOf(field.toUpperCase()) : null, 
+        		(order != null) ? SortOrder.valueOf(order.toUpperCase()) : null, 
+        		(String)request.getParameter("query"));
+    	
     	request.setAttribute("products", productDao.findProducts(filter));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }

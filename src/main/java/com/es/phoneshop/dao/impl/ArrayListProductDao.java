@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
+import com.es.phoneshop.model.comparator.SortingComparator;
 import com.es.phoneshop.model.filter.Filter;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.ProductNotFoundException;
@@ -63,7 +64,7 @@ public class ArrayListProductDao implements ProductDao {
     		    				true : false;
     				}})
     			.sorted((p1, p2) -> {
-    			return (int)(10*(filter.percentOfWords(p2)-filter.percentOfWords(p1)));
+    			return SortingComparator.sortProducts(p1, p2, filter);
     			})
     			.collect(Collectors.toList());
     	

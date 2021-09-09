@@ -30,6 +30,10 @@ public class Filter{
 		this.setSortOrder(sortOrder);
 	}
 	
+	public Filter(String query) {
+		this(null, null, query);
+	}
+	
 	public SortField getSortField() {
 		return sortField;
 	}

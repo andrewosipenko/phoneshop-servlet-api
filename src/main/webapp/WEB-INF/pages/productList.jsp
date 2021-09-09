@@ -19,9 +19,14 @@
         <td>Image</td>
         <td>
         Description
-		<!-- <a href="?field=description&order=asc">&uarr;</a>  -->
+		<a href="?query=${param.query}&field=description&order=asc">&uarr;</a>
+		<a href="?query=${param.query}&field=description&order=desc">&darr;</a>
         </td>
-        <td class="price">Price</td>
+        <td class="price">
+        Price
+        <a href="?query=${param.query}&field=price&order=asc">&uarr;</a>
+		<a href="?query=${param.query}&field=price&order=desc">&darr;</a>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
