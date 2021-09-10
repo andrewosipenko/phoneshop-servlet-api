@@ -17,5 +17,8 @@
   <main>
     <jsp:doBody/>
   </main>
+  <footer>
+    Copyright Expert-soft
+  </footer>
 </body>
 </html>
