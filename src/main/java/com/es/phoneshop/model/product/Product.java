@@ -93,6 +93,10 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public boolean isValid(){
+        return price != null && stock > 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

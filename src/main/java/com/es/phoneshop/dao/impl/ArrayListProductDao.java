@@ -5,13 +5,13 @@ import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 
 import java.math.BigDecimal;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -29,19 +29,18 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFoundException, InvalidParameterException {
+    public Product getProduct(Long id) throws ProductNotFoundException, IllegalArgumentException {
         readLock.lock();
         try {
             if (id != null) {
                 Product requiredProduct;
                 requiredProduct = products.stream().
                         filter((product -> id.equals(product.getId())
-                                && product.getPrice() != null
-                                && product.getStock() > 0)).
+                                && product.isValid())).
                         findFirst().orElseThrow(() -> new ProductNotFoundException(id));
                 return requiredProduct;
             } else
-                throw new InvalidParameterException();
+                throw new IllegalArgumentException();
         } finally {
             readLock.unlock();
         }
@@ -51,7 +50,8 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts() {
         readLock.lock();
         try {
-            return products;
+            return products.stream().
+                    filter((product -> product.isValid())).collect(Collectors.toList());
         } finally {
             readLock.unlock();
         }
