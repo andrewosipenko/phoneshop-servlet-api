@@ -17,11 +17,11 @@ import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 
 public class ArrayListProductDao implements ProductDao {
-	
+
 	private List<Product> products;
 	public final ReadWriteLock readWriteLock;
 	private static Long maxId;
-	
+
 	public ArrayListProductDao() {
 		products = getSampleProducts();
 		this.readWriteLock = new ReentrantReadWriteLock();
@@ -29,33 +29,29 @@ public class ArrayListProductDao implements ProductDao {
 			maxId = (long) products.size() + 1;
 		}
 	}
-	
+
     @Override
     public Product getProduct(Long id) {
-    	
+
 		if (id == null) {
 			throw new IllegalArgumentException("Id is null");
 			}
-		
+
 		readWriteLock.readLock().lock();
-		try {
-			return products.stream()
-					.filter(p -> id.equals(p.getId()))
-					.findFirst()
-					.get();
-		} catch (NoSuchElementException ex) {
-			throw new ProductNotFoundException("No products with current id were found");
-		} finally {
-			readWriteLock.readLock().unlock();
-		}
-		
+
+		return products.stream()
+				.filter(p -> id.equals(p.getId()))
+				.findAny()
+				.orElseThrow( new ProductNotFoundException("No products with current id were found"));
+
+	    	readWriteLock.readLock().unlock();
     }
 
     @Override
     public List<Product> findProducts(Filter filter) {
-       
+
     	readWriteLock.readLock().lock();
-    	
+
     	List<Product> prods = products.stream()
     			.filter(p -> {
     				if(filter.getQueryWords().size() == 0) {
@@ -68,22 +64,22 @@ public class ArrayListProductDao implements ProductDao {
     			return SortingComparator.sortProducts(p1, p2, filter);
     			})
     			.collect(Collectors.toList());
-    	
+
 	/*	List<Product> prods = products.stream()
 				.filter(p -> p.getStock() > 0 && p.getPrice() != null)
 				.collect(Collectors.toList());*/
 		readWriteLock.readLock().unlock();
-		
+
 		return prods;
     }
 
     @Override
     public void save(Product product) {
-        
+
     	if(product == null) {
     		throw new IllegalArgumentException("Product is null");
     	}
-	
+
     	List<Product> sameIdProducts;
 
     	readWriteLock.writeLock().lock();
@@ -93,7 +89,7 @@ public class ArrayListProductDao implements ProductDao {
     		sameIdProducts = products.stream()
         			.filter(p -> product.getId().equals(p.getId()))
         			.collect(Collectors.toList());
-    		
+
         	if(sameIdProducts.size()<1) {
         		throw new ProductNotFoundException("No products with current id were found");
         	} else {
@@ -101,28 +97,23 @@ public class ArrayListProductDao implements ProductDao {
     		}
     	}
     	readWriteLock.writeLock().unlock();
-    	
+
     }
 
     @Override
     public void delete(Long id) {
-        
+
     	if(id == null) {
 			throw new IllegalArgumentException("Id is null");
 		}
-		
+
     	readWriteLock.writeLock().lock();
-		try {
-			products.remove(products.stream()
-					.filter(p -> id.equals(p.getId()))
-					.findFirst()
-					.get());
-		}catch(NoSuchElementException ex) {
-			throw new ProductNotFoundException("No products with current id were found");
-		} finally {
-			readWriteLock.writeLock().unlock();
-		}
-		
+
+	products.removeIf(p -> id.equals(p.getId());
+
+	readWriteLock.writeLock().unlock();
+
+
     }
 
     private List<Product> getSampleProducts(){
@@ -144,7 +135,7 @@ public class ArrayListProductDao implements ProductDao {
 
         return result;
     }
-    
+
     public static Long getMaxId() {
     	return ArrayListProductDao.maxId;
     }
