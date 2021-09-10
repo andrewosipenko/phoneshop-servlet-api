@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class ArrayListProductDao implements ProductDao {
 		try {
 			return products.stream()
 					.filter(p -> id.equals(p.getId()))
-					.findAny()
+					.findFirst()
 					.get();
 		} catch (NoSuchElementException ex) {
 			throw new ProductNotFoundException("No products with current id were found");

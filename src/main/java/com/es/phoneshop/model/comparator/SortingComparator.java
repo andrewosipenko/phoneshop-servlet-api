@@ -11,7 +11,7 @@ public class SortingComparator {
 		int result = 0;
 		
 		if(filter.getSortField() == null || filter.getSortOrder() == null) {
-			return (int)(10*(filter.percentOfWords(p2)-filter.percentOfWords(p1)));
+			return (int)(100*(filter.percentOfWords(p2)-filter.percentOfWords(p1)));
 		} else {
 			
 			switch(filter.getSortField()) {
