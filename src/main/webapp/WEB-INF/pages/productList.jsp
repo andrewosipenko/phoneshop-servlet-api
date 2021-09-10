@@ -37,8 +37,16 @@
                 </td>
                 <td>${product.description}</td>
                 <td class="price">
-                    <fmt:formatNumber value="${product.price}" type="currency"
-                                      currencySymbol="${product.currency.symbol}"/>
+                    <a onclick="myFunction(${product.id})">
+                        <fmt:formatNumber value="${product.price}" type="currency"
+                                          currencySymbol="${product.currency.symbol}"/>
+                    </a>
+                    <script>
+                        function myFunction(id) {
+                            window.open("${pageContext.servletContext.contextPath}/priceHistory/" + id,
+                                "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+                        }
+                    </script>
                 </td>
             </tr>
         </c:forEach>

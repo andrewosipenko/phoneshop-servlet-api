@@ -14,7 +14,18 @@
             <td><img src="${product.imageUrl}" alt="Product image"></td>
         </tr>
         <tr>
-            <td>price - ${product.price} ${product.currency}</td>
+            <td>
+                <a onclick="myFunction(${product.id})">
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
+                </a>
+                <script>
+                    function myFunction(id) {
+                        window.open("${pageContext.servletContext.contextPath}/priceHistory/" + id,
+                            "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+                    }
+                </script>
+            </td>
             <td>stock - ${product.stock}</td>
         </tr>
     </table>
