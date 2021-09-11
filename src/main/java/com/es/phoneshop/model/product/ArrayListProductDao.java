@@ -98,7 +98,7 @@ public class ArrayListProductDao implements ProductDao {
                 deleteProduct(productId);
                 product.setId(productId);
                 result.add(product);
-            } catch (NoSuchElementException exception) {
+            } catch (ProductNotFindException exception) {
                 product.setId(maxId++);
                 result.add(product);
             }
@@ -106,15 +106,11 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void deleteProduct(Long id) throws ProductNotFindException {
-        lock.readLock().lock();
+    public synchronized void deleteProduct(Long id) throws ProductNotFindException {
         if (result.stream().anyMatch(getProduct(id)::equals)) {
-            lock.readLock().unlock();
-            lock.writeLock().lock();
             result.remove(getProduct(id));
-            lock.writeLock().unlock();
         } else {
-            throw new NoSuchElementException();
+            throw new ProductNotFindException("There is no product with " + id + " id");
         }
     }
 }
