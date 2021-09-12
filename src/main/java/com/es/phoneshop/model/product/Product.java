@@ -1,20 +1,30 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
+    private final String path = "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer";
     private String imageUrl;
+    private final List<PriceTag> priceHistory;
 
     public Product() {
+        priceHistory = new ArrayList<>();
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -24,7 +34,9 @@ public class Product {
         this.price = price;
         this.currency = currency;
         this.stock = stock;
-        this.imageUrl = imageUrl;
+        this.imageUrl = path + imageUrl;
+        priceHistory = new ArrayList<>();
+        priceHistory.add(new PriceTag(LocalDateTime.now(), price, currency));
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -33,7 +45,9 @@ public class Product {
         this.price = price;
         this.currency = currency;
         this.stock = stock;
-        this.imageUrl = imageUrl;
+        this.imageUrl = path + imageUrl;
+        priceHistory = new ArrayList<>();
+        priceHistory.add(new PriceTag(LocalDateTime.now(), price, currency));
     }
 
     public Long getId() {
@@ -66,6 +80,7 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+        priceHistory.add(new PriceTag(LocalDateTime.now(), price, currency));
     }
 
     public Currency getCurrency() {
@@ -90,5 +105,9 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<PriceTag> getPriceHistory() {
+        return priceHistory;
     }
 }

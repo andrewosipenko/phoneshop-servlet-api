@@ -3,16 +3,53 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-  <display-name>Phoneshop servlet api training</display-name>
+    <display-name>Phoneshop servlet api training</display-name>
 
-  <servlet>
-    <servlet-name>productList</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>productList</servlet-name>
-    <url-pattern>/products</url-pattern>
-  </servlet-mapping>
+    <context-param>
+        <param-name>insertDemoData</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>com.es.phoneshop.web.DemoDataServletContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>productList</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>productList</servlet-name>
+        <url-pattern>/products</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>product</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>product</servlet-name>
+        <url-pattern>/products/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>productPriceHistory</servlet-name>
+        <servlet-class>com.es.phoneshop.web.ProductPriceHistoryPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>productPriceHistory</servlet-name>
+        <url-pattern>/products/price-history/*</url-pattern>
+    </servlet-mapping>
+
+
+    <error-page>
+        <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+        <exception-type>com.es.phoneshop.exception.ProductNotFoundException</exception-type>
+    </error-page>
+
+    <error-page>
+        <location>/WEB-INF/pages/error.jsp</location>
+        <error-code>500</error-code>
+    </error-page>
 
 </web-app>
