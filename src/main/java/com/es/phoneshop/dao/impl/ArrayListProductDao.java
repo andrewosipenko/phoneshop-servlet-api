@@ -37,7 +37,7 @@ public class ArrayListProductDao implements ProductDao {
                 requiredProduct = products.stream().
                         filter((product -> id.equals(product.getId())
                                 && product.isValid())).
-                        findFirst().orElseThrow(() -> new ProductNotFoundException(id));
+                        findFirst().orElseThrow(() -> new ProductNotFoundException("Product with such id wasn't found. id ="+id));
                 return requiredProduct;
             } else
                 throw new IllegalArgumentException();
