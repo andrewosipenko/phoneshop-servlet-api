@@ -13,19 +13,20 @@
   <input name="query" value="${param.query}">
   <button>Search</button>
   </form>
+   
   <table>
     <thead>
       <tr>
         <td>Image</td>
         <td>
-        Description
-		<a href="?query=${param.query}&field=description&order=asc">&uarr;</a>
-		<a href="?query=${param.query}&field=description&order=desc">&darr;</a>
-        </td>
+        	Description
+        	<tags:sortLink field="description" order="asc"/>
+			<tags:sortLink field="description" order="desc"/>        
+		</td>
         <td class="price">
-        Price
-        <a href="?query=${param.query}&field=price&order=asc">&uarr;</a>
-		<a href="?query=${param.query}&field=price&order=desc">&darr;</a>
+        	Price
+        	<tags:sortLink field="price" order="asc"/>
+			<tags:sortLink field="price" order="desc"/>  
         </td>
       </tr>
     </thead>

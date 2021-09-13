@@ -30,12 +30,17 @@ public class ProductListPageServlet extends HttpServlet {
     	//For situations, when there's no such parameteres
         String field = request.getParameter("field");
         String order = request.getParameter("order");
+        Filter filter;
         
-    	Filter filter = new Filter(
-        		(field != null) ? SortField.valueOf(field.toUpperCase()) : null, 
-        		(order != null) ? SortOrder.valueOf(order.toUpperCase()) : null, 
-        		(String)request.getParameter("query"));
-    	
+        if(field == null && order == null && (request.getParameter("query") == null || "".equals(request.getParameter("query")) )) {
+        	filter = new Filter(SortField.STOCK, SortOrder.DESC, null);
+        } else {
+        	filter = new Filter(
+            		(field != null) ? SortField.valueOf(field.toUpperCase()) : null, 
+            		(order != null) ? SortOrder.valueOf(order.toUpperCase()) : null, 
+            		(String)request.getParameter("query"));
+        }
+        
     	request.setAttribute("products", productDao.findProducts(filter));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }

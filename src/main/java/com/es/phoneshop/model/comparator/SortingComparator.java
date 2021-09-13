@@ -21,12 +21,13 @@ public class SortingComparator {
 			case PRICE:
 				result = p1.getPrice().compareTo(p2.getPrice());
 				return (filter.getSortOrder() == SortOrder.ASC) ? result : -result;
+			case STOCK:
+				result = p1.getStock() - p2.getStock();
+				return (filter.getSortOrder() == SortOrder.ASC) ? result : -result;
 			default:
-				break;
+				return 0;
 			
 			}
-			return 0;
 		}
 	}
-	
 }

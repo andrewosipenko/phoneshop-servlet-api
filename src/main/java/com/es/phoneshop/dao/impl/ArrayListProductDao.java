@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -33,18 +31,20 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public Product getProduct(Long id) {
 
+    	Product buf;
+    	
 		if (id == null) {
 			throw new IllegalArgumentException("Id is null");
 			}
 
 		readWriteLock.readLock().lock();
-
-		return products.stream()
+		buf = products.stream()
 				.filter(p -> id.equals(p.getId()))
 				.findAny()
-				.orElseThrow( new ProductNotFoundException("No products with current id were found"));
-
-	    	readWriteLock.readLock().unlock();
+				.orElseThrow(ProductNotFoundException::new);
+		readWriteLock.readLock().unlock();
+		
+		return buf;
     }
 
     @Override
@@ -108,17 +108,15 @@ public class ArrayListProductDao implements ProductDao {
 		}
 
     	readWriteLock.writeLock().lock();
-
-	products.removeIf(p -> id.equals(p.getId());
-
-	readWriteLock.writeLock().unlock();
-
+    	products.removeIf(p -> id.equals(p.getId()));
+    	readWriteLock.writeLock().unlock();
 
     }
 
     private List<Product> getSampleProducts(){
         List<Product> result = new ArrayList<>();
         Currency usd = Currency.getInstance("USD");
+        
         result.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "/Samsung/Samsung%20Galaxy%20S.jpg"));
         result.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
         result.add(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
