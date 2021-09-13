@@ -13,7 +13,7 @@
     ${product.description}
 
     <c:choose>
-        <c:when test="${productHistoryList.isEmpty() || productHistoryList == null}">
+        <c:when test="${productHistoryList == null || productHistoryList.isEmpty()}">
             </br>
             There is no history of price
         </c:when>

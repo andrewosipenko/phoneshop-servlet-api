@@ -1,11 +1,11 @@
 package com.es.phoneshop.model.product;
 
-import org.w3c.dom.ls.LSInput;
-
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparingDouble;
+import static java.util.stream.Collectors.toList;
 
 public class ArrayListProductDao implements ProductDao {
 
@@ -35,10 +35,12 @@ public class ArrayListProductDao implements ProductDao {
     public Product getProduct(Long id) throws ProductNotFindException {
         lock.readLock().lock();
         try {
-            return result.stream().
-                    filter(product -> product.getId().equals(id)).
-                    findAny().
-                    orElseThrow(() -> new ProductNotFindException("There is no product with " + id + " id"));
+            return result.stream()
+                    .filter(product -> product.getId().equals(id))
+                    .findAny()
+                    .orElseThrow(() ->
+                            new ProductNotFindException(id == -1L ? "There is no product with this id" :
+                                    ("There is no product with " + id + " id")));
         } finally {
             lock.readLock().unlock();
         }
@@ -48,42 +50,67 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts(List<String> searchTextList, SortField sortField, SortOrder sortOrder) {
         lock.readLock().lock();
         try {
-            List<Product> products = result.stream().
-                    filter(product -> product.getPrice() != null).
-                    filter(product -> product.getStock() > 0).
-                    collect(Collectors.toList());
-            products = getSearchProduct(products, searchTextList);
+            List<Product> products = result.stream()
+                    .filter(product -> product.getPrice() != null)
+                    .filter(this::isInStock)
+                    .collect(toList());
+            if ((searchTextList != null && !searchTextList.isEmpty()) &&
+                    !(searchTextList.size() == 1 && searchTextList.get(0).equals(""))) {
+                products = products.stream()
+                        .filter(product -> shouldDisplayProduct(product, searchTextList))
+                        .sorted(comparingDouble(p -> -calculateEqualsPercent(p, searchTextList)))
+                        .collect(toList());
+            }
             return sortProducts(products, sortField, sortOrder);
         } finally {
             lock.readLock().unlock();
         }
     }
 
-    private List<Product> getSearchProduct(List<Product> products, List<String> searchTextList) {
-        return products.stream().
-                filter(product ->
-                        searchTextList == null ||
-                                searchTextList.isEmpty() ||
-                                searchTextList.stream().anyMatch(searchText ->
-                                        product.getDescription().toLowerCase().contains(searchText.toLowerCase()))).
-                collect(Collectors.toList());
-    }
-
     private List<Product> sortProducts(List<Product> products, SortField sortField, SortOrder sortOrder) {
         Comparator<Product> comparator;
-        if (sortField == SortField.price) {
+        if (sortField == SortField.PRICE) {
             comparator = Comparator.comparing(Product::getPrice);
-        } else if (sortField == SortField.description) {
+        } else if (sortField == SortField.DESCRIPTION) {
             comparator = Comparator.comparing(Product::getDescription);
         } else {
             return products;
         }
-        products = products.stream().
-                sorted(comparator).
-                collect(Collectors.toList());
-        return (sortOrder == SortOrder.asc) ?
-                products :
-                products.stream().sorted(comparator.reversed()).collect(Collectors.toList());
+        return endSortProduct(products, comparator, sortOrder);
+    }
+
+    private List<Product> endSortProduct(List<Product> products, Comparator<Product> comparator, SortOrder sortOrder) {
+        products = products.stream()
+                .sorted(comparator)
+                .collect(toList());
+        return (sortOrder == SortOrder.ASCENDING) ? products : products.stream()
+                .sorted(comparator.reversed())
+                .collect(toList());
+    }
+
+    private boolean isInStock(Product product) {
+        return product.getStock() > 0;
+    }
+
+    private boolean shouldDisplayProduct(Product product, List<String> searchTextList) {
+        List<String> searchTextLowerCase = searchTextList.stream()
+                .map(String::toLowerCase)
+                .collect(toList());
+        List<String> descriptionList = Arrays.asList(product.getDescription()
+                .toLowerCase(Locale.ROOT).split("\\s"));
+        searchTextLowerCase.retainAll(descriptionList);
+        return searchTextList.isEmpty() || (searchTextLowerCase.size() != 0);
+    }
+
+    private double calculateEqualsPercent(Product product, List<String> searchText) {
+        List<String> searchTextLowerCase = searchText.stream()
+                .map(String::toLowerCase)
+                .collect(toList());
+        List<String> descriptionList = Arrays.asList(product.getDescription()
+                .toLowerCase(Locale.ROOT).split("\\s"));
+        searchTextLowerCase.retainAll(descriptionList);
+        int coincidingWords = searchTextLowerCase.size();
+        return (double) coincidingWords / descriptionList.size();
     }
 
     @Override

@@ -19,9 +19,15 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        String productId = request.getPathInfo();
-        request.setAttribute("product", productDao.getProduct(Long.valueOf(productId.substring(1))));
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String productIdLine = request.getPathInfo();
+        long productId;
+        try{
+            productId = Long.parseLong(productIdLine.substring(1));
+        } catch (NumberFormatException exception){
+            productId = -1L;
+        }
+        request.setAttribute("product", productDao.getProduct(productId));
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
 }

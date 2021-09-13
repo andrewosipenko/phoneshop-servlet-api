@@ -100,7 +100,7 @@ public class ArrayListProductDaoTest {
         sortedList.add(p13);
         sortedList = sortedList.stream().sorted(Comparator.comparing(Product::getDescription)).collect(Collectors.toList());
 
-        assertEquals(productDao.findProducts(null, SortField.description, SortOrder.asc), sortedList);
+        assertEquals(productDao.findProducts(null, SortField.DESCRIPTION, SortOrder.ASCENDING), sortedList);
     }
 
     @Test

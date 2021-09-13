@@ -15,6 +15,10 @@ import java.util.List;
 
 public class ProductListPageServlet extends HttpServlet {
 
+    private static final String SEARCH_TEXT = "searchText";
+    private static final String SORT_ORDER = "sortOrder";
+    private static final String SORT_FIELD = "sortField";
+
     private ArrayListProductDao arrayListProductDao;
 
     @Override
@@ -25,11 +29,11 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        String searchText = request.getParameter("searchText");
+        String searchText = request.getParameter(SEARCH_TEXT);
         List<String> searchTextList = searchText != null ?
-                Arrays.asList(request.getParameter("searchText").split("\\s")) : null;
-        String sortOrder = request.getParameter("sortOrder");
-        String sortField = request.getParameter("sortField");
+                Arrays.asList(request.getParameter(SEARCH_TEXT).split("\\s")) : null;
+        String sortOrder = request.getParameter(SORT_ORDER);
+        String sortField = request.getParameter(SORT_FIELD);
         request.setAttribute("products", arrayListProductDao.findProducts(searchTextList,
                 sortField != null ? SortField.valueOf(sortField) : null,
                 sortOrder != null ? SortOrder.valueOf(sortOrder) : null));
