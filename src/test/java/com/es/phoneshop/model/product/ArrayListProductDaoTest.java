@@ -23,7 +23,7 @@ public class ArrayListProductDaoTest
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
 		newProduct = new Product(17L, "htces4g", "HTC UVO Short 4G", new BigDecimal(32),
 				Currency.getInstance("USD"), 3, "HTC/HTC%20EVO%20Shift%204G.jpg");
     }

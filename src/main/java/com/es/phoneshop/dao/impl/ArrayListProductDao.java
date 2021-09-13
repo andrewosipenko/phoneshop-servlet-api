@@ -16,16 +16,33 @@ import com.es.phoneshop.model.product.Product;
 
 public class ArrayListProductDao implements ProductDao {
 
+	private static volatile ArrayListProductDao instance;
 	private List<Product> products;
 	public final ReadWriteLock readWriteLock;
 	private static Long maxId;
 
-	public ArrayListProductDao() {
-		products = getSampleProducts();
+	private ArrayListProductDao() {
+		products = new ArrayList<Product>();
 		this.readWriteLock = new ReentrantReadWriteLock();
 		if(maxId == null) {
 			maxId = (long) products.size() + 1;
 		}
+	}
+	
+	public static ArrayListProductDao getInstance() {
+		
+		ArrayListProductDao result = instance;
+		if(result != null) {
+			return result;
+		}
+		
+		synchronized(ArrayListProductDao.class) {
+			if(instance == null) {
+				instance = new ArrayListProductDao();
+			}
+			return instance;
+		}
+		
 	}
 
     @Override
@@ -111,27 +128,6 @@ public class ArrayListProductDao implements ProductDao {
     	products.removeIf(p -> id.equals(p.getId()));
     	readWriteLock.writeLock().unlock();
 
-    }
-
-    private List<Product> getSampleProducts(){
-        List<Product> result = new ArrayList<>();
-        Currency usd = Currency.getInstance("USD");
-        
-        result.add(new Product(1L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "/Samsung/Samsung%20Galaxy%20S.jpg"));
-        result.add(new Product(2L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        result.add(new Product(3L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
-        result.add(new Product(4L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "/Apple/Apple%20iPhone.jpg"));
-        result.add(new Product(5L, "iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "/Apple/Apple%20iPhone%206.jpg"));
-        result.add(new Product(6L, "htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "/HTC/HTC%20EVO%20Shift%204G.jpg"));
-        result.add(new Product(7L, "sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "/Sony/Sony%20Ericsson%20C901.jpg"));
-        result.add(new Product(8L, "xperiaxz", "Sony Xperia XZ", new BigDecimal(120), usd, 100, "/Sony/Sony%20Xperia%20XZ.jpg"));
-        result.add(new Product(9L, "nokia3310", "Nokia 3310", new BigDecimal(70), usd, 100, "/Nokia/Nokia%203310.jpg"));
-        result.add(new Product(10L, "palmp", "Palm Pixi", new BigDecimal(170), usd, 30, "/Palm/Palm%20Pixi.jpg"));
-        result.add(new Product(11L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "/Siemens/Siemens%20C56.jpg"));
-        result.add(new Product(12L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "/Siemens/Siemens%20C61.jpg"));
-        result.add(new Product(13L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "/Siemens/Siemens%20SXG75.jpg"));
-
-        return result;
     }
 
     public static Long getMaxId() {
