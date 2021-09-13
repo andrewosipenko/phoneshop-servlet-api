@@ -1,9 +1,10 @@
-<%@ tag trimDirectiveWhitespaces="true" %>
-<%@ attribute name="pageTitle" required="true" %>
-
+<%
+    String message = pageContext.getException().getMessage();
+    String exception = pageContext.getException().getClass().toString();
+%>
 <html>
 <head>
-    <title>${pageTitle}</title>
+    <title>Product not find</title>
     <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
 </head>
@@ -15,7 +16,9 @@
     </a>
 </header>
 <main>
-    <jsp:doBody/>
+    <h1><strong>We have problem here :(</strong></h1>
+    <h1><strong><%= message%></strong></h1>
+    <p>Type of exception: <%= exception%></p>
 </main>
 <p>Expert Soft, Inc. 2021.</p>
 </body>
