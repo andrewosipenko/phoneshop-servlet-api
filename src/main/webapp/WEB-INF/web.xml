@@ -7,7 +7,7 @@
 
   <context-param>
     <param-name>insertDemoData</param-name>
-    <param-value>false</param-value>
+    <param-value>true</param-value>
   </context-param>
 
   <listener>
@@ -23,5 +23,20 @@
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>productInfo</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>productInfo</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+  
+  <error-page>
+  	<location>/WEB-INF/pages/productNotFoundError.jsp</location>
+  	<!-- <exception-type>com.es.phoneshop.exception.ProductNotFoundException</exception-type>  -->
+  </error-page>
 
 </web-app>
