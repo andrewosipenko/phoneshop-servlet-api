@@ -6,6 +6,16 @@
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <jsp:useBean id="cart" type="com.es.phoneshop.model.product.cart.Cart" scope="request"/>
 <tags:master pageTitle="Product details">
+    <script>
+        function myFunction(id) {
+            window.open("${pageContext.servletContext.contextPath}/priceHistory/" + id,
+                "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+        }
+        function sendToPDP(id) {
+            window.open("${pageContext.servletContext.contextPath}/products/" + id,
+                "_self", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+        }
+    </script>
     <p>
     <div style="font-size: xxx-large">${product.description}</div>
     <div class="content">
@@ -39,7 +49,7 @@
                 About
             </div>
             <form method="post">
-                <table>
+                <table class="light-green">
                     <tr>
                         <td colspan="2"><img src="${product.imageUrl}" alt="Product image"></td>
                     </tr>
@@ -50,12 +60,6 @@
                                 <fmt:formatNumber value="${product.price}" type="currency"
                                                   currencySymbol="${product.currency.symbol}"/>
                             </a>
-                            <script>
-                                function myFunction(id) {
-                                    window.open("${pageContext.servletContext.contextPath}/priceHistory/" + id,
-                                        "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-                                }
-                            </script>
                         </td>
                     </tr>
                     <tr>
@@ -67,10 +71,10 @@
                         <input name="quantity" value="${not empty param.quantity ? param.quantity : 1}">
                         <p>
                             <c:if test="${not empty errorMessage}">
-                                <div class="error-message">
-                                    ${errorMessage}
-                                </div>
-                            </c:if>
+                        <div class="error-message">
+                                ${errorMessage}
+                        </div>
+                        </c:if>
                         <p>
                             <button>Add to cart</button>
                         </p>
@@ -78,5 +82,26 @@
                 </table>
             </form>
         </section>
+    </div>
+    <div class="block-name">
+        Recently viewed
+    </div>
+    <div class="recently-view-container">
+        <c:forEach var="recentlyViewItem" items="${recentlyViewSection.recentlyView}">
+            <div class="polaroid">
+                <img src="${recentlyViewItem.imageUrl}" alt="Product image" class="mini-image-recently-view">
+                <div class="container-polaroid">
+                    <p>
+                        <a onclick="sendToPDP(${recentlyViewItem.id})">
+                                ${recentlyViewItem.description} <br>
+                        </a>
+                        <a onclick="myFunction(${recentlyViewItem.id})">
+                            <fmt:formatNumber value="${recentlyViewItem.price}" type="currency"
+                                              currencySymbol="${recentlyViewItem.currency.symbol}"/>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </c:forEach>
     </div>
 </tags:master>

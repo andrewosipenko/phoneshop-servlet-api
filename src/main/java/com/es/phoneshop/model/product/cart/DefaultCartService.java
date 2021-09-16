@@ -7,13 +7,15 @@ import com.es.phoneshop.model.product.exceptions.StockException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
 
     private ProductDao productDao;
-
     private static volatile DefaultCartService instance;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private DefaultCartService() {
         productDao = ArrayListProductDao.getInstance();
@@ -34,29 +36,33 @@ public class DefaultCartService implements CartService {
 
     @Override
     public Cart getCart(HttpServletRequest request) {
+        lock.writeLock().lock();
         HttpSession session = request.getSession();
         Cart userCart = (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
+        lock.writeLock().unlock();
         if (userCart == null) {
+            lock.writeLock().lock();
             session.setAttribute(CART_SESSION_ATTRIBUTE, userCart = new Cart());
+            lock.writeLock().unlock();
         }
         return userCart;
     }
 
     @Override
-    public void add(Cart cart, Long productId, int quantity) throws StockException {
+    public synchronized void add(Cart cart, Long productId, int quantity) throws StockException {
         Product product = productDao.getProduct(productId);
+        if (product.getStock() < quantity + getQuantityOfCartItem(cart, product)) {
+            throw new StockException("Not enough stock");
+        }
         if (isProductInCart(cart, product)) {
-            if (product.getStock() < quantity + getQuantityOfCartItem(cart, product)) {
-                throw new StockException("Not enough stock");
-            } else {
-                addQuantityToCartItem(cart, product, quantity);
-            }
+            addQuantityToCartItem(cart, product, quantity);
         } else {
             cart.getCartItems().add(new CartItem(product, quantity));
         }
     }
 
     private int getQuantityOfCartItem(Cart cart, Product product) {
+        lock.readLock().lock();
         CartItem searchedCartItem = getCartItemByProduct(cart, product);
         int quantity;
         if (searchedCartItem != null) {
@@ -64,21 +70,34 @@ public class DefaultCartService implements CartService {
         } else {
             quantity = 0;
         }
+        lock.readLock().unlock();
         return quantity;
     }
 
     private void addQuantityToCartItem(Cart cart, Product product, int additionalQuantity) {
+        lock.writeLock().lock();
         getCartItemByProduct(cart, product).addQuantity(additionalQuantity);
+        lock.writeLock().unlock();
     }
 
     private CartItem getCartItemByProduct(Cart cart, Product product) {
-        return cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getCartProduct().equals(product))
-                .findFirst()
-                .orElse(null);
+        lock.readLock().lock();
+        try {
+            return cart.getCartItems().stream()
+                    .filter(cartItem -> cartItem.getCartProduct().equals(product))
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     private boolean isProductInCart(Cart cart, Product product) {
-        return cart.getCartItems().stream().anyMatch(cartItem -> cartItem.getCartProduct().equals(product));
+        lock.readLock().lock();
+        try {
+            return cart.getCartItems().stream().anyMatch(cartItem -> cartItem.getCartProduct().equals(product));
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 }
