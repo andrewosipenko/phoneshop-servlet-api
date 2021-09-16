@@ -31,7 +31,7 @@
 
     <servlet-mapping>
         <servlet-name>productDetails</servlet-name>
-        <url-pattern>/product/*</url-pattern>
+        <url-pattern>/products/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -45,7 +45,7 @@
     </servlet-mapping>
 
     <error-page>
-        <exception-type>com.es.phoneshop.model.product.ProductNotFindException</exception-type>
+        <exception-type>com.es.phoneshop.model.product.exceptions.ProductNotFindException</exception-type>
         <location>/WEB-INF/pages/errorProductNotFindException.jsp</location>
     </error-page>
 </web-app>

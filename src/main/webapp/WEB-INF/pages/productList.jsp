@@ -31,7 +31,7 @@
         <c:forEach var="product" items="${products}">
             <tr>
                 <td>
-                    <a href="${pageContext.servletContext.contextPath}/product/${product.id}">
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
                         <img class="product-tile" src="${product.imageUrl}" alt="product-title">
                     </a>
                 </td>
