@@ -15,4 +15,19 @@ public class RecentlyViewSection {
     public List<Product> getRecentlyView() {
         return recentlyView;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RecentlyViewSection that = (RecentlyViewSection) o;
+
+        return recentlyView.equals(that.recentlyView);
+    }
+
+    @Override
+    public int hashCode() {
+        return recentlyView.hashCode();
+    }
 }

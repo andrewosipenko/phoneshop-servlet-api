@@ -11,6 +11,7 @@
             window.open("${pageContext.servletContext.contextPath}/priceHistory/" + id,
                 "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
         }
+
         function sendToPDP(id) {
             window.open("${pageContext.servletContext.contextPath}/products/" + id,
                 "_self", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
@@ -19,31 +20,33 @@
     <p>
     <div style="font-size: xxx-large">${product.description}</div>
     <div class="content">
-        <section class="cart"><p>
-            <div class="block-name">
-                Cart
-            </div>
-            <table>
-                <c:forEach var="cartItem" items="${cart.cartItems}">
-                    <tr>
-                        <td>${cartItem.cartProduct.description}</td>
-                        <td>${cartItem.quantity}</td>
-                    </tr>
-                </c:forEach>
-            </table>
-            <c:choose>
-                <c:when test="${not empty errorMessage}">
-                    <p class="error-message" style="font-size: large">
-                        Some problems with adding product to cart
-                    </p>
-                </c:when>
-                <c:when test="${not empty param.successMessage}">
-                    <p class="success-message" style="font-size: large">
-                            ${param.successMessage}
-                    </p>
-                </c:when>
-            </c:choose>
-        </section>
+        <c:if test="${not empty cart.cartItems}">
+            <section class="cart"><p>
+                <div class="block-name">
+                    Cart
+                </div>
+                <table>
+                    <c:forEach var="cartItem" items="${cart.cartItems}">
+                        <tr>
+                            <td>${cartItem.cartProduct.description}</td>
+                            <td>${cartItem.quantity}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+                <c:choose>
+                    <c:when test="${not empty errorMessage}">
+                        <p class="error-message" style="font-size: large">
+                            Some problems with adding product to cart
+                        </p>
+                    </c:when>
+                    <c:when test="${not empty param.successMessage}">
+                        <p class="success-message" style="font-size: large">
+                                ${param.successMessage}
+                        </p>
+                    </c:when>
+                </c:choose>
+            </section>
+        </c:if>
         <section class="info-product-table">
             <div class="block-name">
                 About
@@ -83,25 +86,27 @@
             </form>
         </section>
     </div>
-    <div class="block-name">
-        Recently viewed
-    </div>
-    <div class="recently-view-container">
-        <c:forEach var="recentlyViewItem" items="${recentlyViewSection.recentlyView}">
-            <div class="polaroid">
-                <img src="${recentlyViewItem.imageUrl}" alt="Product image" class="mini-image-recently-view">
-                <div class="container-polaroid">
-                    <p>
-                        <a onclick="sendToPDP(${recentlyViewItem.id})">
-                                ${recentlyViewItem.description} <br>
-                        </a>
-                        <a onclick="myFunction(${recentlyViewItem.id})">
-                            <fmt:formatNumber value="${recentlyViewItem.price}" type="currency"
-                                              currencySymbol="${recentlyViewItem.currency.symbol}"/>
-                        </a>
-                    </p>
+    <c:if test="${not empty recentlyViewSection.recentlyView}">
+        <div class="block-name">
+            Recently viewed
+        </div>
+        <div class="recently-view-container">
+            <c:forEach var="recentlyViewItem" items="${recentlyViewSection.recentlyView}">
+                <div class="polaroid">
+                    <img src="${recentlyViewItem.imageUrl}" alt="Product image" class="mini-image-recently-view">
+                    <div class="container-polaroid">
+                        <p>
+                            <a onclick="sendToPDP(${recentlyViewItem.id})">
+                                    ${recentlyViewItem.description} <br>
+                            </a>
+                            <a onclick="myFunction(${recentlyViewItem.id})">
+                                <fmt:formatNumber value="${recentlyViewItem.price}" type="currency"
+                                                  currencySymbol="${recentlyViewItem.currency.symbol}"/>
+                            </a>
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </c:forEach>
-    </div>
+            </c:forEach>
+        </div>
+    </c:if>
 </tags:master>

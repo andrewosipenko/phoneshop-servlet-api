@@ -60,25 +60,27 @@
             </tr>
         </c:forEach>
     </table>
-    <div class="block-name">
-        Recently viewed
-    </div>
-    <div class="recently-view-container">
-        <c:forEach var="recentlyViewItem" items="${recentlyViewSection.recentlyView}">
-            <div class="polaroid">
-                <img src="${recentlyViewItem.imageUrl}" alt="Product image" class="mini-image-recently-view">
-                <div class="container-polaroid">
-                    <p>
-                        <a onclick="sendToPDP(${recentlyViewItem.id})">
-                                ${recentlyViewItem.description} <br>
-                        </a>
-                        <a onclick="myFunction(${recentlyViewItem.id})">
-                            <fmt:formatNumber value="${recentlyViewItem.price}" type="currency"
-                                              currencySymbol="${recentlyViewItem.currency.symbol}"/>
-                        </a>
-                    </p>
+    <c:if test="${not empty recentlyViewSection.recentlyView}">
+        <div class="block-name">
+            Recently viewed
+        </div>
+        <div class="recently-view-container">
+            <c:forEach var="recentlyViewItem" items="${recentlyViewSection.recentlyView}">
+                <div class="polaroid">
+                    <img src="${recentlyViewItem.imageUrl}" alt="Product image" class="mini-image-recently-view">
+                    <div class="container-polaroid">
+                        <p>
+                            <a onclick="sendToPDP(${recentlyViewItem.id})">
+                                    ${recentlyViewItem.description} <br>
+                            </a>
+                            <a onclick="myFunction(${recentlyViewItem.id})">
+                                <fmt:formatNumber value="${recentlyViewItem.price}" type="currency"
+                                                  currencySymbol="${recentlyViewItem.currency.symbol}"/>
+                            </a>
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </c:forEach>
-    </div>
+            </c:forEach>
+        </div>
+    </c:if>
 </tags:master>

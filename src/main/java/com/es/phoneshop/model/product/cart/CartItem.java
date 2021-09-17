@@ -6,8 +6,8 @@ public class CartItem {
     private Product cartProduct;
     private int quantity;
 
-    public CartItem(Product certProduct, int quantity) {
-        this.cartProduct = certProduct;
+    public CartItem(Product cartProduct, int quantity) {
+        this.cartProduct = cartProduct;
         this.quantity = quantity;
     }
 
@@ -21,6 +21,24 @@ public class CartItem {
 
     public void addQuantity(int number) {
         quantity += number;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CartItem cartItem = (CartItem) o;
+
+        if (quantity != cartItem.quantity) return false;
+        return cartProduct.equals(cartItem.cartProduct);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cartProduct.hashCode();
+        result = 31 * result + quantity;
+        return result;
     }
 
     @Override
