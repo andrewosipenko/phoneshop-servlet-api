@@ -1,5 +1,9 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.enums.sort.SortField;
+import com.es.phoneshop.model.product.enums.sort.SortOrder;
+import com.es.phoneshop.model.product.exceptions.ProductNotFindException;
+
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -39,8 +43,7 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(product -> product.getId().equals(id))
                     .findAny()
                     .orElseThrow(() ->
-                            new ProductNotFindException(id == -1L ? "There is no product with this id" :
-                                    ("There is no product with " + id + " id")));
+                            new ProductNotFindException("There is no product with " + id + " id"));
         } finally {
             lock.readLock().unlock();
         }
