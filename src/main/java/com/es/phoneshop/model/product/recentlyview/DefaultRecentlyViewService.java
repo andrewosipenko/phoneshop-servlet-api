@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class DefaultRecentlyViewService implements RecentlyViewService {
 
     public static final String RECENTLY_VIEW_SECTION_ATTRIBUTE = DefaultRecentlyViewService.class.getName() + ".recentlyViewSection";
+    public static final int SIZE_OF_RECENTLY_VIEW_BAR = 3;
     private static volatile DefaultRecentlyViewService instance;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -32,13 +33,12 @@ public class DefaultRecentlyViewService implements RecentlyViewService {
 
     @Override
     public synchronized void add(RecentlyViewSection recentlyViewSection, HttpServletRequest request, Product product) {
-        int sizeOfRecentlyViewBar = 3;
-        recentlyViewSection.getRecentlyView().remove(product);
-        List<Product> recentlyView = recentlyViewSection.getRecentlyView();
-        if (recentlyView.size() >= sizeOfRecentlyViewBar) {
-            recentlyView.remove(sizeOfRecentlyViewBar - 1);
+        List<Product> recentlyViewList = recentlyViewSection.getRecentlyView();
+        recentlyViewList.remove(product);
+        if (recentlyViewList.size() >= SIZE_OF_RECENTLY_VIEW_BAR) {
+            recentlyViewList.remove(SIZE_OF_RECENTLY_VIEW_BAR - 1);
         }
-        recentlyView.add(0, product);
+        recentlyViewList.add(0, product);
     }
 
     @Override

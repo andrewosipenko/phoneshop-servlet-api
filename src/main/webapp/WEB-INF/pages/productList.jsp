@@ -8,7 +8,7 @@
              scope="request"/>
 <tags:master pageTitle="Product List">
     <script>
-        function myFunction(id) {
+        function sendToHistoryPage(id) {
             window.open("${pageContext.servletContext.contextPath}/priceHistory/" + id,
                 "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
         }
@@ -52,7 +52,7 @@
                 </td>
                 <td>${product.description}</td>
                 <td class="price">
-                    <a onclick="myFunction(${product.id})">
+                    <a onclick="sendToHistoryPage(${product.id})">
                         <fmt:formatNumber value="${product.price}" type="currency"
                                           currencySymbol="${product.currency.symbol}"/>
                     </a>
@@ -73,7 +73,7 @@
                             <a onclick="sendToPDP(${recentlyViewItem.id})">
                                     ${recentlyViewItem.description} <br>
                             </a>
-                            <a onclick="myFunction(${recentlyViewItem.id})">
+                            <a onclick="sendToHistoryPage(${recentlyViewItem.id})">
                                 <fmt:formatNumber value="${recentlyViewItem.price}" type="currency"
                                                   currencySymbol="${recentlyViewItem.currency.symbol}"/>
                             </a>
