@@ -3,10 +3,14 @@ package com.es.phoneshop.model.product.cart;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.exceptions.DeleteException;
+import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -49,7 +53,7 @@ public class DefaultCartService implements CartService {
     }
 
     @Override
-    public synchronized void add(Cart cart, Long productId, int quantity) throws StockException {
+    public synchronized void addToCart(Cart cart, Long productId, int quantity) throws StockException {
         Product product = productDao.getProduct(productId);
         if (product.getStock() < quantity + getQuantityOfCartItem(cart, product)) {
             throw new StockException("Not enough stock");
@@ -59,6 +63,50 @@ public class DefaultCartService implements CartService {
         } else {
             cart.getCartItems().add(new CartItem(product, quantity));
         }
+        updateCart(cart);
+    }
+
+    @Override
+    public synchronized void deleteFromCart(Cart cart, Long productId) throws DeleteException {
+        Product product = productDao.getProduct(productId);
+        List<CartItem> cartItemList = cart.getCartItems();
+        CartItem deleteCartItem = getCartItemByProduct(cart, product);
+        if(deleteCartItem != null){
+            cartItemList.remove(deleteCartItem);
+        } else {
+            throw new DeleteException("No such element to delete");
+        }
+        updateCart(cart);
+    }
+
+    @Override
+    public void putToCart(Cart cart, Long productId, int quantity) throws StockException, QuantityLowerZeroException {
+        if(quantity <= 0){
+            throw new QuantityLowerZeroException("Not enough stock, available " + productDao.getProduct(productId).getStock());
+        }
+        Product product = productDao.getProduct(productId);
+        int productStock = product.getStock();
+        if (productStock < quantity) {
+            throw new StockException("Not enough stock, available " + productStock);
+        }
+        if (isProductInCart(cart, product)) {
+            getCartItemByProduct(cart, product).setQuantity(quantity);
+        } else {
+            cart.getCartItems().add(new CartItem(product, quantity));
+        }
+        updateCart(cart);
+    }
+
+    @Override
+    public void updateCart(Cart cart) {
+        int sumQuantity = cart.getCartItems().stream()
+                .mapToInt(CartItem::getQuantity).sum();
+        cart.setTotalQuantity(sumQuantity);
+        BigDecimal sumPrice = BigDecimal.ZERO;
+        for(CartItem item : cart.getCartItems()){
+            sumPrice = sumPrice.add(item.getCartProduct().getPrice().multiply(new BigDecimal(item.getQuantity())));
+        }
+        cart.setTotalPrice(sumPrice);
     }
 
     private int getQuantityOfCartItem(Cart cart, Product product) {
@@ -77,6 +125,7 @@ public class DefaultCartService implements CartService {
     private void addQuantityToCartItem(Cart cart, Product product, int additionalQuantity) {
         lock.writeLock().lock();
         getCartItemByProduct(cart, product).addQuantity(additionalQuantity);
+        updateCart(cart);
         lock.writeLock().unlock();
     }
 

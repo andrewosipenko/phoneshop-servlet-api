@@ -49,7 +49,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Product product = productDao.getProduct(productId);
         RecentlyViewSection recentlyViewSection = recentlyViewService.getRecentlyViewSection(request);
         recentlyViewService.add(recentlyViewSection, request, product);
-        request.setAttribute(RECENTLY_VIEW_SECTION, recentlyViewService.getRecentlyViewSection(request));
+        request.setAttribute(RECENTLY_VIEW_SECTION, recentlyViewSection);
         request.setAttribute("cart", cartService.getCart(request));
         request.setAttribute("product", product);
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
@@ -70,9 +70,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
         long productId = parseProductId(request);
         Cart cart = cartService.getCart(request);
         try {
-            cartService.add(cart, productId, quantity);
+            cartService.addToCart(cart, productId, quantity);
         } catch (StockException e) {
-            setErrorMessage(request, response, "Not enough stock");
+            setErrorMessage(request, response,
+                    "Not enough stock, available " + productDao.getProduct(productId).getStock());
             return;
         }
         response.sendRedirect(request.getContextPath() + "/products/" +
@@ -80,7 +81,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     private Long parseProductId(HttpServletRequest request) {
-
         return Long.parseLong(request.getPathInfo().substring(1));
     }
 

@@ -78,6 +78,10 @@ td {
     justify-content: start;
 }
 
+.main-name {
+    font-size: xxx-large;
+}
+
 img.product-tile {
     max-width: 64px;
 }

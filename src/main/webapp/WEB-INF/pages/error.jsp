@@ -4,12 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <tags:master pageTitle="Error500">
-    <p>
+    <p class="main-name">
         Wrong page!
     </p>
-    <table>
-        <tr>
-            <td>500</td>
-        </tr>
-    </table>
 </tags:master>

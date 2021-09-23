@@ -102,7 +102,7 @@ public class DefaultCartServiceTest {
 
     @Test
     public void addTest() throws StockException {
-        cartService.add(actualCart, 0L, 1);
+        cartService.addToCart(actualCart, 0L, 1);
         Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         CartItem cartItem = new CartItem(product, 1);
         assertEquals(actualCart.getCartItems().get(0), cartItem);
@@ -110,8 +110,8 @@ public class DefaultCartServiceTest {
 
     @Test
     public void addDoubleTest() throws StockException {
-        cartService.add(actualCart, 0L, 1);
-        cartService.add(actualCart, 0L, 1);
+        cartService.addToCart(actualCart, 0L, 1);
+        cartService.addToCart(actualCart, 0L, 1);
         Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         CartItem cartItem = new CartItem(product, 2);
         assertEquals(actualCart.getCartItems().get(0), cartItem);
@@ -120,7 +120,7 @@ public class DefaultCartServiceTest {
     @Test
     public void addNotEnoughStockTest() {
         try {
-            cartService.add(actualCart, 0L, 10000);
+            cartService.addToCart(actualCart, 0L, 10000);
             Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
             CartItem cartItem = new CartItem(product, 1);
             assertEquals(cartItem, actualCart.getCartItems().get(0));

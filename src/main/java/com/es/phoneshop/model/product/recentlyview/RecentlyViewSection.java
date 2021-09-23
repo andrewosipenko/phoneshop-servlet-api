@@ -2,10 +2,11 @@ package com.es.phoneshop.model.product.recentlyview;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentlyViewSection {
+public class RecentlyViewSection implements Serializable {
     List<Product> recentlyView;
 
     public RecentlyViewSection() {
