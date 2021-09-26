@@ -71,7 +71,7 @@ public class DefaultCartService implements CartService {
         Product product = productDao.getProduct(productId);
         List<CartItem> cartItemList = cart.getCartItems();
         CartItem deleteCartItem = getCartItemByProduct(cart, product);
-        if(deleteCartItem != null){
+        if (deleteCartItem != null) {
             cartItemList.remove(deleteCartItem);
         } else {
             throw new DeleteException("No such element to delete");
@@ -81,7 +81,7 @@ public class DefaultCartService implements CartService {
 
     @Override
     public void putToCart(Cart cart, Long productId, int quantity) throws StockException, QuantityLowerZeroException {
-        if(quantity <= 0){
+        if (quantity <= 0) {
             throw new QuantityLowerZeroException("Not enough stock, available " + productDao.getProduct(productId).getStock());
         }
         Product product = productDao.getProduct(productId);
@@ -103,13 +103,14 @@ public class DefaultCartService implements CartService {
                 .mapToInt(CartItem::getQuantity).sum();
         cart.setTotalQuantity(sumQuantity);
         BigDecimal sumPrice = BigDecimal.ZERO;
-        for(CartItem item : cart.getCartItems()){
+        for (CartItem item : cart.getCartItems()) {
             sumPrice = sumPrice.add(item.getCartProduct().getPrice().multiply(new BigDecimal(item.getQuantity())));
         }
         cart.setTotalPrice(sumPrice);
     }
 
-    private int getQuantityOfCartItem(Cart cart, Product product) {
+    @Override
+    public int getQuantityOfCartItem(Cart cart, Product product) {
         lock.readLock().lock();
         CartItem searchedCartItem = getCartItemByProduct(cart, product);
         int quantity;

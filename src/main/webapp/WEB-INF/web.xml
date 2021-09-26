@@ -64,6 +64,16 @@
         <url-pattern>/priceHistory/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>miniCart</servlet-name>
+        <servlet-class>com.es.phoneshop.web.MiniCartServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>miniCart</servlet-name>
+        <url-pattern>/miniCart</url-pattern>
+    </servlet-mapping>
+
     <error-page>
         <exception-type>com.es.phoneshop.model.product.exceptions.ProductNotFindException</exception-type>
         <location>/WEB-INF/pages/errorProductNotFindException.jsp</location>

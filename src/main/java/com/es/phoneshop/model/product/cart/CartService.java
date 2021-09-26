@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product.cart;
 
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.exceptions.DeleteException;
 import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;
@@ -17,4 +18,6 @@ public interface CartService {
     void updateCart(Cart cart);
 
     void deleteFromCart(Cart cart, Long productId) throws DeleteException;
+
+    int getQuantityOfCartItem(Cart cart, Product product);
 }
