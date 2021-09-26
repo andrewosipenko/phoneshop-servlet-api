@@ -55,12 +55,12 @@ public class DefaultRecentlyViewServiceTest {
     }
 
     @Test
-    public void getRecentlyViewSectionEmpty(){
+    public void testGetRecentlyViewSectionEmpty(){
         assertEquals(recentlyViewService.getRecentlyViewSection(request), new RecentlyViewSection());
     }
 
     @Test
-    public void getRecentlyViewSection(){
+    public void testGetRecentlyViewSection(){
         Currency usd = Currency.getInstance("USD");
         Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         recentlyViewSection.getRecentlyView().add(product);
