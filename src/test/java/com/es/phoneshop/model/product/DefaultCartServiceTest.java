@@ -4,7 +4,12 @@ import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartItem;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
+import com.es.phoneshop.model.product.exceptions.DeleteException;
+import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;
+import com.es.phoneshop.model.product.productdao.ArrayListProductDao;
+import com.es.phoneshop.model.product.productdao.Product;
+import com.es.phoneshop.model.product.productdao.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Spy;
@@ -77,19 +82,19 @@ public class DefaultCartServiceTest {
     }
 
     @Test
-    public void getInstanceTest() {
+    public void testGetInstance() {
         CartService cartService1 = DefaultCartService.getInstance();
         CartService cartService2 = DefaultCartService.getInstance();
         assertEquals(cartService1, cartService2);
     }
 
     @Test
-    public void getEmptyCartTest() {
+    public void testGetEmptyCart() {
         assertEquals(new Cart(), actualCart);
     }
 
     @Test
-    public void getCartTest() {
+    public void testGetCart() {
         Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         CartItem cartItem = new CartItem(product, 1);
         Cart expectedCart = new Cart();
@@ -101,31 +106,100 @@ public class DefaultCartServiceTest {
     }
 
     @Test
-    public void addTest() throws StockException {
-        cartService.add(actualCart, 0L, 1);
+    public void testAdd() throws StockException {
+        cartService.addToCart(actualCart, 0L, 1);
         Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         CartItem cartItem = new CartItem(product, 1);
         assertEquals(actualCart.getCartItems().get(0), cartItem);
     }
 
     @Test
-    public void addDoubleTest() throws StockException {
-        cartService.add(actualCart, 0L, 1);
-        cartService.add(actualCart, 0L, 1);
+    public void testAddDouble() throws StockException {
+        cartService.addToCart(actualCart, 0L, 1);
+        cartService.addToCart(actualCart, 0L, 1);
         Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         CartItem cartItem = new CartItem(product, 2);
         assertEquals(actualCart.getCartItems().get(0), cartItem);
     }
 
     @Test
-    public void addNotEnoughStockTest() {
+    public void testAddNotEnoughStock() {
         try {
-            cartService.add(actualCart, 0L, 10000);
+            cartService.addToCart(actualCart, 0L, 10000);
             Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
             CartItem cartItem = new CartItem(product, 1);
             assertEquals(cartItem, actualCart.getCartItems().get(0));
             fail("Expected ProductNotFindException");
         } catch (StockException exception) {
+            assertNotEquals("", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetQuantityOfCartItem() throws StockException {
+        cartService.addToCart(actualCart, 0L, 3);
+        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
+        assertEquals(expectedQuantity, 3);
+    }
+
+    @Test
+    public void testGetQuantityOfCartItemWithoutItem() {
+        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
+        assertEquals(expectedQuantity, 0);
+    }
+
+    @Test
+    public void testPutToCart() throws StockException, QuantityLowerZeroException {
+        cartService.putToCart(actualCart, 0L, 3);
+        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
+        assertEquals(expectedQuantity, 3);
+    }
+
+    @Test
+    public void testPutToCartWithItemInCart() throws StockException, QuantityLowerZeroException {
+        cartService.addToCart(actualCart, 0L, 3);
+        cartService.putToCart(actualCart, 0L, 2);
+        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
+        assertEquals(expectedQuantity, 2);
+    }
+
+    @Test
+    public void testPutToCartErrorNegativeQuantity() throws StockException {
+        try {
+            cartService.putToCart(actualCart, 0L, -1);
+            fail("Expected QuantityLowerZeroException");
+        } catch (QuantityLowerZeroException exception) {
+            assertNotEquals("", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testPutToCartErrorStockException() throws QuantityLowerZeroException {
+        try {
+            cartService.putToCart(actualCart, 0L, 10000);
+            fail("Expected StockException");
+        } catch (StockException exception) {
+            assertNotEquals("", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testDeleteFromCart() throws StockException, DeleteException {
+        cartService.addToCart(actualCart, 0L, 3);
+        cartService.deleteFromCart(actualCart, 0L);
+        assertEquals(actualCart.getTotalQuantity(), 0);
+    }
+
+    @Test
+    public void testDeleteFromCartError() {
+        try {
+            cartService.deleteFromCart(actualCart, 0L);
+            fail("Expected DeleteException");
+        } catch (DeleteException exception) {
             assertNotEquals("", exception.getMessage());
         }
     }

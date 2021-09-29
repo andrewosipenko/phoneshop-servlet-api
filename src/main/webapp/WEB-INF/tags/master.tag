@@ -9,9 +9,12 @@
 </head>
 <body class="product-list">
 <header>
-    <a href="${pageContext.servletContext.contextPath}">
+    <a class="main-logo" href="${pageContext.servletContext.contextPath}">
         <img src="${pageContext.servletContext.contextPath}/images/logo.svg" alt="logo"/>
         PhoneShop
+    </a>`
+    <a class="mini-cart" style="font-size: x-large" href="${pageContext.servletContext.contextPath}/cart">
+        <jsp:include page="/miniCart"/>
     </a>
 </header>
 <main>

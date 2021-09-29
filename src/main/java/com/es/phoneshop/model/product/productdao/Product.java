@@ -1,11 +1,12 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.productdao;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
-public class Product {
+public class Product implements Serializable {
     private Long id;
     private String code;
     private String description;
@@ -126,21 +127,23 @@ public class Product {
         if (stock != product.stock) return false;
         if (!id.equals(product.id)) return false;
         if (!code.equals(product.code)) return false;
-        if (!description.equals(product.description)) return false;
-        if (!price.equals(product.price)) return false;
+        if (description != null ? !description.equals(product.description) : product.description != null) return false;
+        if (price != null ? !price.equals(product.price) : product.price != null) return false;
         if (!currency.equals(product.currency)) return false;
-        return imageUrl.equals(product.imageUrl);
+        if (!imageUrl.equals(product.imageUrl)) return false;
+        return priceHistoryList != null ? priceHistoryList.equals(product.priceHistoryList) : product.priceHistoryList == null;
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + code.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + price.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + currency.hashCode();
         result = 31 * result + stock;
         result = 31 * result + imageUrl.hashCode();
+        result = 31 * result + (priceHistoryList != null ? priceHistoryList.hashCode() : 0);
         return result;
     }
 
