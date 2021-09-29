@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.productdao.Product;
 import com.es.phoneshop.model.product.recentlyview.DefaultRecentlyViewService;
 import com.es.phoneshop.model.product.recentlyview.RecentlyViewSection;
 import com.es.phoneshop.model.product.recentlyview.RecentlyViewService;

@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.productdao.ArrayListProductDao;
+import com.es.phoneshop.model.product.productdao.ProductDao;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
@@ -21,21 +21,22 @@ import java.util.Map;
 
 public class CartPageServlet extends HttpServlet {
 
-    ProductDao productDao;
-    CartService cartService;
-    RecentlyViewService recentlyViewService;
+    public static final String CART_PAGE_JSP = "/WEB-INF/pages/cartPage.jsp";
+    private ProductDao productDao;
+    private CartService cartService;
+    private WebHelperService webHelperService;
 
     @Override
     public void init() {
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
-        recentlyViewService = DefaultRecentlyViewService.getInstance();
+        webHelperService = WebHelperService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("cart", cartService.getCart(request));
-        request.getRequestDispatcher("/WEB-INF/pages/cartPage.jsp").forward(request, response);
+        request.getRequestDispatcher(CART_PAGE_JSP).forward(request, response);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class CartPageServlet extends HttpServlet {
             Long productId = Long.parseLong(productIds[i]);
             int quantity;
             try {
-                quantity = parseRightQuantity(request, quantities[i]);
+                quantity = webHelperService.parseRightQuantity(request, quantities[i]);
                 cartService.putToCart(cartService.getCart(request), productId, quantity);
             } catch (NumberFormatException | ParseException exception) {
                 setErrorMessageToMap(productId, errorsMap, "Quantity should be integer");
@@ -65,25 +66,6 @@ public class CartPageServlet extends HttpServlet {
             request.setAttribute("errorsMap", errorsMap);
             doGet(request, response);
         }
-    }
-
-    private int parseRightQuantity(HttpServletRequest request, String quantityString)
-            throws NumberFormatException, QuantityLowerZeroException, ParseException {
-        NumberFormat format = NumberFormat.getInstance(request.getLocale());
-        int quantity = getQuantity(quantityString, format);
-        if (quantity <= 0) {
-            throw new QuantityLowerZeroException("Quantity should be > 0");
-        }
-        return quantity;
-    }
-
-    private int getQuantity(String quantityString, NumberFormat format) throws ParseException {
-        int quantity = format.parse(quantityString).intValue();
-        double quantityDouble = format.parse(quantityString).doubleValue();
-        if (quantityDouble % 1 != 0) {
-            throw new NumberFormatException("Quantity should be integer");
-        }
-        return quantity;
     }
 
     private void setErrorMessageToMap(Long id, Map<Long, String> errorsMap, String errorMessage) {

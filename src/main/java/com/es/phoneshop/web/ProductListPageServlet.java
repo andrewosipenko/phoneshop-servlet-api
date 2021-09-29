@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.productdao.ArrayListProductDao;
+import com.es.phoneshop.model.product.productdao.Product;
+import com.es.phoneshop.model.product.productdao.ProductDao;
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
@@ -33,10 +33,13 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String SORT_ORDER = "sortOrder";
     private static final String SORT_FIELD = "sortField";
     public static final String RECENTLY_VIEW_SECTION = "recentlyViewSection";
+    public static final String PRODUCT_LIST_PAGE_JSP = "/WEB-INF/pages/productList.jsp";
+    public static final String PRODUCTS_QUANTITIES_MAP = "productsQuantitiesMap";
 
     private ProductDao productDao;
     private RecentlyViewService recentlyViewService;
     private CartService cartService;
+    private WebHelperService webHelperService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -44,6 +47,7 @@ public class ProductListPageServlet extends HttpServlet {
         cartService = DefaultCartService.getInstance();
         productDao = ArrayListProductDao.getInstance();
         recentlyViewService = DefaultRecentlyViewService.getInstance();
+        webHelperService = WebHelperService.getInstance();
     }
 
     @Override
@@ -55,7 +59,7 @@ public class ProductListPageServlet extends HttpServlet {
             int quantityOfProduct = cartService.getQuantityOfCartItem(cart, productItem);
             productsQuantities.put(productItem, quantityOfProduct);
         }
-        request.setAttribute("productsQuantitiesMap", productsQuantities);
+        request.setAttribute(PRODUCTS_QUANTITIES_MAP, productsQuantities);
         String searchText = request.getParameter(SEARCH_TEXT);
         List<String> searchTextList = searchText != null ? parseSearchText(request) : null;
         String sortOrder = request.getParameter(SORT_ORDER);
@@ -65,7 +69,7 @@ public class ProductListPageServlet extends HttpServlet {
         request.setAttribute("products", productDao.findProducts(searchTextList,
                 sortField != null ? SortField.valueOf(sortField) : null,
                 sortOrder != null ? SortOrder.valueOf(sortOrder) : null));
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_LIST_PAGE_JSP).forward(request, response);
     }
 
     @Override
@@ -75,16 +79,15 @@ public class ProductListPageServlet extends HttpServlet {
         Long productId = Long.parseLong(productIdString);
         int quantity;
         try {
-            quantity = parseRightQuantity(request, quantityString);
+            quantity = webHelperService.parseRightQuantity(request, quantityString);
             cartService.putToCart(cartService.getCart(request), productId, quantity);
         } catch (NumberFormatException | ParseException exception) {
             setErrorMessage(request, response, "Quantity should be integer", productId);
             return;
         } catch (StockException exception) {
-            setErrorMessage(request,
-                            response,
-                            "Not enough stock, available " + productDao.getProduct(productId).getStock(),
-                            productId);
+            setErrorMessage(request, response,
+                    "Not enough stock, available " + productDao.getProduct(productId).getStock(),
+                    productId);
             return;
         } catch (QuantityLowerZeroException exception) {
             setErrorMessage(request, response, "Quantity should be > 0", productId);
@@ -93,28 +96,10 @@ public class ProductListPageServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/products?successMessage=Cart successfully updated");
     }
 
-    private int parseRightQuantity(HttpServletRequest request, String quantityString)
-            throws NumberFormatException, QuantityLowerZeroException, ParseException {
-        NumberFormat format = NumberFormat.getInstance(request.getLocale());
-        int quantity = getQuantity(quantityString, format);
-        if (quantity <= 0) {
-            throw new QuantityLowerZeroException("Quantity should be > 0");
-        }
-        return quantity;
-    }
-
-    private int getQuantity(String quantityString, NumberFormat format) throws ParseException {
-        int quantity = format.parse(quantityString).intValue();
-        double quantityDouble = format.parse(quantityString).doubleValue();
-        if (quantityDouble % 1 != 0) {
-            throw new NumberFormatException("Quantity should be integer");
-        }
-        return quantity;
-    }
-
     private void setErrorMessage(HttpServletRequest request,
                                  HttpServletResponse response,
-                                 String errorMessage, Long id) throws ServletException, IOException {
+                                 String errorMessage,
+                                 Long id) throws ServletException, IOException {
         request.setAttribute("productIdWithError", id);
         request.setAttribute("error", errorMessage);
         doGet(request, response);

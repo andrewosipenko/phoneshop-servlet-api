@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product.cart;
 
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.productdao.Product;
 
 import java.io.Serializable;
 

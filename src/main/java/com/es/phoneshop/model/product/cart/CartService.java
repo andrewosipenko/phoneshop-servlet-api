@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product.cart;
 
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.productdao.Product;
 import com.es.phoneshop.model.product.exceptions.DeleteException;
 import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;

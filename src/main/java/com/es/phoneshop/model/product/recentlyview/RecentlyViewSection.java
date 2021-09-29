@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product.recentlyview;
 
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.productdao.Product;
 
 import java.io.Serializable;
 import java.util.ArrayList;

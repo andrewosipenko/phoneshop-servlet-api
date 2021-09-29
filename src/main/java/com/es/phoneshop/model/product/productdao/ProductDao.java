@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.productdao;
 
 import com.es.phoneshop.model.product.enums.sort.SortField;
 import com.es.phoneshop.model.product.enums.sort.SortOrder;

@@ -1,11 +1,11 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.productdao.ArrayListProductDao;
+import com.es.phoneshop.model.product.productdao.Product;
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.productdao.ProductDao;
 import com.es.phoneshop.model.product.exceptions.ProductNotFindException;
 import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;
@@ -26,23 +26,26 @@ public class ProductDetailsPageServlet extends HttpServlet {
     public static final String QUANTITY = "quantity";
     public static final String ERROR_MESSAGE = "errorMessage";
     public static final String RECENTLY_VIEW_SECTION = "recentlyViewSection";
+    public static final String PRODUCT_DETAILS_PAGE_JSP = "/WEB-INF/pages/productDetails.jsp";
 
-    ProductDao productDao;
-    CartService cartService;
-    RecentlyViewService recentlyViewService;
+    private ProductDao productDao;
+    private CartService cartService;
+    private RecentlyViewService recentlyViewService;
+    private WebHelperService webHelperService;
 
     @Override
     public void init() {
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
         recentlyViewService = DefaultRecentlyViewService.getInstance();
+        webHelperService = WebHelperService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long productId;
         try {
-            productId = parseProductId(request);
+            productId = webHelperService.parseProductId(request);
         } catch (NumberFormatException exception) {
             throw new ProductNotFindException("There is no product with " + request.getPathInfo().substring(1) + " id");
         }
@@ -52,14 +55,15 @@ public class ProductDetailsPageServlet extends HttpServlet {
         request.setAttribute(RECENTLY_VIEW_SECTION, recentlyViewSection);
         request.setAttribute("cart", cartService.getCart(request));
         request.setAttribute("product", product);
-        request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_DETAILS_PAGE_JSP).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int quantity;
         try {
-            quantity = parseRightQuantity(request);
+            String quantityString = request.getParameter(QUANTITY);
+            quantity = webHelperService.parseRightQuantity(request, quantityString);
         } catch (NumberFormatException | ParseException exception) {
             setErrorMessage(request, response, "Quantity should be integer");
             return;
@@ -67,7 +71,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             setErrorMessage(request, response, "Quantity should be > 0");
             return;
         }
-        long productId = parseProductId(request);
+        long productId = webHelperService.parseProductId(request);
         Cart cart = cartService.getCart(request);
         try {
             cartService.addToCart(cart, productId, quantity);
@@ -78,29 +82,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/products/" +
                 productId + "?successMessage=Product added to cart");
-    }
-
-    private Long parseProductId(HttpServletRequest request) {
-        return Long.parseLong(request.getPathInfo().substring(1));
-    }
-
-    private int parseRightQuantity(HttpServletRequest request) throws NumberFormatException, QuantityLowerZeroException, ParseException {
-        String quantityString = request.getParameter(QUANTITY);
-        NumberFormat format = NumberFormat.getInstance(request.getLocale());
-        int quantity = getQuantity(quantityString, format);
-        if (quantity <= 0) {
-            throw new QuantityLowerZeroException("Quantity should be > 0");
-        }
-        return quantity;
-    }
-
-    private int getQuantity(String quantityString, NumberFormat format) throws ParseException {
-        int quantity = format.parse(quantityString).intValue();
-        double quantityDouble = format.parse(quantityString).doubleValue();
-        if (quantityDouble % 1 != 0) {
-            throw new NumberFormatException("Quantity should be integer");
-        }
-        return quantity;
     }
 
     private void setErrorMessage(HttpServletRequest request,

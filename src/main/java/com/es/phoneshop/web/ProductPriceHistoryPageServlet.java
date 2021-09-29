@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.PriceHistory;
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.productdao.ArrayListProductDao;
+import com.es.phoneshop.model.product.productdao.PriceHistory;
+import com.es.phoneshop.model.product.productdao.Product;
+import com.es.phoneshop.model.product.productdao.ProductDao;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +16,7 @@ import java.util.List;
 public class ProductPriceHistoryPageServlet extends HttpServlet {
 
     private static final String PRODUCT_HISTORY_LIST = "productHistoryList";
+    public static final String PRODUCT_PRICE_HISTORY_PAGE_JSP = "/WEB-INF/pages/productPriceHistory.jsp";
 
     private ProductDao productDao;
 
@@ -35,6 +36,6 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
         } else {
             request.setAttribute(PRODUCT_HISTORY_LIST, priceHistoryList);
         }
-        request.getRequestDispatcher("/WEB-INF/pages/productPriceHistory.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_PRICE_HISTORY_PAGE_JSP).forward(request, response);
     }
 }
