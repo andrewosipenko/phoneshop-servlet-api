@@ -2,7 +2,7 @@ package com.es.phoneshop.model.product.productdao;
 
 import com.es.phoneshop.model.product.enums.sort.SortField;
 import com.es.phoneshop.model.product.enums.sort.SortOrder;
-import com.es.phoneshop.model.product.exceptions.ProductNotFindException;
+import com.es.phoneshop.model.product.exceptions.ItemNotFindException;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -36,14 +36,14 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFindException {
+    public Product getProduct(Long id) throws ItemNotFindException {
         lock.readLock().lock();
         try {
             return result.stream()
                     .filter(product -> product.getId().equals(id))
                     .findAny()
                     .orElseThrow(() ->
-                            new ProductNotFindException("There is no product with " + id + " id"));
+                            new ItemNotFindException("There is no product with " + id + " id"));
         } finally {
             lock.readLock().unlock();
         }
@@ -117,7 +117,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void saveProduct(Product product) throws ProductNotFindException {
+    public synchronized void saveProduct(Product product) throws ItemNotFindException {
         if (product.getId() == null) {
             product.setId(maxId++);
             result.add(product);
@@ -128,7 +128,7 @@ public class ArrayListProductDao implements ProductDao {
                 deleteProduct(productId);
                 product.setId(productId);
                 result.add(product);
-            } catch (ProductNotFindException exception) {
+            } catch (ItemNotFindException exception) {
                 product.setId(maxId++);
                 result.add(product);
             }
@@ -136,11 +136,11 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void deleteProduct(Long id) throws ProductNotFindException {
+    public synchronized void deleteProduct(Long id) throws ItemNotFindException {
         if (result.stream().anyMatch(getProduct(id)::equals)) {
             result.remove(getProduct(id));
         } else {
-            throw new ProductNotFindException("There is no product with " + id + " id");
+            throw new ItemNotFindException("There is no product with " + id + " id");
         }
     }
 }

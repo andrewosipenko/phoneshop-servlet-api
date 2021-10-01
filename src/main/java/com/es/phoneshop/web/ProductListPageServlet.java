@@ -80,7 +80,7 @@ public class ProductListPageServlet extends HttpServlet {
         int quantity;
         try {
             quantity = webHelperService.parseRightQuantity(request, quantityString);
-            cartService.putToCart(cartService.getCart(request), productId, quantity);
+            cartService.addToCart(cartService.getCart(request), productId, quantity);
         } catch (NumberFormatException | ParseException exception) {
             setErrorMessage(request, response, "Quantity should be integer", productId);
             return;

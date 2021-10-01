@@ -150,4 +150,11 @@ public class DefaultCartService implements CartService {
             lock.readLock().unlock();
         }
     }
+
+    @Override
+    public void clear(Cart cart) {
+        cart.getCartItems().clear();
+        cart.setTotalQuantity(0);
+        cart.setTotalPrice(BigDecimal.ZERO);
+    }
 }

@@ -2,7 +2,6 @@ package com.es.phoneshop.model.product.productdao;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
@@ -21,37 +20,6 @@ public class Product implements Serializable {
     private int stock;
     private String imageUrl;
     private List<PriceHistory> priceHistoryList;
-
-    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.code = code;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.stock = stock;
-        this.imageUrl = imageUrl;
-        priceHistoryList = new ArrayList<>();
-    }
-
-    public Product(long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = id;
-        this.code = code;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.stock = stock;
-        this.imageUrl = imageUrl;
-        priceHistoryList = new ArrayList<>();
-    }
-
-    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, List<PriceHistory> priceHistoryList) {
-        this.code = code;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.stock = stock;
-        this.imageUrl = imageUrl;
-        this.priceHistoryList = priceHistoryList;
-    }
 
     public Long getId() {
         return id;
@@ -125,24 +93,24 @@ public class Product implements Serializable {
         Product product = (Product) o;
 
         if (stock != product.stock) return false;
-        if (!id.equals(product.id)) return false;
-        if (!code.equals(product.code)) return false;
+        if (id != null ? !id.equals(product.id) : product.id != null) return false;
+        if (code != null ? !code.equals(product.code) : product.code != null) return false;
         if (description != null ? !description.equals(product.description) : product.description != null) return false;
         if (price != null ? !price.equals(product.price) : product.price != null) return false;
-        if (!currency.equals(product.currency)) return false;
-        if (!imageUrl.equals(product.imageUrl)) return false;
+        if (currency != null ? !currency.equals(product.currency) : product.currency != null) return false;
+        if (imageUrl != null ? !imageUrl.equals(product.imageUrl) : product.imageUrl != null) return false;
         return priceHistoryList != null ? priceHistoryList.equals(product.priceHistoryList) : product.priceHistoryList == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + code.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (code != null ? code.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + currency.hashCode();
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
         result = 31 * result + stock;
-        result = 31 * result + imageUrl.hashCode();
+        result = 31 * result + (imageUrl != null ? imageUrl.hashCode() : 0);
         result = 31 * result + (priceHistoryList != null ? priceHistoryList.hashCode() : 0);
         return result;
     }
@@ -157,6 +125,7 @@ public class Product implements Serializable {
                 ", currency=" + currency +
                 ", stock=" + stock +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", priceHistoryList=" + priceHistoryList +
                 '}';
     }
 }

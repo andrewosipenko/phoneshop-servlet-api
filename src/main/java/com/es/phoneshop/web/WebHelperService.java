@@ -9,7 +9,10 @@ import java.text.ParseException;
 
 public class WebHelperService {
     private static volatile WebHelperService instance;
-    private WebHelperService(){}
+
+    private WebHelperService() {
+    }
+
     public static WebHelperService getInstance() {
         WebHelperService helper = instance;
         if (helper != null) {
@@ -42,8 +45,7 @@ public class WebHelperService {
         return quantity;
     }
 
-    public Long parseProductId(HttpServletRequest request) {
+    public Long parseId(HttpServletRequest request) {
         return Long.parseLong(request.getPathInfo().substring(1));
     }
-
 }

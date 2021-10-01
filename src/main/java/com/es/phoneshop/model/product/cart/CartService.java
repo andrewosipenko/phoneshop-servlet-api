@@ -20,4 +20,6 @@ public interface CartService {
     void deleteFromCart(Cart cart, Long productId) throws DeleteException;
 
     int getQuantityOfCartItem(Cart cart, Product product);
+
+    void clear(Cart cart);
 }

@@ -7,9 +7,7 @@ import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.exceptions.DeleteException;
 import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;
-import com.es.phoneshop.model.product.productdao.ArrayListProductDao;
-import com.es.phoneshop.model.product.productdao.Product;
-import com.es.phoneshop.model.product.productdao.ProductDao;
+import com.es.phoneshop.model.product.productdao.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Spy;
@@ -18,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
@@ -30,6 +30,7 @@ public class DefaultCartServiceTest {
     private ProductDao productDao;
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
     private final Currency usd = Currency.getInstance("USD");
+    List<PriceHistory> priceHistoryList = new ArrayList<>();
 
     @Spy
     HttpSession session;
@@ -50,19 +51,18 @@ public class DefaultCartServiceTest {
         resetSingletonCartService();
         resetSingletonArrayListProductDao();
 
-        productDao.saveProduct(new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
-        productDao.saveProduct(new Product(1L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        productDao.saveProduct(new Product(2L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
-        productDao.saveProduct(new Product(3L, "iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
-        productDao.saveProduct(new Product(4L, "iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg"));
-        productDao.saveProduct(new Product(5L, "htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));
-        productDao.saveProduct(new Product(6L, "sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg"));
-        productDao.saveProduct(new Product(7L, "xperiaxz", "Sony Xperia XZ", new BigDecimal(120), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Xperia%20XZ.jpg"));
-        productDao.saveProduct(new Product(8L, "nokia3310", "Nokia 3310", new BigDecimal(70), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Nokia/Nokia%203310.jpg"));
-        productDao.saveProduct(new Product(9L, "palmp", "Palm Pixi", new BigDecimal(170), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Palm/Palm%20Pixi.jpg"));
-        productDao.saveProduct(new Product(10L, "simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
-        productDao.saveProduct(new Product(11L, "simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
-        productDao.saveProduct(new Product(12L, "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
+        productDao.saveProduct(new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(2L).setCode("sgs3").setDescription("Samsung Galaxy S III").setPrice(new BigDecimal(300)).setCurrency(usd).setStock(5).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(3L).setCode("iphone").setDescription("Apple iPhone").setPrice(new BigDecimal(200)).setCurrency(usd).setStock(10).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(4L).setCode("iphone6").setDescription("Apple iPhone 6").setPrice(new BigDecimal(1000)).setCurrency(usd).setStock(30).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(5L).setCode("htces4g").setDescription("HTC EVO Shift 4G").setPrice(new BigDecimal(320)).setCurrency(usd).setStock(3).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(6L).setCode("sec901").setDescription("Sony Ericsson C901").setPrice(new BigDecimal(420)).setCurrency(usd).setStock(30).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(7L).setCode("xperiaxz").setDescription("Sony Xperia XZ").setPrice(new BigDecimal(120)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Xperia%20XZ.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(8L).setCode("nokia3310").setDescription("Nokia 3310").setPrice(new BigDecimal(70)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Nokia/Nokia%203310.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(9L).setCode("palmp").setDescription("Palm Pixi").setPrice(new BigDecimal(170)).setCurrency(usd).setStock(30).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Palm/Palm%20Pixi.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(10L).setCode("simc56").setDescription("Siemens C56").setPrice(new BigDecimal(70)).setCurrency(usd).setStock(20).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(11L).setCode("simc61").setDescription("Siemens C61").setPrice(new BigDecimal(80)).setCurrency(usd).setStock(30).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg").setPriceHistory(priceHistoryList).build());
+        productDao.saveProduct(new ProductBuilderImpl().setId(12L).setCode("simsxg75").setDescription("Siemens SXG75").setPrice(new BigDecimal(150)).setCurrency(usd).setStock(40).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg").setPriceHistory(priceHistoryList).build());
     }
 
     public void resetSingletonCartService() throws SecurityException,
@@ -95,7 +95,7 @@ public class DefaultCartServiceTest {
 
     @Test
     public void testGetCart() {
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         CartItem cartItem = new CartItem(product, 1);
         Cart expectedCart = new Cart();
         expectedCart.getCartItems().add(cartItem);
@@ -108,7 +108,7 @@ public class DefaultCartServiceTest {
     @Test
     public void testAdd() throws StockException {
         cartService.addToCart(actualCart, 0L, 1);
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         CartItem cartItem = new CartItem(product, 1);
         assertEquals(actualCart.getCartItems().get(0), cartItem);
     }
@@ -117,7 +117,7 @@ public class DefaultCartServiceTest {
     public void testAddDouble() throws StockException {
         cartService.addToCart(actualCart, 0L, 1);
         cartService.addToCart(actualCart, 0L, 1);
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         CartItem cartItem = new CartItem(product, 2);
         assertEquals(actualCart.getCartItems().get(0), cartItem);
     }
@@ -126,7 +126,7 @@ public class DefaultCartServiceTest {
     public void testAddNotEnoughStock() {
         try {
             cartService.addToCart(actualCart, 0L, 10000);
-            Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+            Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
             CartItem cartItem = new CartItem(product, 1);
             assertEquals(cartItem, actualCart.getCartItems().get(0));
             fail("Expected ProductNotFindException");
@@ -138,14 +138,14 @@ public class DefaultCartServiceTest {
     @Test
     public void testGetQuantityOfCartItem() throws StockException {
         cartService.addToCart(actualCart, 0L, 3);
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
         assertEquals(expectedQuantity, 3);
     }
 
     @Test
     public void testGetQuantityOfCartItemWithoutItem() {
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
         assertEquals(expectedQuantity, 0);
     }
@@ -153,7 +153,7 @@ public class DefaultCartServiceTest {
     @Test
     public void testPutToCart() throws StockException, QuantityLowerZeroException {
         cartService.putToCart(actualCart, 0L, 3);
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
         assertEquals(expectedQuantity, 3);
     }
@@ -162,7 +162,7 @@ public class DefaultCartServiceTest {
     public void testPutToCartWithItemInCart() throws StockException, QuantityLowerZeroException {
         cartService.addToCart(actualCart, 0L, 3);
         cartService.putToCart(actualCart, 0L, 2);
-        Product product = new Product(0L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product = new ProductBuilderImpl().setId(0L).setCode("sgs").setDescription("Samsung Galaxy S").setPrice(new BigDecimal(100)).setCurrency(usd).setStock(100).setImageUrl("https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg").setPriceHistory(priceHistoryList).build();
         int expectedQuantity = cartService.getQuantityOfCartItem(actualCart, product);
         assertEquals(expectedQuantity, 2);
     }
@@ -202,5 +202,15 @@ public class DefaultCartServiceTest {
         } catch (DeleteException exception) {
             assertNotEquals("", exception.getMessage());
         }
+    }
+
+    @Test
+    public void testClear() throws StockException {
+        cartService.addToCart(actualCart, 0L, 3);
+        cartService.addToCart(actualCart, 3L, 3);
+        cartService.clear(actualCart);
+        assertEquals(actualCart.getTotalQuantity(), 0);
+        assertEquals(actualCart.getCartItems(), new ArrayList<>());
+        assertEquals(actualCart.getTotalPrice(), BigDecimal.ZERO);
     }
 }

@@ -81,6 +81,9 @@
                     </p>
                 </form>
                 <form id="deleteForm" method="post"></form>
+                <form action="${pageContext.servletContext.contextPath}/checkout">
+                    <button>Checkout</button>
+                </form>
             </section>
         </c:if>
     </div>

@@ -6,7 +6,7 @@ import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.productdao.ProductDao;
-import com.es.phoneshop.model.product.exceptions.ProductNotFindException;
+import com.es.phoneshop.model.product.exceptions.ItemNotFindException;
 import com.es.phoneshop.model.product.exceptions.QuantityLowerZeroException;
 import com.es.phoneshop.model.product.exceptions.StockException;
 import com.es.phoneshop.model.product.recentlyview.DefaultRecentlyViewService;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
@@ -45,9 +44,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long productId;
         try {
-            productId = webHelperService.parseProductId(request);
+            productId = webHelperService.parseId(request);
         } catch (NumberFormatException exception) {
-            throw new ProductNotFindException("There is no product with " + request.getPathInfo().substring(1) + " id");
+            throw new ItemNotFindException("There is no product with " + request.getPathInfo().substring(1) + " id");
         }
         Product product = productDao.getProduct(productId);
         RecentlyViewSection recentlyViewSection = recentlyViewService.getRecentlyViewSection(request);
@@ -71,7 +70,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             setErrorMessage(request, response, "Quantity should be > 0");
             return;
         }
-        long productId = webHelperService.parseProductId(request);
+        long productId = webHelperService.parseId(request);
         Cart cart = cartService.getCart(request);
         try {
             cartService.addToCart(cart, productId, quantity);

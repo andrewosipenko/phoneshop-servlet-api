@@ -73,7 +73,11 @@
                     <td>
                         <input type="hidden" name="productId" value="${product.id}">
                         <input name="quantity" type="text"
-                               value="${productIdWithError eq product.id and not empty error ? param.quantity : productsQuantitiesMap.get(product)}">
+                               value="${productIdWithError eq product.id ? param.quantity : 1}">
+                        <c:set var="quantityInCart" value="${productsQuantitiesMap.get(product)}"/>
+                        <c:if test="${quantityInCart ne 0}">
+                            <br>In cart - ${quantityInCart}
+                        </c:if>
                         <c:if test="${productIdWithError eq product.id and not empty error}">
                             <div class="error-message">
                                     ${error}

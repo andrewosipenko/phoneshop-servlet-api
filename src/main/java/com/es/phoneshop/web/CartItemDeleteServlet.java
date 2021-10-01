@@ -33,7 +33,7 @@ public class CartItemDeleteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productDeleteId = webHelperService.parseProductId(request);
+        Long productDeleteId = webHelperService.parseId(request);
         Cart cart = cartService.getCart(request);
         try {
             cartService.deleteFromCart(cart, productDeleteId);

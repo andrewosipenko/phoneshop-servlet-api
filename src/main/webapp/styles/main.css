@@ -29,10 +29,12 @@ td {
 }
 
 .error-message {
+    font-size: large;
     color: red;
 }
 
 .success-message {
+    font-size: large;
     color: green;
 }
 
