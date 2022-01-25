@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
     private long nextId = 1;
-    private final Object lock = new Object();
+    private final Object LOCK = new Object();
 
     public ArrayListProductDao() {
         products = new ArrayList<>();
     }
 
     public void setSampleProducts() {
-        synchronized (lock) {
+        synchronized (LOCK) {
             products.clear();
         }
         Currency usd = Currency.getInstance("USD");
@@ -34,6 +34,14 @@ public class ArrayListProductDao implements ProductDao {
         save(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
         save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
+    }
+
+    private void addWithValidation(Product product) throws InvalidProductException {
+        if (ProductValidator.validateProduct(product)) {
+            products.add(product);
+        } else {
+            throw new InvalidProductException();
+        }
     }
 
     @Override
@@ -53,24 +61,24 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product newProduct) {
-        synchronized (lock) {
+    public void save(Product newProduct) throws InvalidProductException {
+        synchronized (LOCK) {
             if (newProduct.getId() != null) {
                 boolean exists = products.stream()
                         .anyMatch(product -> newProduct.getId().equals(product.getId()));
                 if (!exists) {
-                    products.add(newProduct);
+                    addWithValidation(newProduct);
                 }
             } else {
                 newProduct.setId(nextId++);
-                products.add(newProduct);
+                addWithValidation(newProduct);
             }
         }
     }
 
     @Override
     public void delete(Long id) {
-        synchronized (lock) {
+        synchronized (LOCK) {
             products.removeIf(product -> id.equals(product.getId()));
         }
     }
