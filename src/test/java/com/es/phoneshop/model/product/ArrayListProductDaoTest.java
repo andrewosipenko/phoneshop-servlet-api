@@ -5,10 +5,10 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+
 import static org.junit.Assert.*;
 
-public class ArrayListProductDaoTest
-{
+public class ArrayListProductDaoTest {
     private ProductDao productDao;
 
     @Before
@@ -22,36 +22,44 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testSaveNewProduct() throws ProductNotFoundExceprion {
+    public void testSaveNewProduct() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
         productDao.save(product);
         assertTrue(product.getId() > 0);
-        Product result = productDao.getProduct(product.getId());
-        assertNotNull(result);
+        assertTrue(productDao.getProduct(product.getId()).isPresent());
     }
 
     @Test
-    public void testRewriteProduct() throws ProductNotFoundExceprion {
+    public void testRewriteProduct() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
         productDao.save(product);
 
-        Product replaceProduct = new Product(product.getId(), "replace","HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
+        Product replaceProduct = new Product(product.getId(), "replace", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
         productDao.save(replaceProduct);
 
-        Product result = productDao.getProduct(replaceProduct.getId());
+        Product result = productDao.getProduct(replaceProduct.getId()).get();
         assertEquals(result.getCode(), replaceProduct.getCode());
-        assertNotEquals(result.getCode(),product.getCode());
+        assertTrue(productDao.getProduct(replaceProduct.getId()).isPresent());
+        assertNotEquals(result.getCode(), product.getCode());
     }
 
-    @Test(expected = ProductNotFoundExceprion.class)
-    public void testDeleteProduct() throws ProductNotFoundExceprion {
+    @Test
+    public void testDeleteProduct() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg");
         productDao.save(product);
         productDao.delete(product.getId());
-        productDao.getProduct(product.getId());
+        assertFalse(productDao.getProduct(product.getId()).isPresent());
     }
+
+    @Test
+    public void testFindProducts(){
+        assertFalse(productDao.findProducts().stream()
+                .filter(product -> product.getPrice() == null)
+                .anyMatch(product -> product.getStock() <= 0));
+    }
+
 
 }
