@@ -46,7 +46,9 @@ public class ArrayListProductDaoTest {
     @Test
     public void testFindSampleProducts() {
         ((ArrayListProductDao) productDao).setSampleProducts();
-        assertFalse(productDao.findProducts().isEmpty());
+        boolean isSampleProductsListEmpty =
+                productDao.findProducts().isEmpty();
+        assertFalse(isSampleProductsListEmpty);
     }
 
     @Test
@@ -57,7 +59,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testNotFindProductsWithNonPositiveStock() {
+    public void testNotFindProductsWithZeroStock() {
         int zeroStock = 0;
         int negativeStock = -1;
         productDao.save(defaultProduct);
@@ -65,6 +67,24 @@ public class ArrayListProductDaoTest {
         assertTrue(productDao.findProducts().isEmpty());
         defaultProduct.setStock(negativeStock);
         assertTrue(productDao.findProducts().isEmpty());
+    }
+
+    @Test
+    public void testNotFindProductsWithNonPositiveStock() {
+        int zeroStock = 0;
+        defaultProduct.setStock(zeroStock);
+        productDao.save(defaultProduct);
+        boolean isProductNotFound =
+                productDao.findProducts().isEmpty();
+        assertTrue(isProductNotFound);
+    }
+
+    @Test
+    public void testCanNotSaveProductWithNegativeStock() {
+        int negativeStock = -1;
+        defaultProduct.setStock(negativeStock);
+        exceptionRule.expect(InvalidProductException.class);
+        productDao.save(defaultProduct);
     }
 
     @Test
