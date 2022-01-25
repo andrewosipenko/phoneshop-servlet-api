@@ -11,15 +11,9 @@ public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
     private long nextId = 1;
     private final Object lock = new Object();
-    private static final ArrayListProductDao INSTANCE =
-            new ArrayListProductDao();
 
-    private ArrayListProductDao() {
+    public ArrayListProductDao() {
         products = new ArrayList<>();
-    }
-
-    public static ArrayListProductDao getInstance() {
-        return INSTANCE;
     }
 
     public void setSampleProducts() {
