@@ -56,9 +56,8 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProducts(){
-        assertFalse(productDao.findProducts().stream()
-                .filter(product -> product.getPrice() == null)
-                .anyMatch(product -> product.getStock() <= 0));
+        assertTrue(productDao.findProducts().stream()
+                .noneMatch(product -> (product.getPrice() == null || product.getStock() <= 0)));
     }
 
 
