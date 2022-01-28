@@ -22,9 +22,9 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
         Product p = new Product("sgs", "Xiaomi", new BigDecimal(100), usd, 100, "https://just/a/shortened/link.jpg");
         productDao.save(p);
-        assertTrue(productDao.findProducts().contains(p));
+        assertTrue(productDao.getProduct(p.getId()).isPresent());
         productDao.delete(p.getId());
-        assertFalse(productDao.findProducts().contains(p));
+        assertFalse(productDao.getProduct(p.getId()).isPresent());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ArrayListProductDaoTest
         productDao.save(p);
         Long id = p.getId();
         assertNotNull(id);
-        assertEquals(productDao.getProduct(p.getId()), p);
+        assertEquals(productDao.getProduct(p.getId()).get(), p);
         productDao.save(p);
         assertEquals(p.getId(), id);
     }
@@ -58,6 +58,6 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
         Product p = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://just/a/shortened/link.jpg");
         productDao.save(p);
-        assertEquals(productDao.getProduct(p.getId()), p);
+        assertEquals(productDao.getProduct(p.getId()).get(), p);
     }
 }
