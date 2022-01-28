@@ -47,15 +47,20 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String query) {
+    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         rwLock.readLock().lock();
         try {
+            Comparator<Product> comparator = new ProductSortByFieldComparator(sortField);
+            if(SortOrder.desc == sortOrder){
+                comparator = comparator.reversed();
+            }
             return products.stream()
                     .sorted(new ProductNaturalOrderComparator())
                     .filter(product -> isProductSearchResult(product, query))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .sorted(new ProductSearchComparator(query))
+                    .sorted(comparator)
                     .collect(Collectors.toList());
         } finally {
             rwLock.readLock().unlock();

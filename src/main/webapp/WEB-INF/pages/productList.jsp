@@ -16,8 +16,16 @@
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+            Description
+            <tags:sortLinkAsc sort="description" order="asc"/>
+            <tags:sortLinkDesc sort="description" order="desc"/>
+        </td>
+        <td class="price">
+            Price
+            <tags:sortLinkAsc sort="price" order="asc"/>
+            <tags:sortLinkDesc sort="price" order="desc"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
