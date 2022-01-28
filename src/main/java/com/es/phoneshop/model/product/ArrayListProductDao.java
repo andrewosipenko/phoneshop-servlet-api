@@ -40,27 +40,36 @@ public class ArrayListProductDao implements ProductDao {
         if (id == null) {
             return Optional.empty();
         }
-        synchronized (lock.readLock()) {
+        lock.readLock().lock();
+        try {
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findAny();
+        } finally {
+            lock.readLock().unlock();
         }
-
     }
 
     @Override
     public List<Product> findProducts() {
-        synchronized (lock.readLock()) {
+        lock.readLock().lock();
+        try {
             return products
                     .stream()
                     .filter(product -> product.getPrice() != null && product.getStock() > 0)
                     .collect(Collectors.toList());
+        } finally {
+            lock.readLock().unlock();
         }
     }
 
     @Override
     public void save(Product product) {
-        synchronized (lock.writeLock()) {
+        if(product == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
             if (product.getId() != null) {
                 products.forEach(product1 -> {
                     if (product1.getId().equals(product.getId())) {
@@ -71,13 +80,18 @@ public class ArrayListProductDao implements ProductDao {
                 product.setId(maxId++);
                 products.add(product);
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void delete(Long id) {
-        synchronized (lock.writeLock()) {
+        lock.writeLock().lock();
+        try {
             products.removeIf(product -> id.equals(product.getId()));
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 }
