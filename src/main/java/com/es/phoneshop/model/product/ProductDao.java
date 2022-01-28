@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface ProductDao {
     Optional<Product> getProduct(Long id);
-    List<Product> findProducts(String query);
+    List<Product> findProducts(String query, SortField sortFiels, SortType sortType);
     void save(Product product);
     void delete(Long id);
 }
