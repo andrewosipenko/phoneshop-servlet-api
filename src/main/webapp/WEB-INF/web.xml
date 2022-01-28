@@ -22,4 +22,17 @@
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>productDetailsPage</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>productDetailsPage</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+    <error-page>
+      <error-code>500</error-code>
+      <location>/WEB-INF/pages/error.jsp</location>
+    </error-page>
 </web-app>
