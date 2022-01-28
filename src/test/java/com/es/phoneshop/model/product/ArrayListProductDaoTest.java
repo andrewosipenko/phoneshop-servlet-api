@@ -29,17 +29,17 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProducts() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts("").isEmpty());
         Currency usd = Currency.getInstance("USD");
         Product p = new Product("sgs", "Xiaomi", new BigDecimal(100), usd, 100, "https://just/a/shortened/link.jpg");
         productDao.save(p);
-        assertTrue(productDao.findProducts().contains(p));
+        assertTrue(productDao.findProducts("").contains(p));
         p = new Product("sgs", "Xiaomi", new BigDecimal(100), usd, 0, "https://just/a/shortened/link.jpg");
         productDao.save(p);
-        assertFalse(productDao.findProducts().contains(p));
+        assertFalse(productDao.findProducts("").contains(p));
         p = new Product("sgs", "Xiaomi", null, usd, 10, "https://just/a/shortened/link.jpg");
         productDao.save(p);
-        assertFalse(productDao.findProducts().contains(p));
+        assertFalse(productDao.findProducts("").contains(p));
     }
 
     @Test
