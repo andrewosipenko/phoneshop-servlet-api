@@ -18,7 +18,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts("").isEmpty());
     }
 
     @Test
@@ -56,8 +56,11 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProducts(){
-        assertTrue(productDao.findProducts().stream()
+        assertTrue(productDao.findProducts("").stream()
                 .noneMatch(product -> (product.getPrice() == null || product.getStock() <= 0)));
+
+        assertEquals(productDao.findProducts("samsung").size(), productDao.findProducts("").stream()
+                .filter(product -> product.getDescription().toLowerCase().contains("samsung")).count());
     }
 
 

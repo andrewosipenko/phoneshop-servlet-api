@@ -1,10 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -37,18 +34,34 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
+    private boolean isProductSearchResult(Product product, String query) {
+        if (query == null || query.isEmpty()) {
+            return true;
+        }
+        String[] tokens = query.split(" ");
+        long result;
+        result = Arrays.stream(tokens)
+                .filter(item -> product.getDescription().toLowerCase().contains(item.toLowerCase()))
+                .count();
+        return result > 0;
+    }
+
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String query) {
         rwLock.readLock().lock();
         try {
             return products.stream()
+                    .sorted(new ProductNaturalOrderComparator())
+                    .filter(product -> isProductSearchResult(product, query))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
+                    .sorted(new ProductSearchComparator(query))
                     .collect(Collectors.toList());
         } finally {
             rwLock.readLock().unlock();
         }
     }
+
 
     @Override
     public void save(Product product) {
