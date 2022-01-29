@@ -33,14 +33,13 @@ public class ArrayListProductDaoTest {
         usd = Currency.getInstance("USD");
 
         when(productMock.getId()).thenReturn(null);
-        when(productMock.getPrice()).thenReturn(null);
-        when(productMock.getStock()).thenReturn(0);
         when(productMock.getCode()).thenReturn("test-product-mock");
+        when(productMock.getDescription()).thenReturn("The best phone ever");
     }
 
     @Test
     public void testSaveSampleProducts() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts(null).isEmpty());
     }
 
     @Test(expected = ProductNotFoundException.class)
@@ -61,16 +60,28 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsNonNullPrice() {
-        int size = productDao.findProducts().size();
+        int size = productDao.findProducts(null).size();
+        when(productMock.getPrice()).thenReturn(null);
         productDao.save(productMock);
-        assertEquals(size, productDao.findProducts().size());
+        assertEquals(size, productDao.findProducts(null).size());
     }
 
     @Test
     public void testFindProductsNonNullStock() {
-        int size = productDao.findProducts().size();
+        int size = productDao.findProducts(null).size();
+        when(productMock.getStock()).thenReturn(0);
         productDao.save(productMock);
-        assertEquals(size, productDao.findProducts().size());
+        assertEquals(size, productDao.findProducts(null).size());
+    }
+
+    @Test
+    public void testFindProductsByQuery() {
+        String query = "best phone";
+        when(productMock.getPrice()).thenReturn(new BigDecimal(300));
+        when(productMock.getStock()).thenReturn(10);
+        productDao.save(productMock);
+
+        assertEquals(productMock, productDao.findProducts(query).get(0));
     }
 
     @Test
@@ -111,8 +122,8 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testDeleteProductWithNonExistingId() {
-        int size = productDao.findProducts().size();
+        int size = productDao.findProducts(null).size();
         productDao.delete(123L);
-        assertEquals(size, productDao.findProducts().size());
+        assertEquals(size, productDao.findProducts(null).size());
     }
 }

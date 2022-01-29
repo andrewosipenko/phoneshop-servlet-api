@@ -5,9 +5,7 @@ import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -40,16 +38,31 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String query) {
         locker.readLock().lock();
         try {
-            return products.stream()
+            List<Product> result = products;
+            if(query != null && !query.isEmpty()) {
+                result = products.stream()
+                        .sorted(Comparator.comparingInt(product -> countMatchingWords((Product) product, query))
+                                .reversed())
+                        .collect(Collectors.toList());
+            }
+            return result.stream()
                     .filter(this::productHasNonNullPrice)
                     .filter(this::productIsInStock)
                     .collect(Collectors.toList());
         } finally {
             locker.readLock().unlock();
         }
+    }
+
+    private int countMatchingWords(Product product, String query) {
+        String[] queryTerms = query.toLowerCase().split("\\s");
+        String[] productDescriptionTerms = product.getDescription().toLowerCase().split("\\s");
+        return (int) Arrays.stream(productDescriptionTerms)
+                .filter(Arrays.asList(queryTerms)::contains)
+                .count();
     }
 
     private boolean productHasNonNullPrice(Product product) {
