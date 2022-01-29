@@ -1,6 +1,8 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.SortField;
+import com.es.phoneshop.dao.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 
@@ -38,16 +40,25 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String query) {
+    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         locker.readLock().lock();
         try {
             List<Product> result = products;
-            if(query != null && !query.isEmpty()) {
+
+            if (query != null && !query.isEmpty()) {
                 result = products.stream()
+                        .filter(product -> countMatchingWords(product, query) != 0)
                         .sorted(Comparator.comparingInt(product -> countMatchingWords((Product) product, query))
                                 .reversed())
                         .collect(Collectors.toList());
             }
+
+            if (sortField != null) {
+                result = result.stream()
+                        .sorted(getComparator(sortField, sortOrder))
+                        .collect(Collectors.toList());
+            }
+
             return result.stream()
                     .filter(this::productHasNonNullPrice)
                     .filter(this::productIsInStock)
@@ -55,6 +66,20 @@ public class ArrayListProductDao implements ProductDao {
         } finally {
             locker.readLock().unlock();
         }
+    }
+
+    private Comparator<Product> getComparator(SortField sortField, SortOrder sortOrder) {
+        Comparator<Product> comparator = (product1, product2) -> {
+            if (SortField.description == sortField) {
+                return product1.getDescription().compareTo(product2.getDescription());
+            } else {
+                return product1.getPrice().compareTo(product2.getPrice());
+            }
+        };
+        if (SortOrder.desc == sortOrder) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 
     private int countMatchingWords(Product product, String query) {
