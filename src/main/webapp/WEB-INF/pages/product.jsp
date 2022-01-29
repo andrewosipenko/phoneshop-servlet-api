@@ -12,7 +12,9 @@
         Description: ${product.description}
     </p>
     <p>
+        <a href="#priceHistory">
         Price: ${product.price} ${product.currency}
+        </a>
     </p>
     <p>
         Stock: ${product.stock}
@@ -20,5 +22,28 @@
     <p>
         <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
     </p>
-
+    <a href="#x" class="overlay" id="priceHistory"></a>
+    <div class="popup">
+        <H1>Price history</H1>
+        <h2>${product.description}</h2>
+        <table>
+            <thead>
+            <tr>
+                <td>Start date</td>
+                <td>Price</td>
+            </tr>
+            </thead>
+            <c:forEach var="timestamp" items="${product.priceHistory}">
+                <tr>
+                    <td>
+                        ${timestamp.date}
+                    </td>
+                    <td class="price">
+                        <fmt:formatNumber value="${timestamp.price}" type="currency"
+                                          currencySymbol="${product.currency.symbol}"/>
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
 </tags:master>

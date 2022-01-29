@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,4 +9,5 @@ public interface ProductDao {
     List<Product> findProducts(String query, SortField sortFiels, SortType sortType);
     void save(Product product);
     void delete(Long id);
+    void changePrice(Long id, BigDecimal newPrice);
 }

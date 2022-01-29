@@ -1,7 +1,10 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.Date;
+import java.util.List;
 
 public class Product {
     private Long id;
@@ -18,6 +21,8 @@ public class Product {
     private int stock;
     private String imageUrl;
 
+    private final List<PriceTimeStamp> priceHistory = new ArrayList<>();
+
     public Product() {
     }
 
@@ -26,6 +31,7 @@ public class Product {
         this.code = code;
         this.description = description;
         this.price = price;
+        priceHistory.add(new PriceTimeStamp(price, new Date()));
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -35,6 +41,7 @@ public class Product {
         this.code = code;
         this.description = description;
         this.price = price;
+        priceHistory.add(new PriceTimeStamp(price, new Date()));
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -42,6 +49,10 @@ public class Product {
 
     public Long getId() {
         return id;
+    }
+
+    public List<PriceTimeStamp> getPriceHistory() {
+        return priceHistory;
     }
 
     public void setId(Long id) {
@@ -70,6 +81,7 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+        priceHistory.add(new PriceTimeStamp(price, new Date()));
     }
 
     public Currency getCurrency() {

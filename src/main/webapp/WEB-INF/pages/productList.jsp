@@ -4,6 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+
 <tags:master pageTitle="Product List">
     <p>
         Welcome to Expert-Soft training!
@@ -36,7 +37,7 @@
                 </td>
                 <td>
                     <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                        ${product.description}
+                            ${product.description}
                     </a>
                 </td>
                 <td class="price">
@@ -46,4 +47,5 @@
             </tr>
         </c:forEach>
     </table>
+
 </tags:master>
