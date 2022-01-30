@@ -1,18 +1,25 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private List<PriceHistory> priceHistoryList;
 
     public Product() {
     }
@@ -25,6 +32,7 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+        this.priceHistoryList = new ArrayList<>();
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -34,6 +42,14 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+        this.priceHistoryList = getTestPriceHistoryList();
+    }
+
+    private List<PriceHistory> getTestPriceHistoryList() {
+        List<PriceHistory> priceHistoryList = new ArrayList<>();
+        priceHistoryList.add(new PriceHistory("10 Jan 2019", 125));
+        priceHistoryList.add(new PriceHistory("20 Oct 2018", 150));
+        return priceHistoryList;
     }
 
     public Long getId() {
@@ -91,4 +107,8 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public List<PriceHistory> getPriceHistoryList() {return priceHistoryList;}
+
+    public void setPriceHistoryList(List<PriceHistory> priceHistoryList) {this.priceHistoryList = priceHistoryList;}
 }
