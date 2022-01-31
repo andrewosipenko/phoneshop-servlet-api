@@ -5,6 +5,6 @@
 
 <tags:master pageTitle="Error">
   <h1>
-    ERROR
+    Sorry, an error occurred
   </h1>
 </tags:master>

@@ -44,4 +44,14 @@
     <error-code>500</error-code>
   </error-page>
 
+  <servlet>
+    <servlet-name>productPriceHistory</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.ProductPriceHistoryPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>productPriceHistory</servlet-name>
+    <url-pattern>/products/price-history/*</url-pattern>
+  </servlet-mapping>
+
 </web-app>
