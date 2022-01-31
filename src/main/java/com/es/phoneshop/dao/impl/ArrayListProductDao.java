@@ -35,12 +35,12 @@ public class ArrayListProductDao implements ProductDao {
         locker.readLock().lock();
         try {
             if (id == null) {
-                throw new ProductNotFoundException("Null id");
+                throw new ProductNotFoundException("Null id", null);
             }
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException("No product with id " + id));
+                    .orElseThrow(() -> new ProductNotFoundException("No product with id " + id, id));
         } finally {
             locker.readLock().unlock();
         }
