@@ -1,4 +1,6 @@
-package com.es.phoneshop.model;
+package com.es.phoneshop.model.product;
+
+import com.es.phoneshop.model.product.PriceUpdatePoint;
 
 import java.math.BigDecimal;
 import java.util.*;

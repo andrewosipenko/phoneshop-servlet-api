@@ -4,7 +4,7 @@ import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.sorting.SortField;
 import com.es.phoneshop.dao.sorting.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
-import com.es.phoneshop.model.Product;
+import com.es.phoneshop.model.product.Product;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -12,14 +12,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static ProductDao instance;
 
-    public static synchronized ProductDao getInstance() {
-        if(instance == null) {
-            instance = new ArrayListProductDao();
-        }
-        return instance;
-     }
+    private static ProductDao instance;
 
     private final List<Product> products;
     private long currentId;
@@ -29,6 +23,13 @@ public class ArrayListProductDao implements ProductDao {
         products = new ArrayList<>();
         locker = new ReentrantReadWriteLock();
     }
+
+    public static synchronized ProductDao getInstance() {
+        if(instance == null) {
+            instance = new ArrayListProductDao();
+        }
+        return instance;
+     }
 
     @Override
     public Product getProduct(Long id) throws ProductNotFoundException {
@@ -125,7 +126,7 @@ public class ArrayListProductDao implements ProductDao {
     public void delete(Long id) {
         locker.writeLock().lock();
         try {
-            products.removeIf(product -> id.equals(product.getId()));
+            products.removeIf(product -> id.equals(product.getId()) || product.getId() == null);
         } finally {
             locker.writeLock().unlock();
         }

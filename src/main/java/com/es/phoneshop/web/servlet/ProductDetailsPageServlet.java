@@ -2,6 +2,7 @@ package com.es.phoneshop.web.servlet;
 
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,7 +23,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo();
-        request.setAttribute("product", productDao.getProduct(Long.valueOf(productId.substring(1))));
+        Product product = productDao.getProduct(Long.valueOf(productId.substring(1)));
+        request.setAttribute("product", product);
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
 }

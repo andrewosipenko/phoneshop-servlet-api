@@ -1,51 +1,47 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.sorting.SortField;
 import com.es.phoneshop.dao.sorting.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
-import com.es.phoneshop.model.Product;
-import org.junit.Before;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.web.listener.DemoDataServletContextListener;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import java.math.BigDecimal;
-import java.util.Currency;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 public class ArrayListProductDaoTest {
-    private ProductDao productDao;
-    private Product product;
-    private Currency usd;
+    private static int numberOfSampleProducts; // id of the last product in dao
 
-    @Mock
-    private Product productMock;
+    private static final ProductDao productDao = ArrayListProductDao.getInstance();
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+    // Mocks
+    private static final ServletContextEvent servletContextEvent = Mockito.mock(ServletContextEvent.class);
+    private static final ServletContext servletContext = Mockito.mock(ServletContext.class);
+    private final Product product = Mockito.mock(Product.class);
 
-        productDao = ArrayListProductDao.getInstance();
-        product = new Product("test-product", "Samsung Galaxy S",
-                new BigDecimal(100), usd, 100,
-                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        usd = Currency.getInstance("USD");
+    @BeforeClass
+    public static void setup() {
+        DemoDataServletContextListener servletContextListener = new DemoDataServletContextListener();
 
-        when(productMock.getId()).thenReturn(null);
-        when(productMock.getPrice()).thenReturn(new BigDecimal(300));
-        when(productMock.getStock()).thenReturn(10);
-        when(productMock.getCode()).thenReturn("test-product-mock");
-        when(productMock.getDescription()).thenReturn("The best phone ever");
+        when(servletContextEvent.getServletContext()).thenReturn(servletContext);
+        when(servletContext.getInitParameter(eq("insertDemoData"))).thenReturn("true");
+
+        servletContextListener.contextInitialized(servletContextEvent);
+
+        numberOfSampleProducts = productDao.findProducts(null, null, null).size();
     }
 
-    @Test
-    public void testSaveSampleProducts() {
-        assertFalse(productDao.findProducts(null, null, null).isEmpty());
-    }
+
+    // getProduct method tests
 
     @Test(expected = ProductNotFoundException.class)
     public void testGetProductNullId() {
@@ -54,8 +50,9 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testGetExistingProduct() {
-        Product result = productDao.getProduct(1L);
-        assertEquals(1L, result.getId().longValue());
+        Long testId = 1L;
+        Product receivedProduct = productDao.getProduct(testId);
+        assertEquals(testId, receivedProduct.getId());
     }
 
     @Test(expected = ProductNotFoundException.class)
@@ -63,108 +60,67 @@ public class ArrayListProductDaoTest {
         productDao.getProduct(666L);
     }
 
-    @Test
-    public void testFindProductsNonNullPrice() {
-        int size = productDao.findProducts(null, null, null).size();
-        when(productMock.getPrice()).thenReturn(null);
-        productDao.save(productMock);
-        assertEquals(size, productDao.findProducts(null, null, null).size());
-    }
-
-    @Test
-    public void testFindProductsNonNullStock() {
-        int size = productDao.findProducts(null, null, null).size();
-        when(productMock.getStock()).thenReturn(0);
-        productDao.save(productMock);
-        assertEquals(size, productDao.findProducts(null, null, null).size());
-    }
-
-//    @Test
-//    public void testFindProductsByQuery() {
-//        String query = "best phone";
-//        productDao.save(productMock);
-//
-//        assertEquals(productMock, productDao.findProducts(query, null, null).get(0));
-//    }
-
-    @Test
-    public void testFindProductsSortedByDescriptionAscOrder() {
-        when(productMock.getDescription()).thenReturn("AAA");
-        productDao.save(productMock);
-
-        Product result = productDao.findProducts(null,
-                SortField.description, SortOrder.asc).get(0);
-
-        assertEquals(productMock, result);
-    }
-
-    @Test
-    public void testFindProductsSortedByDescriptionDescOrder() {
-        when(productMock.getDescription()).thenReturn("ZZZ");
-        productDao.save(productMock);
-
-        Product result = productDao.findProducts(null,
-                SortField.description, SortOrder.desc).get(0);
-
-        assertEquals(productMock, result);
-    }
-
-    @Test
-    public void testFindProductsSortedByPriceAscOrder() {
-        when(productMock.getPrice()).thenReturn(new BigDecimal(1));
-        productDao.save(productMock);
-
-        Product result = productDao.findProducts(null,
-                SortField.price, SortOrder.asc).get(0);
-
-        assertEquals(productMock, result);
-    }
-
-//    @Test
-//    public void testFindProductsSortedByPriceDescOrder() {
-//        when(productMock.getPrice()).thenReturn(new BigDecimal(99999));
-//        productDao.save(productMock);
-//
-//        Product result = productDao.findProducts(null,
-//                SortField.price, SortOrder.desc).get(0);
-//
-//        assertEquals(productMock, result);
-//    }
+    // saveProduct method tests
 
     @Test
     public void testSaveNewProductWithNullId() {
+        when(product.getId()).thenReturn(null);
+        when(product.getPrice()).thenReturn(new BigDecimal(300));
+        when(product.getStock()).thenReturn(10);
         productDao.save(product);
 
-        assertTrue(product.getId() > 0);
+        Long productTestId = (long) (numberOfSampleProducts + 1);
 
-        Product result = productDao.getProduct(product.getId());
+        verify(product).setId(productTestId);
 
-        assertEquals(product, result);
-        assertEquals("test-product", result.getCode());
+        int size = productDao.findProducts(null, null, null).size();
+
+        assertEquals(numberOfSampleProducts + 1, size);
     }
 
-//    @Test
-//    public void testSaveNewProductWithExistingId() {
-//        when(productMock.getId()).thenReturn(1L);
-//        productDao.save(productMock);
-//
-//        Product result = productDao.getProduct(productMock.getId());
-//
-//        assertEquals(productMock, result);
-//        assertEquals("test-product-mock", result.getCode());
-//        assertEquals(1L, productMock.getId().longValue());
-//    }
+    @Test
+    public void testSaveNewProductWithExistingId() {
+        Long testId = (long) numberOfSampleProducts;
+
+        when(product.getId()).thenReturn(testId);
+
+        productDao.save(product);
+
+        Product receivedProduct = productDao.getProduct(testId);
+
+        assertEquals(product, receivedProduct);
+    }
 
     @Test(expected = ProductNotFoundException.class)
     public void testSaveNewProductWithNonExistingId() {
-        when(productMock.getId()).thenReturn(666L);
-        productDao.save(productMock);
+        when(product.getId()).thenReturn(33L);
+        productDao.save(product);
     }
 
-    @Test(expected = ProductNotFoundException.class)
+    // delete method tests
+
+    @Test
     public void testDeleteProductWithExistingId() {
-        productDao.delete(1L);
-        productDao.getProduct(1L);
+        Long testId = 777L;
+
+        when(product.getId()).thenReturn(null);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(300));
+
+        int initialSize = productDao.findProducts(null,null,null).size();
+
+        productDao.save(product);
+        int sizeAfterSaving = productDao.findProducts(null,null,null).size();
+
+        when(product.getId()).thenReturn(testId);
+
+        assertEquals(1, sizeAfterSaving - initialSize);
+
+        productDao.delete(testId);
+
+        int finalSize = productDao.findProducts(null,null,null).size();
+
+        assertEquals(initialSize, finalSize);
     }
 
     @Test
@@ -172,5 +128,90 @@ public class ArrayListProductDaoTest {
         int size = productDao.findProducts(null, null, null).size();
         productDao.delete(123L);
         assertEquals(size, productDao.findProducts(null, null, null).size());
+    }
+
+    // findProducts method tests
+
+    @Test
+    public void testFindProductsNonNullPrice() {
+        int initialSize = productDao.findProducts(null, null, null).size();
+
+        when(product.getId()).thenReturn(null);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(null);
+
+        productDao.save(product);
+
+        int finalSize = productDao.findProducts(null, null, null).size();
+
+        assertEquals(initialSize, finalSize);
+    }
+
+    @Test
+    public void testFindProductsNonNullStock() {
+        int initialSize = productDao.findProducts(null, null, null).size();
+
+        when(product.getId()).thenReturn(null);
+        when(product.getStock()).thenReturn(0);
+        when(product.getPrice()).thenReturn(new BigDecimal(300));
+
+        productDao.save(product);
+
+        int finalSize = productDao.findProducts(null, null, null).size();
+
+        assertEquals(initialSize, finalSize);
+    }
+
+    @Test
+    public void testFindProductsByQuery() {
+        String query = "apple 8";
+
+        productDao.delete(0L);
+
+        when(product.getId()).thenReturn(null);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(300));
+        when(product.getDescription()).thenReturn("Apple iPhone 8 max");
+
+        productDao.save(product);
+
+        when(product.getId()).thenReturn((long) (numberOfSampleProducts + 1));
+
+        Product receivedProduct = productDao.findProducts(query, null, null).get(0);
+
+        assertEquals(product, receivedProduct);
+    }
+
+    @Test
+    public void testFindProductsSortedByDescriptionAscOrder() {
+        productDao.delete(0L);
+
+        when(product.getId()).thenReturn(null);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(300));
+        when(product.getDescription()).thenReturn("AAA");
+
+        productDao.save(product);
+
+        Product receivedProduct = productDao.findProducts(null,
+                SortField.description, SortOrder.asc).get(0);
+
+        assertEquals(product, receivedProduct);
+    }
+
+    @Test
+    public void testFindProductsSortedByPriceDescOrder() {
+        productDao.delete(13L);
+
+        when(product.getId()).thenReturn(null);
+        when(product.getStock()).thenReturn(10);
+        when(product.getPrice()).thenReturn(new BigDecimal(99999));
+
+        productDao.save(product);
+
+        Product receivedProduct = productDao.findProducts(null,
+                SortField.price, SortOrder.desc).get(0);
+
+        assertEquals(product, receivedProduct);
     }
 }
