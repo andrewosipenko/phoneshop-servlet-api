@@ -4,7 +4,7 @@ import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.sorting.SortField;
 import com.es.phoneshop.dao.sorting.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.Product;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;

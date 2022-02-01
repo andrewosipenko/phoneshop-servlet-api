@@ -4,7 +4,7 @@ import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.sorting.SortField;
 import com.es.phoneshop.dao.sorting.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.Product;
 import com.es.phoneshop.web.listener.DemoDataServletContextListener;
 import org.junit.BeforeClass;
 import org.junit.Test;
