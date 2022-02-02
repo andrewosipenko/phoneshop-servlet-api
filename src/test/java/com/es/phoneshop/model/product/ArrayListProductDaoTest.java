@@ -90,8 +90,8 @@ public class ArrayListProductDaoTest
         productDao.save(p4);
         assertTrue(productDao.findProducts("a a", null, null).contains(p1));
         assertTrue(productDao.findProducts("a a", null, null).contains(p2));
-        assertEquals(productDao.findProducts("a a", null, null).get(0), p2);
-        assertEquals(productDao.findProducts("a a", null, null).get(1), p1);
+        assertEquals(productDao.findProducts("a a", null, null).get(0), p1);
+        assertEquals(productDao.findProducts("a a", null, null).get(1), p2);
         assertFalse(productDao.findProducts("a", null, null).contains(p3));
         assertFalse(productDao.findProducts("a", null, null).contains(p4));
         assertFalse(productDao.findProducts(null, null, null).isEmpty());
@@ -133,18 +133,6 @@ public class ArrayListProductDaoTest
         assertEquals(searchResult.get(1), p3);
         assertEquals(searchResult.get(2), p2);
         assertEquals(searchResult.get(3), p1);
-    }
-
-    @Test
-    public void testPriceChangeHistory() {
-        ClearProductDao();
-        Currency usd = Currency.getInstance("USD");
-        Product p = new Product("sgs", "a", new BigDecimal(1), usd, 100, "somelink");
-        assertEquals(1, p.getPriceHistory().size());
-        p.setPrice(new BigDecimal(100));
-        assertEquals(2, p.getPriceHistory().size());
-        assertEquals(p.getPriceHistory().get(0).getPrice(), new BigDecimal(1));
-        assertEquals(p.getPriceHistory().get(1).getPrice(), new BigDecimal(100));
     }
 
     private void ClearProductDao() {

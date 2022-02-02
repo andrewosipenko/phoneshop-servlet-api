@@ -14,7 +14,7 @@ public class DemoDataServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        if(servletContextEvent.getServletContext().getInitParameter("insertDemoData").equals("true")) {
+        if(servletContextEvent.getServletContext().getInitParameter("insertDemoData").equals(Boolean.TRUE.toString())) {
             this.productDao = ArrayListProductDao.getInstance();
             fillProducts();
         }
@@ -27,7 +27,10 @@ public class DemoDataServletContextListener implements ServletContextListener {
         Currency usd = Currency.getInstance("USD");
         productDao.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         productDao.save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        productDao.save(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
+        Product p = new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg");
+        p.setPrice(new BigDecimal("12345678765432345678765434567876543"));
+        p.setPrice(new BigDecimal(100));
+        productDao.save(p);
         productDao.save(new Product("iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "manufacturer/Apple/Apple%20iPhone.jpg"));
         productDao.save(new Product("iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "manufacturer/Apple/Apple%20iPhone%206.jpg"));
         productDao.save(new Product("htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));

@@ -53,52 +53,9 @@ public class ArrayListProductDao implements ProductDao {
         try {
             return products
                     .stream()
-                    .filter(product -> {
-                        if (queryWordsList.size() == 0) {
-                            return true;
-                        }
-                        String[] productWords = product.getDescription().split(" ");
-                        for (String i : queryWordsList) {
-                            for (String j : productWords) {
-                                if (j.toLowerCase().contains(i.toLowerCase())) {
-                                    return true;
-                                }
-                            }
-                        }
-                        return false;
-                    })
-                    .filter(product -> product.getPrice() != null && product.getStock() > 0)
-                    .sorted((Product a, Product b) -> {
-                        int a_counter = 0;
-                        int b_counter = 0;
-                        for (String i : queryWordsList) {
-                            for (String j : a.getDescription().split(" ")) {
-                                if (j.toLowerCase().contains(i.toLowerCase())) {
-                                    a_counter++;
-                                }
-                            }
-                            for (String j : b.getDescription().split(" ")) {
-                                if (j.toLowerCase().contains(i.toLowerCase())) {
-                                    b_counter++;
-                                }
-                            }
-                        }
-                        return b_counter - a_counter;
-                    })
-                    .sorted((Product a, Product b) -> {
-                        int result = 0;
-                        if (sortField == null) {
-                            return 0;
-                        } else if (sortField == SortField.description) {
-                            result = a.getDescription().compareTo(b.getDescription());
-                        } else if (sortField == SortField.price) {
-                            result = a.getPrice().compareTo(b.getPrice());
-                        }
-                        if (sortType == SortType.desc) {
-                            result *= -1;
-                        }
-                        return result;
-                    })
+                    .filter(new ProductStockPricePredicate().and(new ProductSearchPredicate(queryWordsList)))
+                    .sorted(new ProductSearchComparator(queryWordsList)
+                            .thenComparing(new ProductSortFieldComparator(sortType, sortField)))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
@@ -137,17 +94,4 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    @Override
-    public void changePrice(Long id, BigDecimal newPrice) {
-        lock.writeLock().lock();
-        try {
-            products.forEach(product -> {
-                if (Objects.equals(product.getId(), id)) {
-                    product.setPrice(newPrice);
-                }
-            });
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
 }

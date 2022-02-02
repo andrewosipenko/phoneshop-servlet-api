@@ -5,6 +5,9 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
+    <a href="${pageContext.servletContext.contextPath}/products">
+            <-Back to products list
+    </a>
     <p>
         Code: ${product.code}
     </p>
@@ -22,6 +25,7 @@
     <p>
         <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
     </p>
+
     <a href="#x" class="overlay" id="priceHistory"></a>
     <div class="popup">
         <H1>Price history</H1>
@@ -36,7 +40,7 @@
             <c:forEach var="timestamp" items="${product.priceHistory}">
                 <tr>
                     <td>
-                        ${timestamp.date}
+                            ${timestamp.date}
                     </td>
                     <td class="price">
                         <fmt:formatNumber value="${timestamp.price}" type="currency"

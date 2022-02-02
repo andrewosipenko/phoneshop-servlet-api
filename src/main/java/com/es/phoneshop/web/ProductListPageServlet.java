@@ -32,10 +32,17 @@ public class ProductListPageServlet extends HttpServlet {
         if(sortType == null) {
             sortType = "asc";
         }
-        request.setAttribute("products", productDao.findProducts(
-                query,
-                SortField.valueOf(sortField),
-                SortType.valueOf(sortType)));
+        try {
+            request.setAttribute("products", productDao.findProducts(
+                    query,
+                    SortField.valueOf(sortField),
+                    SortType.valueOf(sortType)));
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("products", productDao.findProducts(
+                    query,
+                    SortField.notSpecified,
+                    SortType.asc));
+        }
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }
