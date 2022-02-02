@@ -54,8 +54,8 @@ public class ArrayListProductDao implements ProductDao {
             return products
                     .stream()
                     .filter(new ProductStockPricePredicate().and(new ProductSearchPredicate(queryWordsList)))
-                    .sorted(new ProductSearchComparator(queryWordsList)
-                            .thenComparing(new ProductSortFieldComparator(sortType, sortField)))
+                    .sorted(new ProductSortFieldComparator(sortType, sortField)
+                            .thenComparing(new ProductSearchComparator(queryWordsList)))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();

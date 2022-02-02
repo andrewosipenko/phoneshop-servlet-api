@@ -1,11 +1,15 @@
 package com.es.phoneshop.model.product;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 
 import static org.junit.Assert.*;
+
+@RunWith(MockitoJUnitRunner.class)
 
 public class ProductTest
 {

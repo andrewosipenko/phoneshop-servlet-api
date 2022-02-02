@@ -2,6 +2,8 @@ package com.es.phoneshop.model.product;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.Currency;
 import java.util.List;
 
 import static org.junit.Assert.*;
+
+@RunWith(MockitoJUnitRunner.class)
 
 public class ArrayListProductDaoTest
 {
