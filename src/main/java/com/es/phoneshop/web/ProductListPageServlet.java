@@ -4,6 +4,7 @@ import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortType;
+import com.es.phoneshop.model.recentView.HttpSessionRecentViewService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -43,6 +44,7 @@ public class ProductListPageServlet extends HttpServlet {
                     SortField.notSpecified,
                     SortType.asc));
         }
+        request.setAttribute("recentView", HttpSessionRecentViewService.getInstance().getRecentView(request).getDeque());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

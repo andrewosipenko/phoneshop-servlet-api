@@ -25,6 +25,14 @@ td {
     vertical-align: top;
 }
 
+.success{
+    color: rgba(30, 112, 0, 0.8);
+}
+
+.error {
+    color: rgba(255, 17, 0, 0.8)
+}
+
 .price {
     text-align: right;
 }

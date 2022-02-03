@@ -4,10 +4,18 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
+<jsp:useBean id="recentView" type="java.util.Deque" scope="request"/>
+
 <tags:master pageTitle="Product Details">
     <a href="${pageContext.servletContext.contextPath}/products">
             <-Back to products list
     </a>
+    <p>
+            ${cart}
+    </p>
+    <div class="success">
+       ${param.message}
+    </div>
     <p>
         Code: ${product.code}
     </p>
@@ -25,7 +33,14 @@
     <p>
         <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
     </p>
-
+    <form method="post">
+        quantity
+        <input name="quantity" value=${not empty error ? param.quantity : 1}>
+        <button>AddToCart</button>
+        <p class="error">
+        ${error}
+        </p>
+    </form>
     <a href="#x" class="overlay" id="priceHistory"></a>
     <div class="popup">
         <H1>Price history</H1>
@@ -50,4 +65,18 @@
             </c:forEach>
         </table>
     </div>
+    <p>
+        Recently Viewed
+    </p>
+    <c:forEach var="product" items="${recentView}">
+        <img class="product-tile"
+             src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+        <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                ${product.description}
+        </a>
+        <p class="price">
+            <fmt:formatNumber value="${product.price}" type="currency"
+                              currencySymbol="${product.currency.symbol}"/>
+        </p>
+    </c:forEach>
 </tags:master>
