@@ -1,8 +1,8 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.sorting.SortField;
-import com.es.phoneshop.dao.sorting.SortOrder;
+import com.es.phoneshop.dao.enums.SortField;
+import com.es.phoneshop.dao.enums.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 
@@ -24,19 +24,23 @@ public class ArrayListProductDao implements ProductDao {
         locker = new ReentrantReadWriteLock();
     }
 
-    public static synchronized ProductDao getInstance() {
-        if(instance == null) {
-            instance = new ArrayListProductDao();
+    public static ProductDao getInstance() {
+        if (instance == null) {
+            synchronized (ArrayListProductDao.class) {
+                if (instance == null) {
+                    instance = new ArrayListProductDao();
+                }
+            }
         }
         return instance;
-     }
+    }
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFoundException {
+    public Product getProduct(Long id) throws ProductNotFoundException, IllegalArgumentException {
         locker.readLock().lock();
         try {
             if (id == null) {
-                throw new ProductNotFoundException("Null id", null);
+                throw new IllegalArgumentException("Null id");
             }
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
@@ -78,13 +82,13 @@ public class ArrayListProductDao implements ProductDao {
 
     private Comparator<Product> getComparator(SortField sortField, SortOrder sortOrder) {
         Comparator<Product> comparator = (product1, product2) -> {
-            if (SortField.description == sortField) {
+            if (SortField.DESCRIPTION == sortField) {
                 return product1.getDescription().compareTo(product2.getDescription());
             } else {
                 return product1.getPrice().compareTo(product2.getPrice());
             }
         };
-        if (SortOrder.desc == sortOrder) {
+        if (SortOrder.DESC == sortOrder) {
             comparator = comparator.reversed();
         }
         return comparator;
@@ -93,8 +97,8 @@ public class ArrayListProductDao implements ProductDao {
     private int countMatchingWords(Product product, String query) {
         String[] queryTerms = query.toLowerCase().split("\\s");
         String[] productDescriptionTerms = product.getDescription().toLowerCase().split("\\s");
-        return (int) Arrays.stream(productDescriptionTerms)
-                .filter(Arrays.asList(queryTerms)::contains)
+        return (int) Arrays.stream(queryTerms)
+                .filter(Arrays.asList(productDescriptionTerms)::contains)
                 .count();
     }
 
@@ -126,7 +130,7 @@ public class ArrayListProductDao implements ProductDao {
     public void delete(Long id) {
         locker.writeLock().lock();
         try {
-            products.removeIf(product -> id.equals(product.getId()) || product.getId() == null);
+            products.removeIf(product -> product.getId() == null || id.equals(product.getId()));
         } finally {
             locker.writeLock().unlock();
         }

@@ -1,8 +1,8 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.sorting.SortField;
-import com.es.phoneshop.dao.sorting.SortOrder;
+import com.es.phoneshop.dao.enums.SortField;
+import com.es.phoneshop.dao.enums.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 import com.es.phoneshop.web.listener.DemoDataServletContextListener;
@@ -194,7 +194,7 @@ public class ArrayListProductDaoTest {
         productDao.save(product);
 
         Product receivedProduct = productDao.findProducts(null,
-                SortField.description, SortOrder.asc).get(0);
+                SortField.DESCRIPTION, SortOrder.ASC).get(0);
 
         assertEquals(product, receivedProduct);
     }
@@ -210,7 +210,7 @@ public class ArrayListProductDaoTest {
         productDao.save(product);
 
         Product receivedProduct = productDao.findProducts(null,
-                SortField.price, SortOrder.desc).get(0);
+                SortField.PRICE, SortOrder.DESC).get(0);
 
         assertEquals(product, receivedProduct);
     }

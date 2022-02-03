@@ -15,13 +15,13 @@
         <td>Image</td>
         <td>
         Description
-        <tags:sortLink sort="description" order="asc"/>
-        <tags:sortLink sort="description" order="desc"/>
+        <tags:sortLink sort="DESCRIPTION" order="ASC"/>
+        <tags:sortLink sort="DESCRIPTION" order="DESC"/>
         </td>
         <td class="price">
         Price
-        <tags:sortLink sort="price" order="asc"/>
-        <tags:sortLink sort="price" order="desc"/>
+        <tags:sortLink sort="PRICE" order="ASC"/>
+        <tags:sortLink sort="PRICE" order="DESC"/>
         </td>
       </tr>
     </thead>
