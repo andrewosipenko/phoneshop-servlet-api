@@ -5,9 +5,19 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Price ${product.description}">
-  <p>
+<p>
+    <a href="http://localhost:8080/phoneshop-servlet-api/products">
+    Go to main page
+    </a>
+</p>
+
+<p>
+    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
     ${product.description}
-  </p>
+     </a>
+<p>
+
+
   <table>
       <tr>
         <td>Image</td>

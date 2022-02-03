@@ -41,14 +41,4 @@
     <url-pattern>/products/priceHistory/*</url-pattern>
   </servlet-mapping>
 
-  <error-page>
-    <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
-    <exception-type>java.util.NoSuchElementException</exception-type>
-  </error-page>
-
-  <error-page>
-    <location>/WEB-INF/pages/error.jsp</location>
-    <error-code>500</error-code>
-  </error-page>
-
 </web-app>

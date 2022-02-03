@@ -5,6 +5,12 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="${product.description}">
+<p>
+    <a href="http://localhost:8080/phoneshop-servlet-api/products">
+    Go to main page
+    </a>
+</p>
+
   <p>
     ${product.description}
   </p>
@@ -33,4 +39,9 @@
         </td>
       </tr>
   </table>
+  <p>
+    <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
+    Price history
+    </a>
+  </p>
 </tags:master>

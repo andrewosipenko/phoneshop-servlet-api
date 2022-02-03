@@ -42,14 +42,6 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-        this.priceHistoryList = getTestPriceHistoryList();
-    }
-
-    private List<PriceHistory> getTestPriceHistoryList() {
-        List<PriceHistory> priceHistoryList = new ArrayList<>();
-        priceHistoryList.add(new PriceHistory("10 Jan 2019", 125));
-        priceHistoryList.add(new PriceHistory("20 Oct 2018", 150));
-        return priceHistoryList;
     }
 
     public Long getId() {

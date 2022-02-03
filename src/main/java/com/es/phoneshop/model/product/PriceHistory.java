@@ -6,10 +6,10 @@ public class PriceHistory {
     private String date;
     private BigDecimal price;
 
-    PriceHistory(){
+    public PriceHistory(){
     }
 
-    PriceHistory(String date, int price){
+    public PriceHistory(String date, int price){
         this.date = date;
         this.price = new BigDecimal(price);
     }

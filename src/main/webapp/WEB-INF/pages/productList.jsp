@@ -18,13 +18,13 @@
         <td>Image</td>
         <td>
             Description
-            <tags:sortLinkAsc sort="description" order="asc"/>
-            <tags:sortLinkDesc sort="description" order="desc"/>
+            <tags:sortLinkAsc sortParam="descriptionAsc"/>
+            <tags:sortLinkDesc sortParam="descriptionDesc"/>
         </td>
         <td class="price">
             Price
-            <tags:sortLinkAsc sort="price" order="asc"/>
-            <tags:sortLinkDesc sort="price" order="desc"/>
+            <tags:sortLinkAsc sortParam="priceAsc"/>
+            <tags:sortLinkDesc sortParam="priceDesc"/>
         </td>
       </tr>
     </thead>

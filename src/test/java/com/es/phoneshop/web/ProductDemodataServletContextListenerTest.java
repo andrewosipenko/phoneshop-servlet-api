@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDemodataServletContextListenerTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -28,19 +28,17 @@ public class ProductListPageServletTest {
     @Mock
     protected ServletConfig config;
 
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
+    private final ProductDemoDataServletContextListener servlet = new ProductDemoDataServletContextListener();
 
-    @Before
-    public void setup() throws ServletException {
-        servlet.init(config);
-        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-    }
+//    @Before
+//    public void setup() throws ServletException {
+//        servlet.init(config);
+//        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+//    }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-        servlet.doGet(request, response);
-        verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("products"),anyCollection());
+      //verify(servlet.)
     }
 
 }

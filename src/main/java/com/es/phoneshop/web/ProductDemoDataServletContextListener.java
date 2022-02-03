@@ -1,19 +1,24 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.PriceHistory;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 public class ProductDemoDataServletContextListener implements ServletContextListener {
     private final ProductDao productDao;
+    private final List<PriceHistory> priceHistoryList;
 
     public ProductDemoDataServletContextListener(){
         this.productDao = ArrayListProductDao.getInstance();
+        this.priceHistoryList = getTestPriceHistoryList();
     }
 
     @Override
@@ -43,5 +48,14 @@ public class ProductDemoDataServletContextListener implements ServletContextList
         productDao.save(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "manufacturer/Siemens/Siemens%20C56.jpg"));
         productDao.save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "manufacturer/Siemens/Siemens%20C61.jpg"));
         productDao.save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "manufacturer/Siemens/Siemens%20SXG75.jpg"));
+        productDao.findProducts("",null)
+                .forEach(product -> product.setPriceHistoryList(priceHistoryList));
+    }
+
+    private List<PriceHistory> getTestPriceHistoryList() {
+        List<PriceHistory> priceHistoryList = new ArrayList<>();
+        priceHistoryList.add(new PriceHistory("10 Jan 2019", 125));
+        priceHistoryList.add(new PriceHistory("20 Oct 2018", 150));
+        return priceHistoryList;
     }
 }
