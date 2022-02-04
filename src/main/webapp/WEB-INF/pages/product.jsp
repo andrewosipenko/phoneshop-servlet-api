@@ -5,6 +5,17 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="${product.description}">
+
+<p>
+    Cart: ${cart}
+</p>
+
+ <c:if test="${not empty param.message}">
+        <p>
+            ${param.message}
+        </p>
+ </c:if>
+
 <p>
     <a href="http://localhost:8080/phoneshop-servlet-api/products">
     Go to main page
@@ -14,6 +25,7 @@
   <p>
     ${product.description}
   </p>
+  <form method="post">
   <table>
       <tr>
         <td>Image</td>
@@ -33,12 +45,26 @@
           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
         </td>
       </tr>
+      <tr>
         <td>stock</td>
         <td>
           ${product.stock}
         </td>
       </tr>
+       <tr>
+            <td>quantity</td>
+            <td>
+              <input name="quantity" value="${not empty param.quantity ? param.quantity : 1}">
+              <c:if test="${not empty error}">
+                    <p class="error">
+                        ${error}
+                    </p>
+              </c:if>
+            </td>
+            </tr>
   </table>
+  <button>Add to cart</button>
+  </form>
   <p>
     <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
     Price history
