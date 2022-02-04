@@ -96,7 +96,7 @@ embed, iframe {
     font-weight: bold;
 }
 
-.popup h2 {
+.h2 {
     color: #008000;
     text-align: left;
     text-shadow: 0 1px 3px rgba(0, 0, 0, .3);
@@ -173,6 +173,17 @@ embed, iframe {
     box-shadow: 0 0 0 0 #ffffff;
 }
 
-body.product-list {
+.product-list {
+    text-align: center;
+}
 
+.recently-viewed{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.recently-viewed-tile {
+    margin: 1%;
+    border: 1px solid darkred;
+    padding: 5px;
 }

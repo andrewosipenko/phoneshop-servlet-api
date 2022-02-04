@@ -65,18 +65,24 @@
             </c:forEach>
         </table>
     </div>
-    <p>
+    <h2>
         Recently Viewed
-    </p>
-    <c:forEach var="product" items="${recentView}">
-        <img class="product-tile"
-             src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-        <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                ${product.description}
-        </a>
-        <p class="price">
-            <fmt:formatNumber value="${product.price}" type="currency"
-                              currencySymbol="${product.currency.symbol}"/>
-        </p>
-    </c:forEach>
+    </h2>
+    <div class="recently-viewed">
+        <c:forEach var="product" items="${recentView}">
+            <div class="recently-viewed-tile">
+                <img class="product-tile"
+                     src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+                <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                    <p>
+                            ${product.description}
+                    </p>
+                </a>
+                <p class="price">
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
+                </p>
+            </div>
+        </c:forEach>
+    </div>
 </tags:master>
