@@ -6,7 +6,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class RecentView {
-    Deque<Product> deque;
+
+    private Deque<Product> deque;
+
     public RecentView() {
         deque = new ArrayDeque<>();
     }

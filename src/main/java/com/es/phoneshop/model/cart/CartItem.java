@@ -1,7 +1,6 @@
 package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
 
 public class CartItem {
     private Product product;
