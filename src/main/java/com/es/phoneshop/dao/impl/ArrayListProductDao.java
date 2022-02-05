@@ -1,10 +1,10 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.enums.SortField;
-import com.es.phoneshop.dao.enums.SortOrder;
+import com.es.phoneshop.model.enums.SortField;
+import com.es.phoneshop.model.enums.SortOrder;
 import com.es.phoneshop.exception.ProductNotFoundException;
-import com.es.phoneshop.model.Product;
+import com.es.phoneshop.model.product.Product;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -12,8 +12,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-
-    private static ProductDao instance;
 
     private final List<Product> products;
     private long currentId;
@@ -24,15 +22,12 @@ public class ArrayListProductDao implements ProductDao {
         locker = new ReentrantReadWriteLock();
     }
 
+    private static final class ProductDaoHolder {
+        private static final ProductDao INSTANCE = new ArrayListProductDao();
+    }
+
     public static ProductDao getInstance() {
-        if (instance == null) {
-            synchronized (ArrayListProductDao.class) {
-                if (instance == null) {
-                    instance = new ArrayListProductDao();
-                }
-            }
-        }
-        return instance;
+        return ProductDaoHolder.INSTANCE;
     }
 
     @Override

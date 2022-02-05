@@ -1,7 +1,7 @@
 package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.dao.enums.SortField;
-import com.es.phoneshop.dao.enums.SortOrder;
+import com.es.phoneshop.model.enums.SortField;
+import com.es.phoneshop.model.enums.SortOrder;
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Optional;
 
 
