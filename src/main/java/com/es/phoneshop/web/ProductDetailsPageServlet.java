@@ -4,6 +4,9 @@ import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.model.product.*;
+import com.es.phoneshop.recentViewd.RecentViewed;
+import com.es.phoneshop.recentViewd.RecentViewedContainer;
+import com.es.phoneshop.recentViewd.RecentViewedList;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,12 +21,14 @@ import java.util.regex.Pattern;
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private RecentViewed recentViewed;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
+        recentViewed = RecentViewedContainer.getInstance();
     }
 
     @Override
@@ -42,6 +47,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
         } else {
             request.setAttribute("product", product);
             request.setAttribute("cart", cartService.getCart(request));
+            RecentViewedList recentViewedList = recentViewed.getRecentViewedList(request);
+            recentViewed.addToRecentViewed(recentViewedList, product);
+            request.setAttribute("recentViewedList", recentViewedList.getItems());
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         }
     }
@@ -56,7 +64,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         try {
             quantityInt = format.parse(quantity).intValue();
-        }catch (ParseException e){
+        } catch (ParseException e) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
             return;

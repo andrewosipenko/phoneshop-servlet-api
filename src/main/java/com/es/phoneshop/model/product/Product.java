@@ -103,4 +103,9 @@ public class Product {
     public List<PriceHistory> getPriceHistoryList() {return priceHistoryList;}
 
     public void setPriceHistoryList(List<PriceHistory> priceHistoryList) {this.priceHistoryList = priceHistoryList;}
+
+    @Override
+    public String toString() {
+        return description;
+    }
 }

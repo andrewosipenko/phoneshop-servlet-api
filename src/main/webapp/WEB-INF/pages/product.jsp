@@ -10,6 +10,10 @@
     Cart: ${cart}
 </p>
 
+<p>
+    Recent: ${recentViewedList}
+</p>
+
  <c:if test="${not empty param.message}">
         <p>
             ${param.message}
@@ -70,4 +74,23 @@
     Price history
     </a>
   </p>
+
+<jsp:useBean id="recentViewedList" type="java.util.ArrayList" scope="request"/>
+
+ <table>
+    <c:forEach var="product" items="${recentViewedList}">
+      <tr class="recentView">
+              <td>
+          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+               <p>
+             <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
+                </p>
+            <p>
+                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+            </p>
+        </td>
+      </tr>
+    </c:forEach>
+  </table>
+
 </tags:master>
