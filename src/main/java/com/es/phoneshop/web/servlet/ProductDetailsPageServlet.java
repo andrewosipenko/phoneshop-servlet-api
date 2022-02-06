@@ -34,6 +34,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Product product = productDao.getProduct(productId);
         Cart cart = cartService.getCart(request);
 
+        cart.setLastViewedProduct(product);
+        request.setAttribute("recentlyViewed", cart.getRecentlyViewedProducts());
+
         request.setAttribute("product", product);
 
         request.setAttribute("cart", cart);

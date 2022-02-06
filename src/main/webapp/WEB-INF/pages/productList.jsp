@@ -4,6 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+<jsp:useBean id="recentlyViewed" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
     <form style="margin:20px 0 20px 0 ;">
         <input name="query" value="${param.query}">
@@ -15,32 +16,51 @@
                 <td>Image</td>
                 <td>
                 Description
-                <tags:sortLink sort="DESCRIPTION" order="ASC"/>
-                <tags:sortLink sort="DESCRIPTION" order="DESC"/>
+                    <span class="lowercase">
+                        <tags:sortLink sort="DESCRIPTION" order="ASC"/>
+                        <tags:sortLink sort="DESCRIPTION" order="DESC"/>
+                    </span>
                 </td>
-                <td class="field">
+                <td>
                 Price
-                <tags:sortLink sort="PRICE" order="ASC"/>
-                <tags:sortLink sort="PRICE" order="DESC"/>
+                    <span class="lowercase">
+                        <tags:sortLink sort="PRICE" order="ASC"/>
+                        <tags:sortLink sort="PRICE" order="DESC"/>
+                    </span>
                 </td>
             </tr>
         </thead>
         <c:forEach var="product" items="${products}">
             <tr>
                 <td>
-                <img class="product-tile" src="${product.imageUrl}">
+                    <img class="product-tile" src="${product.imageUrl}">
                 </td>
                 <td>
-                <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                ${product.description}
-                </a>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                        ${product.description}
+                    </a>
                 </td>
                 <td class="field">
-                <a href="${pageContext.servletContext.contextPath}/products/price-history/${product.id}">
-                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-                </a>
+                    <a href="${pageContext.servletContext.contextPath}/products/price-history/${product.id}">
+                        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                    </a>
                 </td>
             </tr>
         </c:forEach>
     </table>
+  <c:if test="${not empty recentlyViewed}">
+      <h2>
+          Recently viewed
+      </h2>
+      <c:forEach var="product" items="${recentlyViewed}">
+          <figure>
+              <img class="product-tile" src="${product.imageUrl}">
+              <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                  <div>${product.description}</div>
+              </a>
+              <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          </figure>
+      </c:forEach>
+  </c:if>
+  <div class="clear"></div>
 </tags:master>

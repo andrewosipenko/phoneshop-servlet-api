@@ -33,6 +33,22 @@ img.product-tile {
 .success {
   color: green;
 }
+.lowercase {
+  text-transform: lowercase;
+}
+figure {
+  width: 85px;
+  height: 120px;
+  padding: 10px;
+  display: inline-block;
+  text-align: center;
+  border : 1px solid gray;
+  margin: 1px;
+  float: left;
+}
+.clear {
+  clear: left;
+}
 
 /* Page specific styles */
 body.product-list {

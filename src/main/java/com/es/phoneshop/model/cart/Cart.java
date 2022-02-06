@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Cart {
     private final List<CartItem> items;
+
+    private Product lastViewedProduct;
     private final List<Product> recentlyViewedProducts;
 
     public Cart() {
@@ -16,6 +18,14 @@ public class Cart {
 
     public List<CartItem> getItems() {
         return items;
+    }
+
+    public Product getLastViewedProduct() {
+        return lastViewedProduct;
+    }
+
+    public void setLastViewedProduct(Product lastViewedProduct) {
+        this.lastViewedProduct = lastViewedProduct;
     }
 
     public List<Product> getRecentlyViewedProducts() {

@@ -27,7 +27,9 @@ public class Product {
         this.imageUrl = imageUrl;
         this.priceHistory = new ArrayList<>();
 
-        priceHistory.add(new PriceUpdatePoint(Calendar.getInstance().getTime(), price));
+        if(price != null) {
+            priceHistory.add(new PriceUpdatePoint(Calendar.getInstance().getTime(), price));
+        }
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -40,7 +42,9 @@ public class Product {
         this.imageUrl = imageUrl;
         this.priceHistory = new ArrayList<>();
 
-        priceHistory.add(new PriceUpdatePoint(Calendar.getInstance().getTime(), price));
+        if(price != null) {
+            priceHistory.add(new PriceUpdatePoint(Calendar.getInstance().getTime(), price));
+        }
     }
 
     public Long getId() {
@@ -74,6 +78,11 @@ public class Product {
     public void setPrice(BigDecimal price) {
         this.price = price;
         priceHistory.add(new PriceUpdatePoint(Calendar.getInstance().getTime(), price));
+    }
+
+    public void setPrice(Date date, BigDecimal price) {
+        this.price = price;
+        priceHistory.add(new PriceUpdatePoint(date, price));
     }
 
     public Currency getCurrency() {
