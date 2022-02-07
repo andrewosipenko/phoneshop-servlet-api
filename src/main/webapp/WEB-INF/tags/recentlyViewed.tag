@@ -1,13 +1,12 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
-<%@ attribute name="products" required="true" %>
 
-<jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+<jsp:useBean id="recentlyViewed" type="java.util.ArrayList" scope="application"/>
 
-<c:if test="${not empty products}">
+<c:if test="${not empty recentlyViewed}">
 <h2>
       Recently viewed
   </h2>
-          <c:forEach var="product" items="${products}">
+          <c:forEach var="product" items="${recentlyViewed}">
               <table>
               <tr>
               <td>
@@ -24,3 +23,4 @@
           </c:forEach>
   </table>
   </c:if>
+  <div class="clear"></div>
