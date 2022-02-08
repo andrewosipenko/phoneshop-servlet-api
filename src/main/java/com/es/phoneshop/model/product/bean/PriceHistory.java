@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class PriceHistory {
-    LocalDate dateStart;
-    BigDecimal price;
+    private LocalDate dateStart;
+    private BigDecimal price;
 
     public PriceHistory(LocalDate dateStart, BigDecimal price) {
         this.dateStart = dateStart;

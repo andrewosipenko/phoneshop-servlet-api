@@ -47,9 +47,9 @@
         <exception-type>com.es.phoneshop.model.product.exception.ProductNotFoundException</exception-type>
     </error-page>
 
-    <error-page>
-        <location>/WEB-INF/pages/error.jsp</location>
-        <error-code>500</error-code>
-    </error-page>
+<!--    <error-page>-->
+<!--        <location>/WEB-INF/pages/error.jsp</location>-->
+<!--        <error-code>500</error-code>-->
+<!--    </error-page>-->
 
 </web-app>
