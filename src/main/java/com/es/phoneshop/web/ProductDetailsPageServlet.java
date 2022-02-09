@@ -68,10 +68,16 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantity = request.getParameter("quantity");
         Product product = productDao.getProduct(Long.valueOf(productId)).orElse(null);
 
+        request.setAttribute("error", "Not a number");
+        request.setAttribute("product", product);
+        request.setAttribute("recentViewedList", recentViewed.getRecentViewedList(request).getItems());
+        request.setAttribute("cart", cartService.getCart(request).getItems());
+
         if (!isProductIdExist(productId)) {
             response.setStatus(404);
             request.setAttribute("id", productId);
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
+            return;
         }
 
         int quantityInt;
@@ -79,34 +85,31 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             quantityInt = format.parse(quantity).intValue();
         } catch (ParseException e) {
-            request.setAttribute("error", "Not a number");
-            doGet(request, response);
-            response.sendRedirect(request.getContextPath() + "/products/" + productId
-                    + "?message=Product not added to cart");
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+            return;
+        }
+
+        if(quantityInt < 0){
+            request.setAttribute("error", "Negative amount");
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+            return;
+        }
+
+        if(quantityInt == 0){
+            request.setAttribute("error", "Product not added to cart, because amount is 0");
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
             return;
         }
 
         if (quantityInt + getCurrentQuantityById(request, Long.valueOf(productId)) > product.getStock()) {
             request.setAttribute("error", "Out of stock available " +
                     (product.getStock() - getCurrentQuantityById(request, Long.valueOf(productId))));
-            doGet(request, response);
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         } else {
-            if (quantityInt > 0) {
                 Cart cart = cartService.getCart(request);
                 cartService.add(request, cart, Long.valueOf(productId), quantityInt);
                 response.sendRedirect(request.getContextPath() + "/products/" + productId
                         + "?message=Product added to cart");
-            }else if (quantityInt == 0){
-                request.setAttribute("error", "Product not added to cart, because amount is 0");
-                response.sendRedirect(request.getContextPath() + "/products/" + productId
-                        + "?message=Product not added to cart");
-                doGet(request, response);
-            }else{
-                request.setAttribute("error", "Negative amount");
-                response.sendRedirect(request.getContextPath() + "/products/" + productId
-                        + "?message=Product not added to cart");
-                doGet(request, response);
-            }
         }
     }
 }
