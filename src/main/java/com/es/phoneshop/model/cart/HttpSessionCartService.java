@@ -5,10 +5,14 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class HttpSessionCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = HttpSessionCartService.class.getName() + ".cart";
-    private ProductDao productDao;
+    private static final String LOCK_SESSION_ATTRIBUTE = HttpSessionCartService.class.getName() + ".lock";
+    private final ProductDao productDao;
     private static HttpSessionCartService instance;
 
     public static synchronized HttpSessionCartService getInstance() {
@@ -23,21 +27,40 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public synchronized Cart getCart(HttpServletRequest request) {
+    public Cart getCart(HttpServletRequest request) {
         Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
-        if (cart == null) {
-            cart = new Cart();
-            request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
+        Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+        synchronized (request.getSession()) {
+            if (lock == null) {
+                lock = new ReentrantLock();
+                request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+            }
         }
-        return cart;
+        lock.lock();
+        try {
+            if (cart == null) {
+                cart = new Cart();
+                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
+            }
+            return cart;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
-    public synchronized void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
-        Product p = productDao.getProduct(productId).get();
-        if (p.getStock() < quantity + cart.get(p)) {
-            throw new OutOfStockException(p, quantity, p.getStock());
+    public void add(Cart cart, Long productId, int quantity, HttpSession session) throws OutOfStockException {
+        Lock lock = (Lock) session.getAttribute(LOCK_SESSION_ATTRIBUTE);
+        lock.lock();
+        try {
+            Product p = productDao.getProduct(productId).get();
+            if (p.getStock() < quantity + cart.get(p)) {
+                throw new OutOfStockException(p, quantity, p.getStock());
+            }
+            Integer amount = cart.getItems().get(p);
+            cart.getItems().put(p, (amount == null ? 0 : amount) + quantity);
+        } finally {
+            lock.unlock();
         }
-        cart.add(p, quantity);
     }
 }

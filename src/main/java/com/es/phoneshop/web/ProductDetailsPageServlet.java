@@ -33,21 +33,27 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String quantityString = request.getParameter("quantity");
-        String url = request.getPathInfo().substring(1);
-        try{
+        Long productId = null;
+        try {
+            String quantityString = request.getParameter("quantity");
+            String url = request.getPathInfo().substring(1);
+            productId = Long.parseLong(url);
             NumberFormat format = NumberFormat.getInstance(request.getLocale());
             int quantity = format.parse(quantityString).intValue();
-            long productId = Long.parseLong(url);
-            cartService.add(cartService.getCart(request), productId, quantity);
-            response.sendRedirect(request.getContextPath() + "/products/" + productId+"?message=Product added to cart!");
-        } catch(IllegalArgumentException| ParseException e) {
+            if (quantity < 1) {
+                throw new IllegalArgumentException();
+            }
+            cartService.add(cartService.getCart(request), productId, quantity, request.getSession());
+            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Product added to cart!");
+        } catch (IllegalArgumentException | ParseException e) {
             request.setAttribute("error", "invalid quantity");
-            doGet(request, response);
-        }
-        catch(OutOfStockException e) {
+            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Error occurred while adding a product!");
+        } catch (OutOfStockException e) {
             request.setAttribute("error", "not enough stock available");
-            doGet(request, response);
+            response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Error occurred while adding a product!");
+        } catch (NoSuchElementException e) {
+            request.setAttribute("error", "do not try to break my website");
+            response.sendRedirect(request.getContextPath() + "/products/");
         }
     }
 

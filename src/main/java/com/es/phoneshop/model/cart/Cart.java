@@ -2,23 +2,19 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Cart {
-    private Map<Product, Integer> items;
+    private final Map<Product, Integer> items;
 
     public Cart() {
-        this.items = new LinkedHashMap<>();
+        this.items = Collections.synchronizedMap(new LinkedHashMap<>());
     }
 
     public Map<Product, Integer> getItems() {
         return items;
-    }
-
-    void add(Product p, int quantity) {
-        Integer amount = items.get(p);
-        items.put(p, (amount == null ? 0 : amount) + quantity);
     }
 
     int get(Product p) {

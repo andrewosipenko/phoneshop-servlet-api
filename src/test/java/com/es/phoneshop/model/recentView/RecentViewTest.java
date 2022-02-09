@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecentViewTest {
+    private final Lock lock = new ReentrantLock();
 
     @Mock
     private HttpServletRequest request;
@@ -34,7 +37,7 @@ public class RecentViewTest {
         Product p2 = new Product("b", "b", new BigDecimal(1), usd, 100, "somelink");
         Product p3 = new Product("c", "c", new BigDecimal(1), usd, 100, "somelink");
         Product p4 = new Product("d", "d", new BigDecimal(1), usd, 100, "somelink");
-        RecentView recentView = new RecentView();
+        RecentView recentView = new RecentView(lock);
         recentView.add(p1);
         recentView.add(p2);
         recentView.add(p3);
@@ -56,12 +59,11 @@ public class RecentViewTest {
         assertEquals(recentView.getDeque().pop(), p2);
         assertEquals(recentView.getDeque().pop(), p4);
         assertEquals(recentView.getDeque().pop(), p3);
-
     }
 
     @Test
     public void testRecentViewService() {
-        RecentView recentView = new RecentView();
+        RecentView recentView = new RecentView(lock);
         when(request.getSession()).thenReturn(httpSession);
         when(httpSession.getAttribute(anyString())).thenReturn(null);
         RecentViewService recentViewService = HttpSessionRecentViewService.getInstance();

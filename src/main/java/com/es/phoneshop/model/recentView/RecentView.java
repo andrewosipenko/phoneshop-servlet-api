@@ -2,27 +2,35 @@ package com.es.phoneshop.model.recentView;
 
 import com.es.phoneshop.model.product.Product;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.locks.Lock;
 
 public class RecentView {
+    private final Deque<Product> deque;
 
-    private Deque<Product> deque;
+    private final Lock lock;
 
-    public RecentView() {
-        deque = new ArrayDeque<>();
+    public RecentView(Lock lock) {
+        deque = new ConcurrentLinkedDeque<>();
+        this.lock = lock;
     }
 
     public void add(Product product) {
-        if(deque.contains(product)) {
-            deque.remove(product);
+        lock.lock();
+        try {
+            if (deque.contains(product)) {
+                deque.remove(product);
+                deque.addFirst(product);
+                return;
+            }
+            if (deque.size() == 3) {
+                deque.removeLast();
+            }
             deque.addFirst(product);
-            return;
+        } finally {
+            lock.unlock();
         }
-        if(deque.size() == 3) {
-            deque.removeLast();
-        }
-        deque.addFirst(product);
     }
 
     public Deque<Product> getDeque() {
