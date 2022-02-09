@@ -2,25 +2,28 @@ package com.es.phoneshop.cart;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class CartItem {
     private final Product product;
+    private AtomicInteger quantity;
 
     public int getQuantity() {
-        return quantity;
+        return quantity.get();
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        this.quantity = new AtomicInteger(quantity);
     }
 
-    private int quantity;
+    public Product getProduct(){
+        return product;
+    }
 
     public CartItem(Product product, int quantity) {
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new AtomicInteger(quantity);
     }
-
-
 
     @Override
     public String toString() {

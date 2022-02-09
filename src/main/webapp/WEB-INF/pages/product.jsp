@@ -75,7 +75,7 @@
     </a>
   </p>
 
-<jsp:useBean id="recentViewedList" type="java.util.ArrayList" scope="request"/>
+<jsp:useBean id="recentViewedList" type="java.util.concurrent.CopyOnWriteArrayList" scope="request"/>
 
  <table>
     <c:forEach var="product" items="${recentViewedList}">

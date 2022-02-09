@@ -3,14 +3,13 @@ package com.es.phoneshop.recentViewd;
 import com.es.phoneshop.model.product.Product;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RecentViewedList {
     private final List<Product> items;
-    private final int size;
 
     public RecentViewedList() {
-        size = 3;
-        this.items = new ArrayList<>(size);
+        this.items = new CopyOnWriteArrayList<>();
     }
 
     public List<Product> getItems() {

@@ -2,7 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.*;
 import com.es.phoneshop.recentViewd.RecentViewed;
-import com.es.phoneshop.recentViewd.RecentViewedContainer;
+import com.es.phoneshop.recentViewd.RecentViewedService;
 import com.es.phoneshop.recentViewd.RecentViewedList;
 
 import javax.servlet.ServletConfig;
@@ -22,7 +22,7 @@ public class ProductListPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
     super.init(config);
     productDao = ArrayListProductDao.getInstance();
-    recentViewed = RecentViewedContainer.getInstance();
+    recentViewed = RecentViewedService.getInstance();
     }
 
     @Override

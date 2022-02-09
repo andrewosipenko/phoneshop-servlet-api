@@ -50,7 +50,7 @@ public class ProductDetailsPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-//        servlet.doGet(request, response);
+        servlet.doGet(request, response);
 //        verify(requestDispatcher).forward(request, response);
 //        verify(request).setAttribute(eq("product"), product);
     }

@@ -1,20 +1,20 @@
 package com.es.phoneshop.cart;
 
+import com.es.phoneshop.lock.SessionLock;
+import com.es.phoneshop.lock.SessionLockService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
     private static CartService instance;
     private static final Object mutex = new Object();
-    private final ReadWriteLock rwLock;
     private final ProductDao productDao;
+    private final SessionLock lock;
 
     public static CartService getInstance() {
         if (instance == null) {
@@ -29,12 +29,12 @@ public class DefaultCartService implements CartService {
 
     private DefaultCartService() {
         productDao = ArrayListProductDao.getInstance();
-        rwLock = new ReentrantReadWriteLock();
+        lock = SessionLockService.getInstance();
     }
 
     @Override
     public Cart getCart(HttpServletRequest request) {
-        rwLock.readLock().lock();
+        lock.getSessionLock(request).readLock().lock();
         try {
             Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
@@ -42,13 +42,13 @@ public class DefaultCartService implements CartService {
             }
             return cart;
         } finally {
-            rwLock.readLock().unlock();
+            lock.getSessionLock(request).readLock().unlock();
         }
     }
 
     @Override
-    public void add(Cart cart, Long productId, int quantity) {
-        rwLock.writeLock().lock();
+    public void add(HttpServletRequest request, Cart cart, Long productId, int quantity) {
+        lock.getSessionLock(request).writeLock().lock();
         try {
             Optional<Product> product = productDao.getProduct(productId);
             if (product.isPresent()) {
@@ -66,7 +66,7 @@ public class DefaultCartService implements CartService {
                 cart.getItems().add(cartItem);
             }
         } finally {
-            rwLock.writeLock().unlock();
+            lock.getSessionLock(request).writeLock().unlock();
         }
     }
 }

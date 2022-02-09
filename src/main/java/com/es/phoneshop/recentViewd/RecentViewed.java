@@ -6,5 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface RecentViewed {
     RecentViewedList getRecentViewedList(HttpServletRequest request);
-    void addToRecentViewed(RecentViewedList recentViewedList, Product product);
+
+    void addToRecentViewed(HttpServletRequest request, Product product);
 }

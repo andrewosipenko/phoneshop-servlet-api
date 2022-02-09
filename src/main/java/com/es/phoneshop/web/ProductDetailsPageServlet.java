@@ -1,12 +1,12 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.cart.CartItem;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.model.product.*;
 import com.es.phoneshop.recentViewd.RecentViewed;
-import com.es.phoneshop.recentViewd.RecentViewedContainer;
-import com.es.phoneshop.recentViewd.RecentViewedList;
+import com.es.phoneshop.recentViewd.RecentViewedService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -28,29 +28,37 @@ public class ProductDetailsPageServlet extends HttpServlet {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
-        recentViewed = RecentViewedContainer.getInstance();
+        recentViewed = RecentViewedService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo().substring(1);
-        Product product;
-        if (Pattern.matches("^[0-9]+$", productId)) {
-            product = productDao.getProduct(Long.valueOf(productId)).orElse(null);
-        } else {
-            product = null;
-        }
-        if (product == null) {
+
+        if (!isProductIdExist(productId)) {
             response.setStatus(404);
             request.setAttribute("id", productId);
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
         } else {
-            request.setAttribute("product", product);
-            request.setAttribute("cart", cartService.getCart(request));
-            RecentViewedList recentViewedList = recentViewed.getRecentViewedList(request);
-            recentViewed.addToRecentViewed(recentViewedList, product);
-            request.setAttribute("recentViewedList", recentViewedList.getItems());
+            recentViewed.addToRecentViewed(request, productDao.getProduct(Long.valueOf(productId)).get());
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        }
+    }
+
+    private int getCurrentQuantityById(HttpServletRequest request, Long id) {
+        CartItem cartItem = cartService.getCart(request).getCartItemByProductId(id).orElse(null);
+        if (cartItem == null) {
+            return 0;
+        } else {
+            return cartItem.getQuantity();
+        }
+    }
+
+    private boolean isProductIdExist(String productId) {
+        if (Pattern.matches("^[0-9]+$", productId)) {
+            return productDao.getProduct(Long.valueOf(productId)).isPresent();
+        } else {
+            return false;
         }
     }
 
@@ -60,6 +68,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantity = request.getParameter("quantity");
         Product product = productDao.getProduct(Long.valueOf(productId)).orElse(null);
 
+        if (!isProductIdExist(productId)) {
+            response.setStatus(404);
+            request.setAttribute("id", productId);
+            request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
+        }
+
         int quantityInt;
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         try {
@@ -67,21 +81,33 @@ public class ProductDetailsPageServlet extends HttpServlet {
         } catch (ParseException e) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
+            response.sendRedirect(request.getContextPath() + "/products/" + productId
+                    + "?message=Product not added to cart");
             return;
         }
 
-        if (quantityInt > product.getStock()) {
-            request.setAttribute("error", "Out of stock available " + product.getStock());
+        if (quantityInt + getCurrentQuantityById(request, Long.valueOf(productId)) > product.getStock()) {
+            request.setAttribute("error", "Out of stock available " +
+                    (product.getStock() - getCurrentQuantityById(request, Long.valueOf(productId))));
             doGet(request, response);
         } else {
-            if (quantityInt != 0) {
+            if (quantityInt > 0) {
                 Cart cart = cartService.getCart(request);
-                cartService.add(cart, Long.valueOf(productId), quantityInt);
+                cartService.add(request, cart, Long.valueOf(productId), quantityInt);
                 response.sendRedirect(request.getContextPath() + "/products/" + productId
                         + "?message=Product added to cart");
+            }else if (quantityInt == 0){
+                request.setAttribute("error", "Product not added to cart, because amount is 0");
+                response.sendRedirect(request.getContextPath() + "/products/" + productId
+                        + "?message=Product not added to cart");
+                doGet(request, response);
+            }else{
+                request.setAttribute("error", "Negative amount");
+                response.sendRedirect(request.getContextPath() + "/products/" + productId
+                        + "?message=Product not added to cart");
+                doGet(request, response);
             }
         }
     }
-
 }
 
