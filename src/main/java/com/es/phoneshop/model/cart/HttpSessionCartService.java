@@ -28,16 +28,19 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public Cart getCart(HttpServletRequest request) {
-        Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
         Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
-        synchronized (request.getSession()) {
-            if (lock == null) {
-                lock = new ReentrantLock();
-                request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+        if(lock == null) {
+            synchronized (request.getSession()) {
+                lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+                if (lock == null) {
+                    lock = new ReentrantLock();
+                    request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+                }
             }
         }
         lock.lock();
         try {
+            Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
                 cart = new Cart();
                 request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
@@ -51,6 +54,12 @@ public class HttpSessionCartService implements CartService {
     @Override
     public void add(Cart cart, Long productId, int quantity, HttpSession session) throws OutOfStockException {
         Lock lock = (Lock) session.getAttribute(LOCK_SESSION_ATTRIBUTE);
+        synchronized (session) {
+            if (lock == null) {
+                lock = new ReentrantLock();
+                session.setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+            }
+        }
         lock.lock();
         try {
             Product p = productDao.getProduct(productId).get();

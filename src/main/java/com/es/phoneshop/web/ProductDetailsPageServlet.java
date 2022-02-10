@@ -51,7 +51,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         } catch (OutOfStockException e) {
             request.setAttribute("error", "not enough stock available");
             response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Error occurred while adding a product!");
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             request.setAttribute("error", "do not try to break my website");
             response.sendRedirect(request.getContextPath() + "/products/");
         }

@@ -20,16 +20,19 @@ public class HttpSessionRecentViewService implements RecentViewService {
 
     @Override
     public RecentView getRecentView(HttpServletRequest request) {
-        RecentView recentView = (RecentView) request.getSession().getAttribute(RECENT_VIEW_SESSION_ATTRIBUTE);
         Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
-        synchronized (request.getSession()) {
-            if (lock == null) {
-                lock = new ReentrantLock();
-                request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+        if(lock == null) {
+            synchronized (request.getSession()) {
+                lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+                if (lock == null) {
+                    lock = new ReentrantLock();
+                    request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+                }
             }
         }
         lock.lock();
         try {
+            RecentView recentView = (RecentView) request.getSession().getAttribute(RECENT_VIEW_SESSION_ATTRIBUTE);
             if (recentView == null) {
                 recentView = new RecentView(lock);
                 request.getSession().setAttribute(RECENT_VIEW_SESSION_ATTRIBUTE, recentView);
