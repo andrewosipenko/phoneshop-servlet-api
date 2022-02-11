@@ -6,6 +6,7 @@ import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -60,6 +61,7 @@ public class HttpSessionCartService implements CartService {
                 throw new OutOfStockException(p, quantity, p.getStock());
             }
             cart.getItems().put(p, quantity);
+            recalculateCart(cart);
         } finally {
             lock.unlock();
         }
@@ -75,6 +77,7 @@ public class HttpSessionCartService implements CartService {
             }
             Integer amount = cart.getItems().get(p);
             cart.getItems().put(p, (amount == null ? 0 : amount) + quantity);
+            recalculateCart(cart);
         } finally {
             lock.unlock();
         }
@@ -87,6 +90,7 @@ public class HttpSessionCartService implements CartService {
         try{
             Product p = productDao.getProduct(productId).get();
             cart.getItems().remove(p);
+            recalculateCart(cart);
         } finally {
             lock.unlock();
         }
@@ -103,4 +107,18 @@ public class HttpSessionCartService implements CartService {
         return lock;
     }
 
+    private void recalculateCart(Cart cart) {
+        cart.setTotalQuantity(
+                cart.getItems()
+                        .values()
+                        .stream()
+                        .mapToInt(q -> q)
+                        .sum());
+        cart.setTotalCost(
+                cart.getItems()
+                        .keySet()
+                        .stream()
+                        .map(Product::getPrice)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
 }

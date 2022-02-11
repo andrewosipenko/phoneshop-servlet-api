@@ -42,6 +42,16 @@
     <url-pattern>/cart/deleteCartItem/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>MiniCartServlet</servlet-name>
+    <servlet-class>com.es.phoneshop.web.MiniCartServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>MiniCartServlet</servlet-name>
+    <url-pattern>/cart/minicart</url-pattern>
+  </servlet-mapping>
+
 
   <servlet>
     <servlet-name>productDetailsPage</servlet-name>
