@@ -2,9 +2,10 @@ package com.es.phoneshop.cart;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CartItem {
+public class CartItem implements Serializable {
     private final Product product;
     private AtomicInteger quantity;
 
