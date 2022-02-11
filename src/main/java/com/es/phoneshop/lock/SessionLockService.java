@@ -1,18 +1,18 @@
 package com.es.phoneshop.lock;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SessionLockService implements SessionLock {
     private static final String LOCK_SESSION_ATTRIBUTE = SessionLockService.class.getName() + ".lock";
     private static SessionLock instance;
     private static final Object mutex = new Object();
-    private final ReadWriteLock rwLock;
+    private final Lock lock;
 
 
     private SessionLockService(){
-        rwLock = new ReentrantReadWriteLock();
+        this.lock = new ReentrantLock();
     }
 
 
@@ -28,16 +28,16 @@ public class SessionLockService implements SessionLock {
     }
 
     @Override
-    public ReentrantReadWriteLock getSessionLock(HttpServletRequest request) {
-        rwLock.readLock().lock();
+    public ReentrantLock getSessionLock(HttpServletRequest request) {
+        this.lock.lock();
         try {
-            ReentrantReadWriteLock lock = (ReentrantReadWriteLock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+            ReentrantLock lock = (ReentrantLock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
             if (lock == null) {
-                request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock = new ReentrantReadWriteLock());
+                request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock = new ReentrantLock());
             }
             return lock;
         } finally {
-            rwLock.readLock().unlock();
+            this.lock.unlock();
         }
     }
 }

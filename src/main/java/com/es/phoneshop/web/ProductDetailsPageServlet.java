@@ -34,23 +34,20 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo().substring(1);
-
         if (!isProductIdExist(productId)) {
             response.setStatus(404);
             request.setAttribute("id", productId);
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
         } else {
+            if(cartService.getCart(request).getCartItemByProductId(Long.valueOf(productId)).isPresent()){
+                request.setAttribute("message","You have " +
+                        cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId))
+                + " in cart" );
+            }else {
+                request.setAttribute("message","");
+            }
             recentViewed.addToRecentViewed(request, productDao.getProduct(Long.valueOf(productId)).get());
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
-        }
-    }
-
-    private int getCurrentQuantityById(HttpServletRequest request, Long id) {
-        CartItem cartItem = cartService.getCart(request).getCartItemByProductId(id).orElse(null);
-        if (cartItem == null) {
-            return 0;
-        } else {
-            return cartItem.getQuantity();
         }
     }
 
@@ -68,12 +65,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantity = request.getParameter("quantity");
         Product product = productDao.getProduct(Long.valueOf(productId)).orElse(null);
 
-        request.setAttribute("error", "Not a number");
         request.setAttribute("product", product);
         request.setAttribute("recentViewedList", recentViewed.getRecentViewedList(request).getItems());
         request.setAttribute("cart", cartService.getCart(request).getItems());
 
-        if (!isProductIdExist(productId)) {
+        if (!isProductIdExist(productId) || product == null) {
             response.setStatus(404);
             request.setAttribute("id", productId);
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
@@ -85,31 +81,49 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             quantityInt = format.parse(quantity).intValue();
         } catch (ParseException e) {
+            request.setAttribute("error", "Not a number");
+            request.setAttribute("message","Product not added to cart.\n" +
+                    "You have " +
+                    cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)) +
+                    " now."
+            );
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
             return;
         }
 
         if(quantityInt < 0){
             request.setAttribute("error", "Negative amount");
-            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+            request.setAttribute("message","Product not added to cart.\n" +
+                    "You have " +
+                    cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)) +
+                    " now."
+            );            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
             return;
         }
 
         if(quantityInt == 0){
             request.setAttribute("error", "Product not added to cart, because amount is 0");
-            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+            request.setAttribute("message","Product not added to cart.\n" +
+                    "You have " +
+                    cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)) +
+                    " now."
+            );            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
             return;
         }
 
-        if (quantityInt + getCurrentQuantityById(request, Long.valueOf(productId)) > product.getStock()) {
+        if (!cartService.isEnoughStockForOrder(request,product,quantityInt)) {
             request.setAttribute("error", "Out of stock available " +
-                    (product.getStock() - getCurrentQuantityById(request, Long.valueOf(productId))));
-            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+                    (product.getStock() -
+                            cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId))));
+            request.setAttribute("message","Product not added to cart.\n" +
+                    "You have " +
+                    cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)) +
+                    " now."
+            );            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         } else {
                 Cart cart = cartService.getCart(request);
                 cartService.add(request, cart, Long.valueOf(productId), quantityInt);
-                response.sendRedirect(request.getContextPath() + "/products/" + productId
-                        + "?message=Product added to cart");
+                response.sendRedirect(request.getContextPath() + "/products/" + productId);
         }
     }
 }

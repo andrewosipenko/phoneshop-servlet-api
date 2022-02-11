@@ -34,7 +34,7 @@ public class DefaultCartService implements CartService {
 
     @Override
     public Cart getCart(HttpServletRequest request) {
-        lock.getSessionLock(request).readLock().lock();
+        lock.getSessionLock(request).lock();
         try {
             Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
@@ -42,13 +42,13 @@ public class DefaultCartService implements CartService {
             }
             return cart;
         } finally {
-            lock.getSessionLock(request).readLock().unlock();
+            lock.getSessionLock(request).unlock();
         }
     }
 
     @Override
     public void add(HttpServletRequest request, Cart cart, Long productId, int quantity) {
-        lock.getSessionLock(request).writeLock().lock();
+        lock.getSessionLock(request).lock();
         try {
             Optional<Product> product = productDao.getProduct(productId);
             if (product.isPresent()) {
@@ -66,7 +66,21 @@ public class DefaultCartService implements CartService {
                 cart.getItems().add(cartItem);
             }
         } finally {
-            lock.getSessionLock(request).writeLock().unlock();
+            lock.getSessionLock(request).unlock();
+        }
+    }
+
+    @Override
+    public boolean isEnoughStockForOrder(HttpServletRequest request, Product product, int quantity) {
+        lock.getSessionLock(request).lock();
+        try {
+            if (!productDao.getProduct(product.getId()).isPresent()) {
+                return false;
+            }
+            int currentAmount = getCart(request).getCurrentQuantityById(product.getId());
+            return quantity + currentAmount <= product.getStock();
+        }finally {
+            lock.getSessionLock(request).unlock();
         }
     }
 }

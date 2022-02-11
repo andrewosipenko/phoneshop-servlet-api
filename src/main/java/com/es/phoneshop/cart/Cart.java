@@ -25,6 +25,14 @@ public class Cart {
         return Optional.empty();
     }
 
+    public int getCurrentQuantityById(Long id) {
+        if(getCartItemByProductId(id).isPresent()){
+            return getCartItemByProductId(id).get().getQuantity();
+        }else {
+            return 0;
+        }
+    }
+
     @Override
     public String toString() {
         return "[" + items + "]";

@@ -33,7 +33,7 @@ public class RecentViewedService implements RecentViewed {
     }
 
     public void addToRecentViewed(HttpServletRequest request, Product product) {
-        lock.getSessionLock(request).writeLock().lock();
+        lock.getSessionLock(request).lock();
         try {
             List<Product> currentList = getRecentViewedList(request).getItems();
             if (currentList.size() >= size) {
@@ -52,12 +52,12 @@ public class RecentViewedService implements RecentViewed {
             request.setAttribute("product", product);
             request.setAttribute("cart", DefaultCartService.getInstance().getCart(request));
             request.setAttribute("recentViewedList", getRecentViewedList(request).getItems());
-            lock.getSessionLock(request).writeLock().unlock();
+            lock.getSessionLock(request).unlock();
         }
     }
 
     public RecentViewedList getRecentViewedList(HttpServletRequest request) {
-        lock.getSessionLock(request).readLock().lock();
+        lock.getSessionLock(request).lock();
         try {
             RecentViewedList recentViewedList = (RecentViewedList) request.getSession().getAttribute(RECENTVIEWED_SESSION_ATTRIBUTE);
             if (recentViewedList == null) {
@@ -65,7 +65,7 @@ public class RecentViewedService implements RecentViewed {
             }
             return recentViewedList;
         } finally {
-            lock.getSessionLock(request).readLock().unlock();
+            lock.getSessionLock(request).unlock();
         }
     }
 }

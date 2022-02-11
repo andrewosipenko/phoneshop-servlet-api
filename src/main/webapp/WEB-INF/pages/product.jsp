@@ -14,11 +14,9 @@
     Recent: ${recentViewedList}
 </p>
 
- <c:if test="${not empty param.message}">
-        <p>
-            ${param.message}
-        </p>
- </c:if>
+    <p>
+        ${message}
+    </p>
 
 <p>
     <a href="http://localhost:8080/phoneshop-servlet-api/products">
