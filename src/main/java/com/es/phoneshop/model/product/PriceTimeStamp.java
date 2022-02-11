@@ -1,9 +1,10 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PriceTimeStamp {
+public class PriceTimeStamp implements Serializable {
     private final BigDecimal price;
 
     private final Date date;

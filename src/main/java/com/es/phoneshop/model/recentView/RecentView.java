@@ -2,11 +2,12 @@ package com.es.phoneshop.model.recentView;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.io.Serializable;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.Lock;
 
-public class RecentView {
+public class RecentView implements Serializable {
     private final Deque<Product> deque;
 
     private final Lock lock;

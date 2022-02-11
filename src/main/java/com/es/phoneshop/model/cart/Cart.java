@@ -2,11 +2,12 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Cart {
+public class Cart implements Serializable {
     private final Map<Product, Integer> items;
 
     public Cart() {
