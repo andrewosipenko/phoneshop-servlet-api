@@ -64,7 +64,6 @@ public class HttpSessionCartService implements CartService {
             lock.unlock();
         }
     }
-
     @Override
     public void add(Cart cart, Long productId, int quantity, HttpSession session) throws OutOfStockException {
         Lock lock = getLock(session);
@@ -76,6 +75,18 @@ public class HttpSessionCartService implements CartService {
             }
             Integer amount = cart.getItems().get(p);
             cart.getItems().put(p, (amount == null ? 0 : amount) + quantity);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId, HttpSession session) {
+        Lock lock = getLock(session);
+        lock.lock();
+        try{
+            Product p = productDao.getProduct(productId).get();
+            cart.getItems().remove(p);
         } finally {
             lock.unlock();
         }

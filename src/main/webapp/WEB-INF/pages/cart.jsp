@@ -27,6 +27,7 @@
                 <td class="price">
                     Price
                 </td>
+                <td></td>
             </tr>
             </thead>
             <c:forEach var="entry" items="${cart.items.entrySet()}">
@@ -53,6 +54,12 @@
                         <fmt:formatNumber value="${entry.key.price}" type="currency"
                                           currencySymbol="${entry.key.currency.symbol}"/>
                     </td>
+                    <td>
+                        <button form="deleteCartItem"
+                                formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${entry.key.id}">
+                            Delete
+                        </button>
+                    </td>
                 </tr>
             </c:forEach>
         </table>
@@ -60,6 +67,7 @@
             <button>Update</button>
         </p>
     </form>
+    <form id="deleteCartItem" method="post"></form>
     <h2>
         Recently Viewed
     </h2>

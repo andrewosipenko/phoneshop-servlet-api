@@ -108,4 +108,17 @@ public class Product implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        return this.id.equals(((Product) obj).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Math.toIntExact(this.id);
+    }
 }
