@@ -44,7 +44,6 @@ public class ProductListPageServlet extends HttpServlet {
                     SortField.notSpecified,
                     SortType.asc));
         }
-        request.setAttribute("recentView", HttpSessionRecentViewService.getInstance().getRecentView(request).getDeque());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

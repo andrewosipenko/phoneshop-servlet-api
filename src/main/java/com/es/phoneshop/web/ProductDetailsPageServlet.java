@@ -64,7 +64,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
             Product product = productDao.getProduct(Long.valueOf(url)).get();
             RecentView recentView = recentViewService.getRecentView(request);
             recentView.add(product);
-            request.setAttribute("recentView", recentView.getDeque());
             request.setAttribute("product", product);
             request.setAttribute("cart", cartService.getCart(request));
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);

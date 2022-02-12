@@ -75,7 +75,6 @@ public class CartPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = HttpSessionCartService.getInstance().getCart(request);
         request.setAttribute("cart", cart);
-        request.setAttribute("recentView", recentViewService.getRecentView(request).getDeque());
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
 }

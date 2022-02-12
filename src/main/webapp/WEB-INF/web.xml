@@ -52,6 +52,17 @@
     <url-pattern>/cart/minicart</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>RecentViewServlet</servlet-name>
+    <servlet-class>com.es.phoneshop.web.RecentViewServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>RecentViewServlet</servlet-name>
+    <url-pattern>/recentView</url-pattern>
+  </servlet-mapping>
+
+
 
   <servlet>
     <servlet-name>productDetailsPage</servlet-name>

@@ -17,6 +17,7 @@
   </header>
   <main>
     <jsp:doBody/>
+    <jsp:include page="/recentView"/>
   </main>
 </body>
 </html>
