@@ -9,8 +9,8 @@ public class CartItem implements Serializable {
     private final Product product;
     private AtomicInteger quantity;
 
-    public int getQuantity() {
-        return quantity.get();
+    public AtomicInteger getQuantity() {
+        return quantity;
     }
 
     public void setQuantity(int quantity) {

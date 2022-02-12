@@ -8,10 +8,12 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.InputMismatchException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 public class DefaultCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
@@ -50,30 +52,44 @@ public class DefaultCartService implements CartService {
         }
     }
 
+//    private boolean isProductIdValid(String productId) {
+//        if (Pattern.matches("^[0-9]+$", productId)) {
+//            return productDao.getProduct(Long.valueOf(productId)).isPresent();
+//        } else {
+//            return false;
+//        }
+//    }
+//^[0-9]+$
+    //-?\\d+
     private void inputCheck(HttpServletRequest request, String productId, String quantity) throws IncorrectInputException {
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         int quantityInt;
+
         try {
             quantityInt = format.parse(quantity).intValue();
-            if (quantityInt < 0) {
-                throw new IncorrectInputException("Negative amount");
-            }
-
-            Optional<Product> product = productDao.getProduct(Long.valueOf(productId));
-            if (!product.isPresent()) {
-                throw new IncorrectInputException("Product not found");
-            }
-
-            if (quantityInt == 0) {
-                throw new IncorrectInputException("Product not added to cart, because amount is 0");
-            }
-
-            if (product.get().getStock() < quantityInt) {
-                throw new IncorrectInputException("Out of stock");
-            }
-
         } catch (ParseException e) {
             throw new IncorrectInputException("Not a number");
+        }
+
+        if (!Pattern.matches("[-+]?\\d+", quantity)) {
+            throw new IncorrectInputException("Not a number");
+        }
+
+        if (quantityInt < 0) {
+            throw new IncorrectInputException("Negative amount");
+        }
+
+        Optional<Product> product = productDao.getProduct(Long.valueOf(productId));
+        if (!product.isPresent()) {
+            throw new IncorrectInputException("Product not found");
+        }
+
+        if (quantityInt == 0) {
+            throw new IncorrectInputException("Product not added to cart, because amount is 0");
+        }
+
+        if (product.get().getStock() < quantityInt) {
+            throw new IncorrectInputException("Out of stock");
         }
     }
 
@@ -81,14 +97,11 @@ public class DefaultCartService implements CartService {
     public void update(HttpServletRequest request, String productId, String quantity) throws IncorrectInputException {
         lock.getSessionLock(request).lock();
         try {
-            //  if (inputCheck(request,productId,quantity)) {
             inputCheck(request, productId, quantity);
             getCart(request).getCartItemByProductId(Long.valueOf(productId))
                     .ifPresent(cartItem -> cartItem.setQuantity(Integer.parseInt(quantity)));
-//            }else{
-//                throw new IncorrectInputException();
-//            }
         } finally {
+            recalculateCart(request);
             lock.getSessionLock(request).unlock();
         }
     }
@@ -107,7 +120,7 @@ public class DefaultCartService implements CartService {
                 }
                 for (CartItem item : getCart(request).getItems()) {
                     if (item.equals(cartItem)) {
-                        item.setQuantity(item.getQuantity() + Integer.parseInt(quantity));
+                        item.setQuantity(item.getQuantity().get() + Integer.parseInt(quantity));
                         return;
                     }
                 }
@@ -116,6 +129,7 @@ public class DefaultCartService implements CartService {
                 throw new IncorrectInputException("Out of stock");
             }
         } finally {
+            recalculateCart(request);
             lock.getSessionLock(request).unlock();
         }
     }
@@ -133,5 +147,30 @@ public class DefaultCartService implements CartService {
         } finally {
             lock.getSessionLock(request).unlock();
         }
+    }
+
+    @Override
+    public void deleteCartItem(HttpServletRequest request, String productId) {
+        lock.getSessionLock(request).lock();
+        try {
+            getCart(request).deleteCartItemById(Long.valueOf(productId));
+        } finally {
+            recalculateCart(request);
+            lock.getSessionLock(request).unlock();
+        }
+    }
+
+    private void recalculateCart(HttpServletRequest request) {
+        getCart(request).setTotalQuantity(new AtomicInteger(getCart(request).getItems()
+                .stream()
+                .map(CartItem::getQuantity)
+                .mapToInt(AtomicInteger::get)
+                .sum()));
+
+        getCart(request).setTotalCost(new BigDecimal(getCart(request).getItems()
+                .stream()
+                .mapToInt((cartItem) ->
+                        cartItem.getQuantity().get() * cartItem.getProduct().getPrice().intValue())
+                .sum()));
     }
 }

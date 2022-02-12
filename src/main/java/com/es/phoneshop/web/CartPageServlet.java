@@ -34,16 +34,15 @@ public class CartPageServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
 
-    private boolean isProductIdExist(String productId) {
-        if (Pattern.matches("^[0-9]+$", productId)) {
-            return productDao.getProduct(Long.valueOf(productId)).isPresent();
-        } else {
-            return false;
-        }
-    }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(request.getParameterValues("productId") == null ||
+        request.getParameterValues("quantity") == null){
+            doGet(request,response);
+            return;
+        }
         String[] productIds = request.getParameterValues("productId");
         String[] quantities = request.getParameterValues("quantity");
         Map<Long, String> errors = new HashMap<>();
@@ -60,14 +59,12 @@ public class CartPageServlet extends HttpServlet {
                 errors.put(Long.valueOf(productIds[i]), errorMessage);
             }
         }
-
         if (errors.isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/cart?message=Cart updated successfully");
         } else {
             request.setAttribute("errors", errors);
             doGet(request, response);
         }
-
     }
 }
 

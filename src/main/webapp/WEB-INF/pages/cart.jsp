@@ -64,11 +64,26 @@
       <fmt:formatNumber value="${cartItem.product.price}" type="currency" currencySymbol="${cartItem.product.currency.symbol}"/>
     </a>
   </td>
+  <td>
+    <button form="deleteCartItem"
+    formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${cartItem.product.id}">
+    Delete</button>
+    </td>
 </tr>
 </c:forEach>
+    <tr>
+        <td>Total Quantity</td>
+        <td>${cart.totalQuantity.get()}</td>
+                <td>Total Cost</td>
+                <td>
+                 <fmt:formatNumber value="${cart.totalCost}" type="currency" currencySymbol="$"/>
+</td>
+    </tr>
 </table>
 <p>
   <button>Update</button>
 </p>
+</form>
+<form id="deleteCartItem" method="post">
 </form>
 </tags:master>

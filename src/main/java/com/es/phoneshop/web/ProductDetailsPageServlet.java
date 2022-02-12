@@ -71,6 +71,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
                             cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)));
                 }
                 request.setAttribute("error", errorMessage);
+                request.setAttribute("cart", cartService.getCart(request).getItems());
+                request.setAttribute("recentViewedList", recentViewed.getRecentViewedList(request).getItems());
                 request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
             }
         } else {

@@ -23,6 +23,9 @@
         <tags:sortLinkAsc sortParam="descriptionAsc"/>
         <tags:sortLinkDesc sortParam="descriptionDesc"/>
       </td>
+      <td class"quantity">
+        Quantity
+        </td>
       <td class="price">
         Price
         <tags:sortLinkAsc sortParam="priceAsc"/>
@@ -38,11 +41,27 @@
     <td>
      <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
    </td>
+   <td class="quantity">
+         <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
+         <c:set var="error" value="${errors[cartItem.product.id]}"/>
+         <input name="quantity" value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity}" class="quantity"/>
+         <c:if test="${not empty error}">
+         <div class="error">
+           ${errors[cartItem.product.id]}
+         </div>
+       </c:if>
+       <input type="hidden" name="productId" value="${cartItem.product.id}"/>
+     </td>
    <td class="price">
     <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
       <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
     </a>
   </td>
+      <td>
+        <button form="addToCart"
+        formaction="${pageContext.servletContext.contextPath}/products/addToCart/${cartItem.product.id}">
+        Add to cart</button>
+        </td>
 </tr>
 </c:forEach>
 </table>
