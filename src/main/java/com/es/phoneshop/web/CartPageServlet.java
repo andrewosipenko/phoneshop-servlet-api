@@ -4,10 +4,6 @@ import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
-import com.es.phoneshop.model.product.*;
-import com.es.phoneshop.model.recentView.HttpSessionRecentViewService;
-import com.es.phoneshop.model.recentView.RecentView;
-import com.es.phoneshop.model.recentView.RecentViewService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,11 +15,9 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 
 public class CartPageServlet extends HttpServlet {
-    private RecentViewService recentViewService;
     private CartService cartService;
 
     @Override
@@ -61,19 +55,17 @@ public class CartPageServlet extends HttpServlet {
         } catch (NullPointerException e) {
             doGet(request, response);
         }
-
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        recentViewService = HttpSessionRecentViewService.getInstance();
         cartService = HttpSessionCartService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Cart cart = HttpSessionCartService.getInstance().getCart(request);
+        Cart cart = cartService.getCart(request);
         request.setAttribute("cart", cart);
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }

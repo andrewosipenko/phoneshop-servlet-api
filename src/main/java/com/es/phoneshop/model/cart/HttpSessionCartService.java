@@ -7,6 +7,7 @@ import com.es.phoneshop.model.product.ProductDao;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -30,7 +31,7 @@ public class HttpSessionCartService implements CartService {
     @Override
     public Cart getCart(HttpServletRequest request) {
         Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
-        if(lock == null) {
+        if (lock == null) {
             synchronized (request.getSession()) {
                 lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
                 if (lock == null) {
@@ -51,6 +52,7 @@ public class HttpSessionCartService implements CartService {
             lock.unlock();
         }
     }
+
     @Override
     public void update(Cart cart, Long productId, int quantity, HttpSession session) throws OutOfStockException {
         Lock lock = getLock(session);
@@ -66,6 +68,7 @@ public class HttpSessionCartService implements CartService {
             lock.unlock();
         }
     }
+
     @Override
     public void add(Cart cart, Long productId, int quantity, HttpSession session) throws OutOfStockException {
         Lock lock = getLock(session);
@@ -87,7 +90,7 @@ public class HttpSessionCartService implements CartService {
     public void delete(Cart cart, Long productId, HttpSession session) {
         Lock lock = getLock(session);
         lock.lock();
-        try{
+        try {
             Product p = productDao.getProduct(productId).get();
             cart.getItems().remove(p);
             recalculateCart(cart);
@@ -114,11 +117,10 @@ public class HttpSessionCartService implements CartService {
                         .stream()
                         .mapToInt(q -> q)
                         .sum());
-        cart.setTotalCost(
-                cart.getItems()
-                        .keySet()
-                        .stream()
-                        .map(Product::getPrice)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add));
+        BigDecimal totalCost = new BigDecimal(0);
+        for (Map.Entry<Product, Integer> entry : cart.getItems().entrySet()) {
+            totalCost = totalCost.add(entry.getKey().getPrice().multiply(new BigDecimal(entry.getValue())));
+        }
+        cart.setTotalCost(totalCost);
     }
 }

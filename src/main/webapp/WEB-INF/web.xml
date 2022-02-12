@@ -62,14 +62,10 @@
     <url-pattern>/recentView</url-pattern>
   </servlet-mapping>
 
-
-
   <servlet>
     <servlet-name>productDetailsPage</servlet-name>
     <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
   </servlet>
-
-
 
   <servlet-mapping>
     <servlet-name>productDetailsPage</servlet-name>
