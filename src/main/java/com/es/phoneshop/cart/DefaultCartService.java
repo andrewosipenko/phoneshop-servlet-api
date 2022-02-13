@@ -52,18 +52,17 @@ public class DefaultCartService implements CartService {
         }
     }
 
-//    private boolean isProductIdValid(String productId) {
-//        if (Pattern.matches("^[0-9]+$", productId)) {
-//            return productDao.getProduct(Long.valueOf(productId)).isPresent();
-//        } else {
-//            return false;
-//        }
-//    }
-//^[0-9]+$
-    //-?\\d+
     private void inputCheck(HttpServletRequest request, String productId, String quantity) throws IncorrectInputException {
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         int quantityInt;
+
+        if(productId == null){
+            throw new IncorrectInputException("productIdNULL");
+        }
+
+        if(quantity == null){
+            throw new IncorrectInputException("quantityNULL");
+        }
 
         try {
             quantityInt = format.parse(quantity).intValue();

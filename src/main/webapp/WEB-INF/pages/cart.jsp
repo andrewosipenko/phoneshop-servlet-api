@@ -40,7 +40,7 @@
         </td>
       </tr>
     </thead>
-    <c:forEach var="cartItem" items="${cart.items}">
+    <c:forEach var="cartItem" items="${cart.items}" varStatus="status">
     <tr>
       <td>
         <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${cartItem.product.imageUrl}">
@@ -51,7 +51,7 @@
      <td class="quantity">
       <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
       <c:set var="error" value="${errors[cartItem.product.id]}"/>
-      <input name="quantity" value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity}" class="quantity"/>
+      <input name="quantity" value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity.get()}" class="quantity"/>
       <c:if test="${not empty error}">
       <div class="error">
         ${errors[cartItem.product.id]}

@@ -5,8 +5,28 @@
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <jsp:useBean id="recentViewedList" type="java.util.concurrent.CopyOnWriteArrayList" scope="request"/>
+<jsp:useBean id="cart" type="com.es.phoneshop.cart.Cart" scope="request"/>
 
 <tags:master pageTitle="Product List">
+
+<p>
+	Cart: ${cart}
+</p>
+
+<c:if test="${not empty param.message}">
+<div class="success">
+	${param.message}
+</div>
+<br>
+</c:if>
+
+<c:if test="${not empty param.errorMessage}">
+<div class="error">
+  There were errors updating cart
+</div>
+<br>
+</c:if>
+
 <p>
   Welcome to Expert-Soft training!
 </p>
@@ -14,6 +34,13 @@
   <input name="query" value="${param.query}">
   <button>Search</button>
 </form>
+
+<form>
+  <input type="hidden" name="query2" value="${param.query}"
+  form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
+  />
+</form>
+
 <table>
   <thead>
     <tr>
@@ -33,7 +60,7 @@
       </td>
     </tr>
   </thead>
-  <c:forEach var="product" items="${products}">
+  <c:forEach var="product" items="${products}" varStatus="status">
   <tr>
     <td>
       <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
@@ -42,15 +69,16 @@
      <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
    </td>
    <td class="quantity">
-         <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
-         <c:set var="error" value="${errors[cartItem.product.id]}"/>
-         <input name="quantity" value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity}" class="quantity"/>
-         <c:if test="${not empty error}">
+         <c:set var="error" value="${param.errorMessage}"/>
+         <input form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
+          name="quantity" value="${1}" class="quantity"/>
+         <c:if test="${param.prId.toString() eq product.id.toString()}">
          <div class="error">
-           ${errors[cartItem.product.id]}
+           ${param.errorMessage}
          </div>
        </c:if>
-       <input type="hidden" name="productId" value="${cartItem.product.id}"/>
+       <input type="hidden" form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
+        name="productId" value="${product.id}"/>
      </td>
    <td class="price">
     <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
@@ -58,8 +86,7 @@
     </a>
   </td>
       <td>
-        <button form="addToCart"
-        formaction="${pageContext.servletContext.contextPath}/products/addToCart/${cartItem.product.id}">
+        <button form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}">
         Add to cart</button>
         </td>
 </tr>
@@ -87,5 +114,13 @@
 	</c:forEach>
 </tr>
 </table>
+</form>
+<form id="addToCartFromPLP" method="post">
+</form>
 
+<form>
+  <input type="hidden" name="sortParam2" value="${param.sortParam}"
+  form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
+  />
+</form>
 </tags:master>

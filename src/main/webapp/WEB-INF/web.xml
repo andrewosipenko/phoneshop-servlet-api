@@ -68,11 +68,20 @@
     <url-pattern>/cart/miniCart</url-pattern>
   </servlet-mapping>
 
- <!-- <error-page>
+  <servlet>
+    <servlet-name>addToCartFromPLP</servlet-name>
+    <servlet-class>com.es.phoneshop.web.AddToCartFromPLPServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>addToCartFromPLP</servlet-name>
+    <url-pattern>/products/addToCart/*</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
     <error-code>500</error-code>
     <location>/WEB-INF/pages/error.jsp</location>
   </error-page>
--->
+
   <error-page>
     <error-code>404</error-code>
     <location>/WEB-INF/pages/errorPageNotFound.jsp</location>

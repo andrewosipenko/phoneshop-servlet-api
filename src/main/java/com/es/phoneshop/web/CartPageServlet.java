@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class CartPageServlet extends HttpServlet {
     private ProductDao productDao;
@@ -33,8 +32,6 @@ public class CartPageServlet extends HttpServlet {
         request.setAttribute("cart", cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
-
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
