@@ -16,6 +16,7 @@ public class ArrayListProductDaoTest {
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
+        saveSampleProducts();
     }
 
     @Test
@@ -66,7 +67,7 @@ public class ArrayListProductDaoTest {
     public void testFindProductsByQuery() {
         String query = "samsung";
         assertTrue(productDao.findProducts(query, null).stream()
-                .allMatch(product -> product.getDescription().contains(query)));
+                .allMatch(product -> product.getDescription().toLowerCase().contains(query.toLowerCase())));
     }
 
     @Test
@@ -76,7 +77,7 @@ public class ArrayListProductDaoTest {
                 productDao.findProducts("", null).stream()
                         .filter(product -> product.getDescription().toLowerCase()
                                 .contains(query)).count());
-        saveSampleProducts();
+       // saveSampleProducts();
         List<Product> productList = productDao.findProducts("", SortingParams.priceAsc);
         for (int i = 0; i < productList.size() - 1; i++) {
             assertTrue(priceAsc(productList.get(i), productList.get(i + 1)));

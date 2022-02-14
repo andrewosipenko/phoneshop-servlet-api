@@ -52,7 +52,9 @@ public class RecentViewedService implements RecentViewed {
             request.setAttribute("product", product);
             request.setAttribute("cart", DefaultCartService.getInstance().getCart(request));
             request.setAttribute("recentViewedList", getRecentViewedList(request).getItems());
-            lock.getSessionLock(request).unlock();
+            if(lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 
@@ -65,7 +67,9 @@ public class RecentViewedService implements RecentViewed {
             }
             return recentViewedList;
         } finally {
-            lock.getSessionLock(request).unlock();
+            if(lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 }

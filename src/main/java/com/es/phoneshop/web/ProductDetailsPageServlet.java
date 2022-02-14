@@ -55,10 +55,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantity = request.getParameter("quantity");
         Product product = productDao.getProduct(Long.valueOf(productId)).orElse(null);
 
-        request.setAttribute("product", product);
-        request.setAttribute("recentViewedList", recentViewed.getRecentViewedList(request).getItems());
-        request.setAttribute("cart", cartService.getCart(request).getItems());
-
         if (isProductIdExist(productId) && product != null) {
             try {
                 cartService.add(request, productId, quantity);
@@ -71,6 +67,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
                             cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)));
                 }
                 request.setAttribute("error", errorMessage);
+                request.setAttribute("product", product);
                 request.setAttribute("cart", cartService.getCart(request).getItems());
                 request.setAttribute("recentViewedList", recentViewed.getRecentViewedList(request).getItems());
                 request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);

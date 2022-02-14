@@ -48,7 +48,9 @@ public class DefaultCartService implements CartService {
             }
             return cart;
         } finally {
-            lock.getSessionLock(request).unlock();
+            if (lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 
@@ -56,11 +58,11 @@ public class DefaultCartService implements CartService {
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         int quantityInt;
 
-        if(productId == null){
+        if (productId == null) {
             throw new IncorrectInputException("productIdNULL");
         }
 
-        if(quantity == null){
+        if (quantity == null) {
             throw new IncorrectInputException("quantityNULL");
         }
 
@@ -101,7 +103,9 @@ public class DefaultCartService implements CartService {
                     .ifPresent(cartItem -> cartItem.setQuantity(Integer.parseInt(quantity)));
         } finally {
             recalculateCart(request);
-            lock.getSessionLock(request).unlock();
+            if (lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 
@@ -129,7 +133,9 @@ public class DefaultCartService implements CartService {
             }
         } finally {
             recalculateCart(request);
-            lock.getSessionLock(request).unlock();
+            if (lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 
@@ -144,7 +150,9 @@ public class DefaultCartService implements CartService {
                     productDao.getProduct(Long.valueOf(productId)).
                             get().getStock();
         } finally {
-            lock.getSessionLock(request).unlock();
+            if (lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 
@@ -155,7 +163,9 @@ public class DefaultCartService implements CartService {
             getCart(request).deleteCartItemById(Long.valueOf(productId));
         } finally {
             recalculateCart(request);
-            lock.getSessionLock(request).unlock();
+            if (lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
         }
     }
 
