@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Cart  implements Serializable {
+    private static final long serialVersionUID = -601688199873100938L;
     private final List<CartItem> items;
     private AtomicInteger totalQuantity;
     private BigDecimal totalCost;

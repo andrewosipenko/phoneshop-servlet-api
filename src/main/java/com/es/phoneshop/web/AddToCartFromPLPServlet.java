@@ -5,6 +5,7 @@ import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.exceptions.IncorrectInputException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.SortingParams;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,19 +17,15 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class AddToCartFromPLPServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
     private ProductDao productDao;
     private CartService cartService;
-    private String queryTest;
-    private String sortParamTest;
-
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
-        queryTest = "";
-        sortParamTest = "";
     }
 
     private boolean isProductIdExist(String productId) {
@@ -41,34 +38,44 @@ public class AddToCartFromPLPServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String productId = request.getPathInfo().substring(1);
-        queryTest = request.getParameter("query2");
-        sortParamTest = request.getParameter("sortParam2");
-        if (queryTest == null) {
-            queryTest = "";
-        }
-        String[] productIds = request.getParameterValues("productId");
-        String[] quantities = request.getParameterValues("quantity");
-        int index = Arrays.asList(productIds).indexOf(productId);
-        if (isProductIdExist(productId) || index != -1) {
+        String query = request.getParameter("query2");
+        String sortParam = request.getParameter("sortParam2");
+        String quantity = request.getParameter("quantity");
+        if (request.getPathInfo() != null &&
+                isProductIdExist(request.getPathInfo().substring(1))) {
+            // product for sure exists
             try {
-                cartService.add(request, productId, quantities[index]);
+                String productId = request.getPathInfo().substring(1);
+                if (query == null) {
+                    query = "";
+                }
+                if (sortParam == null) {
+                    sortParam = String.valueOf(SortingParams.defaultSort);
+                }
+                cartService.add(request, productId, quantity);
                 response.sendRedirect(request.getContextPath() + "/products?message=Cart updated successfully" +
-                        "&query=" + queryTest + "&sortParam=" + sortParamTest);
+                        "&query=" + query + "&sortParam=" + sortParam);
             } catch (IncorrectInputException e) {
                 String errorMessage = e.getErrorMessage();
                 if (errorMessage.equals("Out of stock")) {
                     errorMessage = errorMessage + ", available " +
-                            (productDao.getProduct(Long.valueOf(productId)).get().getStock()
-                            - cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)));
+                            (productDao.getProduct(Long.valueOf(request.getPathInfo().substring(1))).get().getStock()
+                                    - cartService.getCart(request)
+                                    .getCurrentQuantityById(Long.valueOf(request.getPathInfo().substring(1))));
                 }
                 response.sendRedirect(request.getContextPath() + "/products?" +
-                        "query=" + queryTest + "&sortParam=" + sortParamTest
-                        + "&errorMessage=" + errorMessage + "&prId=" + productId);
+                        "query=" + query + "&sortParam=" + sortParam
+                        + "&errorMessage=" + errorMessage + "&prId=" +
+                        request.getPathInfo().substring(1));
             }
         } else {
+            // product not found or not exists
             response.setStatus(404);
-            request.setAttribute("id", productId);
+            if (request.getPathInfo() != null) {
+                request.setAttribute("id", request.getPathInfo().substring(1));
+            } else {
+                request.setAttribute("id", "");
+            }
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
         }
 

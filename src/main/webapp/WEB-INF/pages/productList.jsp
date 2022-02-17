@@ -30,15 +30,10 @@
 <p>
   Welcome to Expert-Soft training!
 </p>
-<form>
-  <input name="query" value="${param.query}">
-  <button>Search</button>
-</form>
 
 <form>
-  <input type="hidden" name="query2" value="${param.query}"
-  form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
-  />
+<input name="query" value="${param.query}">
+<button>Search</button>
 </form>
 
 <table>
@@ -52,7 +47,7 @@
       </td>
       <td class"quantity">
         Quantity
-        </td>
+      </td>
       <td class="price">
         Price
         <tags:sortLinkAsc sortParam="priceAsc"/>
@@ -60,41 +55,54 @@
       </td>
     </tr>
   </thead>
+
   <c:forEach var="product" items="${products}" varStatus="status">
-  <tr>
-    <td>
-      <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-    </td>
-    <td>
-     <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
-   </td>
-   <td class="quantity">
-         <c:set var="error" value="${param.errorMessage}"/>
-         <input form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
-          name="quantity" value="${1}" class="quantity"/>
-         <c:if test="${param.prId.toString() eq product.id.toString()}">
-         <div class="error">
-           ${param.errorMessage}
-         </div>
-       </c:if>
-       <input type="hidden" form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
-        name="productId" value="${product.id}"/>
-     </td>
-   <td class="price">
-    <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
-      <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-    </a>
-  </td>
+  <form id="add${status.index}" method="post" >
+    <tr>
       <td>
-        <button form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}">
-        Add to cart</button>
-        </td>
-</tr>
-</c:forEach>
+        <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+      </td>
+      <td>
+       <a href="${pageContext.servletContext.contextPath}/products/${product.id}">${product.description}</a>
+     </td>
+
+     <td class="quantity">
+       <c:set var="error" value="${param.errorMessage}"/>
+       <input
+       name="quantity" value="${not empty param.quantity ? param.quantity : 1}" class="quantity"/>
+       <c:if test="${param.prId.toString() eq product.id.toString()}">
+       <div class="error">
+         ${param.errorMessage}
+       </div>
+     </c:if>
+
+     <input type="hidden" name="productId" value="${product.id}"/>
+
+     <input type="hidden" name="query2" value="${param.query}"/>
+
+     <input type="hidden" name="sortParam2" value="${param.sortParam}"/>
+    </td>
+
+    <td class="price">
+      <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}">
+        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+      </a>
+    </td>
+
+    <td>
+      <button form="add${status.index}" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}">
+      Add to cart</button>
+    </td>
+
+    </tr>
+  </form>
+  </c:forEach>
 </table>
 
+
+
 <p>
-  Recenlty viewed:
+  Recently viewed:
 </p>
 
 <table>
@@ -114,13 +122,4 @@
 	</c:forEach>
 </tr>
 </table>
-</form>
-<form id="addToCartFromPLP" method="post">
-</form>
-
-<form>
-  <input type="hidden" name="sortParam2" value="${param.sortParam}"
-  form="addToCartFromPLP" formAction="${pageContext.servletContext.contextPath}/products/addToCart/${product.id}"
-  />
-</form>
 </tags:master>

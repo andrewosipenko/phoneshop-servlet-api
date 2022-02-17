@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CartItem implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final Product product;
     private AtomicInteger quantity;
 

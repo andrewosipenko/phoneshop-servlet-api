@@ -4,8 +4,8 @@ import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.exceptions.IncorrectInputException;
 import com.es.phoneshop.model.product.*;
-import com.es.phoneshop.recentViewd.RecentViewed;
-import com.es.phoneshop.recentViewd.RecentViewedService;
+import com.es.phoneshop.recentViewed.RecentViewed;
+import com.es.phoneshop.recentViewed.RecentViewedService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -51,20 +51,20 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String productId = request.getPathInfo().substring(1);
-        String quantity = request.getParameter("quantity");
-        Product product = productDao.getProduct(Long.valueOf(productId)).orElse(null);
-
-        if (isProductIdExist(productId) && product != null) {
+        if (request.getPathInfo() != null &&
+                isProductIdExist(request.getPathInfo().substring(1))) {
             try {
+                String productId = request.getPathInfo().substring(1);
+                String quantity = request.getParameter("quantity");
                 cartService.add(request, productId, quantity);
                 response.sendRedirect(request.getContextPath() + "/products/" + productId +
                         "?message=Product was added to cart");
             } catch (IncorrectInputException e) {
+                Product product = productDao.getProduct(Long.valueOf(request.getPathInfo().substring(1))).orElse(null);
                 String errorMessage = e.getErrorMessage();
                 if (errorMessage.equals("Out of stock")) {
                     errorMessage = errorMessage + ", available " + (product.getStock() -
-                            cartService.getCart(request).getCurrentQuantityById(Long.valueOf(productId)));
+                            cartService.getCart(request).getCurrentQuantityById(product.getId()));
                 }
                 request.setAttribute("error", errorMessage);
                 request.setAttribute("product", product);
@@ -72,9 +72,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
                 request.setAttribute("recentViewedList", recentViewed.getRecentViewedList(request).getItems());
                 request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
             }
-        } else {
+        } else { //product not exist or not found case
             response.setStatus(404);
-            request.setAttribute("id", productId);
+            if (request.getPathInfo() != null) {
+                request.setAttribute("id", request.getPathInfo().substring(1));
+            }else {
+                request.setAttribute("id", "");
+            }
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
         }
     }

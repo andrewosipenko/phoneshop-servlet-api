@@ -40,13 +40,18 @@ public class DeleteCartItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String productId = request.getPathInfo().substring(1);
-        if(isProductIdExist(productId)) {
+        if (request.getPathInfo() != null &&
+                isProductIdExist(request.getPathInfo().substring(1))) {
+            String productId = request.getPathInfo().substring(1);
             cartService.deleteCartItem(request, productId);
             response.sendRedirect(request.getContextPath() + "/cart?message=Cart item removed successfully");
-        }else{
+        } else {
             response.setStatus(404);
-            request.setAttribute("id", productId);
+            if (request.getPathInfo() != null) {
+                request.setAttribute("id", request.getPathInfo().substring(1));
+            }else {
+                request.setAttribute("id", "");
+            }
             request.getRequestDispatcher("/WEB-INF/pages/errorProductNotFound.jsp").forward(request, response);
         }
     }

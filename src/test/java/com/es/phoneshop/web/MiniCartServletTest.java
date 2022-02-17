@@ -1,6 +1,9 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,12 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class MiniCartServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -31,24 +38,26 @@ public class ProductListPageServletTest {
     @Mock
     protected HttpSession httpSession;
 
-
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
+    private final MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(httpSession);
-        when(request.getParameter("sortParam")).thenReturn("descriptionAsc");
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
-        verify(request).setAttribute(eq("products"),anyCollection());
-        verify(request).setAttribute(eq("recentViewedList"),anyCollection());
-        verify(request).setAttribute(eq("cart"), any(Cart.class));
-        verify(requestDispatcher).forward(request, response);
+        verify(request).setAttribute(eq("cart"),any(Cart.class));
+        verify(requestDispatcher).include(request, response);
     }
 
+    @Test
+    public void testDoPost() throws ServletException,IOException{
+        servlet.doPost(request,response);
+        verify(request).setAttribute(eq("cart"),any(Cart.class));
+        verify(requestDispatcher).include(request,response);
+    }
 }

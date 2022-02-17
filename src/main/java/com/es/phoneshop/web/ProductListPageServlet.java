@@ -3,8 +3,8 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.model.product.*;
-import com.es.phoneshop.recentViewd.RecentViewed;
-import com.es.phoneshop.recentViewd.RecentViewedService;
+import com.es.phoneshop.recentViewed.RecentViewed;
+import com.es.phoneshop.recentViewed.RecentViewedService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

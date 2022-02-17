@@ -1,4 +1,4 @@
-package com.es.phoneshop.recentViewd;
+package com.es.phoneshop.recentViewed;
 
 
 import com.es.phoneshop.cart.DefaultCartService;
