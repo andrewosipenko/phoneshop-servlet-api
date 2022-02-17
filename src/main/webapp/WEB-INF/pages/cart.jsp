@@ -29,7 +29,7 @@
                 <td></td>
             </tr>
             </thead>
-            <c:forEach var="entry" items="${cart.items.entrySet()}">
+            <c:forEach var="entry" items="${cart.items.entrySet()}" varStatus="status">
                 <tr>
                     <td>
                         <img class="product-tile"
@@ -41,8 +41,9 @@
                         </a>
                     </td>
                     <td>
-                        <input name="quantity" value="${entry.value}" class="quantity">
-                        <c:if test="${not empty errors[entry.key.id]}">
+                        <c:set var="hasError" value="${errors[entry.key.id]}"/>
+                        <input name="quantity" value="${not empty hasError ? paramValues['quantity'][status.index] : entry.value}" class="quantity">
+                        <c:if test="${not empty hasError}">
                             <div class="error">
                                     ${errors[entry.key.id]}
                             </div>

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class PriceTimeStamp implements Serializable {
+    static final long serialVersionUID = 1L;
     private final BigDecimal price;
 
     private final Date date;

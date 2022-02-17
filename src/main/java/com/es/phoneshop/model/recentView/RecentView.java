@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.Lock;
 
 public class RecentView implements Serializable {
+    static final long serialVersionUID = 1L;
+
     private final Deque<Product> deque;
 
     private final Lock lock;

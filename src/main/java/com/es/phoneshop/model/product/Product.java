@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 public class Product implements Serializable {
+    static final long serialVersionUID = 1L;
+
     private Long id;
     private String code;
     private String description;

@@ -33,9 +33,12 @@ public class ProductListPageServlet extends HttpServlet {
             try {
                 NumberFormat format = NumberFormat.getInstance(request.getLocale());
                 int quantity = format.parse(request.getParameter("quantity")).intValue();
+                if (quantity < 1) {
+                    throw new NumberFormatException();
+                }
                 Cart cart = HttpSessionCartService.getInstance().getCart(request);
                 HttpSessionCartService.getInstance().add(cart, productId, quantity, request.getSession());
-                response.sendRedirect(request.getContextPath() + "/products?message=Product added to cart!");
+                response.sendRedirect(request.getContextPath() + "/products?message=Product added to cart!&" + request.getQueryString());
                 return;
             } catch (NumberFormatException | ParseException e) {
                 request.setAttribute("error", "Invalid quantity");

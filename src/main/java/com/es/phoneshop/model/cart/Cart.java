@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Cart implements Serializable {
+    static final long serialVersionUID = 1L;
     private final Map<Product, Integer> items;
 
     private int totalQuantity;

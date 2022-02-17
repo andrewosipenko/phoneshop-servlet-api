@@ -52,14 +52,14 @@
                                       currencySymbol="${product.currency.symbol}"/>
                 </td>
                 <td>
-                    <form method="post" action="${pageContext.servletContext.contextPath}/products">
+                    <form method="post">
                         <label>
-                            <input name="quantity" class="quantity" value="${not empty param.error and param.productId eq product.id ? param.quantity : 1}"/>
+                            <input name="quantity" class="quantity" value="${not empty error and param.productId eq product.id ? param.quantity : 1}"/>
                         </label>
                         <input type="hidden" name="productId" value="${product.id}"/>
                         <c:if test="${param.productId eq product.id}">
                         <div class="error">
-                                ${param.error}
+                                ${error}
                         </div>
                     </c:if>
                     <button>
