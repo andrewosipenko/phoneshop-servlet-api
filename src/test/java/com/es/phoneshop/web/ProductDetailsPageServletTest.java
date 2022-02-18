@@ -1,9 +1,11 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.recentView.HttpSessionRecentViewService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -28,6 +32,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsPageServletTest {
+    private Lock lock = new ReentrantLock();
+
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -62,7 +68,9 @@ public class ProductDetailsPageServletTest {
         when(request.getLocale()).thenReturn(locale);
         when(request.getSession()).thenReturn(httpSession);
         Cart cart = new Cart();
-        when(httpSession.getAttribute(anyString())).thenReturn(cart);
+
+        when(httpSession.getAttribute(HttpSessionCartService.class.getName() + ".cart")).thenReturn(cart);
+        when(httpSession.getAttribute(HttpSessionCartService.class.getName() + ".lock")).thenReturn(lock);
         Currency usd = Currency.getInstance("USD");
         Product p = new Product("a", "a", new BigDecimal(1), usd, 100, "somelink");
         ProductDao productDao = ArrayListProductDao.getInstance();

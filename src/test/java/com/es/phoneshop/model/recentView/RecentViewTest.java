@@ -3,7 +3,9 @@ package com.es.phoneshop.model.recentView;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.HttpSessionCartService;
+import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.ProductDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -37,6 +39,11 @@ public class RecentViewTest {
         Product p2 = new Product("b", "b", new BigDecimal(1), usd, 100, "somelink");
         Product p3 = new Product("c", "c", new BigDecimal(1), usd, 100, "somelink");
         Product p4 = new Product("d", "d", new BigDecimal(1), usd, 100, "somelink");
+        ProductDao productDao = ArrayListProductDao.getInstance();
+        productDao.save(p1);
+        productDao.save(p2);
+        productDao.save(p3);
+        productDao.save(p4);
         RecentView recentView = new RecentView(lock);
         recentView.add(p1);
         recentView.add(p2);
@@ -69,7 +76,7 @@ public class RecentViewTest {
         RecentViewService recentViewService = HttpSessionRecentViewService.getInstance();
         assertNotNull(recentViewService);
         assertNotNull(recentViewService.getRecentView(request));
-        when(httpSession.getAttribute(anyString())).thenReturn(recentView);
+        when(httpSession.getAttribute(HttpSessionRecentViewService.class.getName() + ".recentView")).thenReturn(recentView);
         assertEquals(recentViewService.getRecentView(request), recentView);
     }
 }
