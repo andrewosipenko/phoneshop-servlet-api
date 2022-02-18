@@ -16,6 +16,7 @@ public class ArrayListProductDaoTest {
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
+        productDao.clearProductDao();
         saveSampleProducts();
     }
 

@@ -46,13 +46,12 @@ public class CartPageServletTest {
     @Before
     public void setup() throws ServletException {
         productDao = ArrayListProductDao.getInstance();
+        productDao.clearProductDao();
         saveSampleProducts();
         initParamValues();
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(httpSession);
-//        when(request.getPathInfo()).thenReturn("/0");
-//        when(request.getParameter("quantity")).thenReturn("3");
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
         when(request.getParameterValues("productId")).thenReturn(productIds);
         when(request.getParameterValues("quantity")).thenReturn(quantities);

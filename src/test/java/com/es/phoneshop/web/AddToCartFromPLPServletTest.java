@@ -39,6 +39,7 @@ public class AddToCartFromPLPServletTest {
     @Before
     public void setup() throws ServletException {
         productDao = ArrayListProductDao.getInstance();
+        productDao.clearProductDao();
         saveSampleProducts();
         servlet.init(config);
         when(request.getSession()).thenReturn(httpSession);
@@ -75,5 +76,4 @@ public class AddToCartFromPLPServletTest {
         productDao.save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "manufacturer/Siemens/Siemens%20C61.jpg"));
         productDao.save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "manufacturer/Siemens/Siemens%20SXG75.jpg"));
     }
-
 }

@@ -40,6 +40,7 @@ public class ProductDetailsPageServletTest {
     @Before
     public void setup() throws ServletException {
         productDao = ArrayListProductDao.getInstance();
+        productDao.clearProductDao();
         saveSampleProducts();
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);

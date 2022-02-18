@@ -139,4 +139,10 @@ public class ArrayListProductDao implements ProductDao {
             }
         }
     }
+
+    @Override
+    public void clearProductDao() {
+        products.clear();
+        maxId = 0;
+    }
 }

@@ -8,4 +8,5 @@ public interface ProductDao {
     List<Product> findProducts(String query, SortingParams sortingParams);
     void save(Product product);
     void delete(Long id);
+    void clearProductDao();
 }
