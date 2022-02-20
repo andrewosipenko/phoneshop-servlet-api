@@ -9,4 +9,5 @@ public interface CartService {
     void add(HttpServletRequest request, String productId, String quantity) throws IncorrectInputException;
     void update(HttpServletRequest request, String productId, String quantity) throws IncorrectInputException;
     void deleteCartItem(HttpServletRequest request, String productId);
+    void clearCart(HttpServletRequest request);
 }

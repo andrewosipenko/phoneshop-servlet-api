@@ -182,4 +182,9 @@ public class DefaultCartService implements CartService {
                         cartItem.getQuantity().get() * cartItem.getProduct().getPrice().intValue())
                 .sum()));
     }
+
+    @Override
+    public void clearCart(HttpServletRequest request) {
+        getCart(request).getItems().clear();
+    }
 }

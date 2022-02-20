@@ -5,7 +5,7 @@ import com.es.phoneshop.model.product.Product;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CartItem implements Serializable {
+public class CartItem implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
     private final Product product;
     private AtomicInteger quantity;
@@ -38,5 +38,10 @@ public class CartItem implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         CartItem cartItem = (CartItem) o;
         return product.getDescription().equals(cartItem.product.getDescription());
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
