@@ -185,6 +185,9 @@ public class DefaultCartService implements CartService {
 
     @Override
     public void clearCart(HttpServletRequest request) {
-        getCart(request).getItems().clear();
+        Cart cart = getCart(request);
+        cart.getItems().clear();
+        cart.setTotalCost(new BigDecimal(0));
+        cart.setTotalQuantity(new AtomicInteger(0));
     }
 }

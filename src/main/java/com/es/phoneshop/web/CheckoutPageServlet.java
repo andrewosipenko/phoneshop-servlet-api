@@ -46,7 +46,13 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
-        Order order = orderService.getOrder(cart);
+        Cart cloneCart;
+        try {
+            cloneCart = (Cart) cart.clone();
+        }catch (CloneNotSupportedException e){
+            return;
+        }
+        Order order = orderService.getOrder(cloneCart);
         Map<String, String> errors = new HashMap<>();
         setRequiredParam(request, "firstName", errors, order::setFirstName);
         setRequiredParam(request, "lastName", errors, order::setLastName);
@@ -57,6 +63,7 @@ public class CheckoutPageServlet extends HttpServlet {
 
         if (errors.isEmpty()) {
             orderService.placeOrder(order);
+            cartService.clearCart(request);
             response.sendRedirect(request.getContextPath() + "/order/overview/" + order.getSecureId());
         } else {
             request.setAttribute("errors", errors);

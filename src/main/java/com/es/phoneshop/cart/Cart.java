@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Cart  implements Serializable {
+public class Cart  implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
     private  List<CartItem> items;
     private AtomicInteger totalQuantity;
@@ -74,5 +74,10 @@ public class Cart  implements Serializable {
     @Override
     public String toString() {
         return "[" + items + "]";
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
