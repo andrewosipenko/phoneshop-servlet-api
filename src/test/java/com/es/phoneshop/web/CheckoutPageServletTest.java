@@ -44,7 +44,7 @@ public class CheckoutPageServletTest {
         when(request.getParameter("firstName")).thenReturn("Ivan");
         when(request.getParameter("lastName")).thenReturn("Ivanov");
         when(request.getParameter("phone")).thenReturn("333");
-        when(request.getParameter("deliveryDate")).thenReturn("12/12/2021").thenReturn("wrong");
+        when(request.getParameter("deliveryDate")).thenReturn("2021-11-11").thenReturn("wrong");
         when(request.getParameter("deliveryAddress")).thenReturn("defaultAddress");
         when(request.getParameter("paymentMethod")).thenReturn("CARD");
     }

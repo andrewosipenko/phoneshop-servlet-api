@@ -30,23 +30,6 @@ public class ArrayListOrderDao implements OrderDao {
     }
 
     @Override
-    public Optional<Order> getOrder(Long id) {
-        if (id == null) {
-            return Optional.empty();
-        } else {
-            rwLock.readLock().lock();
-            try {
-                return orders.stream()
-                        .filter(order -> id.equals(order.getId()))
-                        .findAny();
-            } finally {
-                rwLock.readLock().unlock();
-            }
-        }
-    }
-
-
-    @Override
     public void save(Order order) {
         if (order != null) {
             rwLock.writeLock().lock();

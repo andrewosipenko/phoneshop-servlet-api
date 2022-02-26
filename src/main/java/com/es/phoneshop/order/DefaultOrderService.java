@@ -2,9 +2,12 @@ package com.es.phoneshop.order;
 
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartItem;
+import com.es.phoneshop.cart.CartService;
+import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.lock.SessionLock;
 import com.es.phoneshop.lock.SessionLockService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +19,7 @@ public class DefaultOrderService implements OrderService {
     private static final Object mutex = new Object();
     private final SessionLock lock;
     private OrderDao orderDao;
+    private CartService cartService;
 
     public static OrderService getInstance() {
         if (instance == null) {
@@ -30,6 +34,7 @@ public class DefaultOrderService implements OrderService {
 
     private DefaultOrderService() {
         orderDao = ArrayListOrderDao.getInstance();
+        cartService = DefaultCartService.getInstance();
         lock = SessionLockService.getInstance();
     }
 
@@ -59,8 +64,16 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public void placeOrder(Order order) {
-        order.setSecureId(UUID.randomUUID().toString());
-        orderDao.save(order);
+    public void placeOrder(HttpServletRequest request, Order order) {
+        lock.getSessionLock(request).lock();
+        try {
+            order.setSecureId(UUID.randomUUID().toString());
+            orderDao.save(order);
+            cartService.clearCart(request);
+        } finally {
+            if (lock.getSessionLock(request).isHeldByCurrentThread()) {
+                lock.getSessionLock(request).unlock();
+            }
+        }
     }
 }

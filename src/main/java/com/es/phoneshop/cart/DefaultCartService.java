@@ -187,7 +187,6 @@ public class DefaultCartService implements CartService {
     public void clearCart(HttpServletRequest request) {
         Cart cart = getCart(request);
         cart.getItems().clear();
-        cart.setTotalCost(new BigDecimal(0));
-        cart.setTotalQuantity(new AtomicInteger(0));
+        recalculateCart(request);
     }
 }

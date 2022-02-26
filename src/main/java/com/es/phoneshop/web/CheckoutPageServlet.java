@@ -3,9 +3,6 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
-import com.es.phoneshop.exceptions.IncorrectInputException;
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.order.DefaultOrderService;
 import com.es.phoneshop.order.Order;
 import com.es.phoneshop.order.OrderService;
@@ -46,14 +43,9 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
-        Cart cloneCart;
-        try {
-            cloneCart = (Cart) cart.clone();
-        }catch (CloneNotSupportedException e){
-            return;
-        }
-        Order order = orderService.getOrder(cloneCart);
+        Order order = orderService.getOrder(cart);
         Map<String, String> errors = new HashMap<>();
+
         setRequiredParam(request, "firstName", errors, order::setFirstName);
         setRequiredParam(request, "lastName", errors, order::setLastName);
         setRequiredParam(request, "phone", errors, order::setPhone);
@@ -62,8 +54,7 @@ public class CheckoutPageServlet extends HttpServlet {
         setPaymentMethod(request, errors, order);
 
         if (errors.isEmpty()) {
-            orderService.placeOrder(order);
-            cartService.clearCart(request);
+            orderService.placeOrder(request, order);
             response.sendRedirect(request.getContextPath() + "/order/overview/" + order.getSecureId());
         } else {
             request.setAttribute("errors", errors);
@@ -97,7 +88,7 @@ public class CheckoutPageServlet extends HttpServlet {
     private void setDeliveryDate(HttpServletRequest request,
                                  Map<String, String> errors, Order order) {
         String value = request.getParameter("deliveryDate");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (value == null || value.isEmpty()) {
             errors.put("deliveryDate", "Value is required");
         } else {
