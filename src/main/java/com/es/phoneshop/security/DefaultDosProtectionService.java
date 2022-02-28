@@ -29,12 +29,9 @@ public class DefaultDosProtectionService implements DosProtectionService {
 
     @Override
     public boolean isAllowed(String ip) {
-        TimeCountPair timeCountPair = countMap.get(ip);
 
-        if (timeCountPair == null) {
-            countMap.put(ip, new TimeCountPair(LocalTime.now(), 1L));
-            return true;
-        }
+        TimeCountPair timeCountPair =
+                countMap.computeIfAbsent(ip,k -> new TimeCountPair(LocalTime.now(), 0L));
 
         timeCountPair.getLock().lock();
         try {
