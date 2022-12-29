@@ -3,7 +3,13 @@ package com.es.phoneshop.model.product;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Currency;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ArrayListProductDaoTest
 {
@@ -15,7 +21,95 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testFindProductsNoResults() {
+    public void testSaveNewProduct() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+
+        assertTrue(product.getId() > 0);
+        Product result = productDao.getProduct(Long.valueOf(product.getId()));
+        assertNotNull(result);
+        assertEquals("test", result.getCode());
+    }
+
+    @Test
+    public void testSaveNewProductCorrectIdSet() {
+        Currency usd = Currency.getInstance("USD");
+        Product product1 = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product2 = new Product("test2", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product1);
+        productDao.save(product2);
+
+        assertEquals(1L, product2.getId() - product1.getId());
+    }
+
+    @Test
+    public void testGetProductCorrectId() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+
+        assertEquals(product, productDao.getProduct(product.getId()));
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void testGetProductIncorrectId() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+
+        productDao.getProduct(product.getId() + 1L);
+    }
+
+    @Test
+    public void testFindProductsWithCorrectConditions() {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(product);
+
+        List<Product> products = new ArrayList<>();
+        products.add(product);
+
+        assertEquals(productDao.findProducts(), products);
+    }
+    @Test
+    public void testFindProductsWithIncorrectPrice() {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", null, usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(product);
+
         assertTrue(productDao.findProducts().isEmpty());
+    }
+
+    @Test
+    public void testFindProductsWithIncorrectStock() {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, -5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(product);
+
+        assertTrue(productDao.findProducts().isEmpty());
+    }
+
+    @Test
+    public void testDeleteExistedProduct() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(product);
+
+        productDao.delete(product.getId());
+
+        assertTrue(productDao.findProducts().isEmpty());
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void testDeleteNonExistedProduct() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.delete(product.getId());
     }
 }
