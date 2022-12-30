@@ -3,7 +3,6 @@ package com.es.phoneshop.model.product;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.dao.exception.ProductNotFoundException;
 import com.es.phoneshop.dao.impl.ArrayListProductDao;
-import org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +24,7 @@ public class ArrayListProductDaoTest
     @Test
     public void testFindProductsNoResults() {
         assertFalse(productDao.findProducts().isEmpty());
+
     }
 
     @Test
@@ -36,5 +36,6 @@ public class ArrayListProductDaoTest
         Product result = productDao.getProduct(product.getId());
         assertNotNull(result);
         assertEquals("test-prod", result.getCode());
+
     }
 }

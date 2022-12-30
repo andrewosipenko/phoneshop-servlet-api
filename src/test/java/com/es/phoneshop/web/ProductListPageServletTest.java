@@ -33,12 +33,14 @@ public class ProductListPageServletTest {
 
     @Before
     public void setup() throws ServletException {
+
         servlet.init(servletConfig);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+
         servlet.doGet(request, response);
         verify(requestDispatcher).forward(request, response);
         verify(request).setAttribute(eq("products"),any());
