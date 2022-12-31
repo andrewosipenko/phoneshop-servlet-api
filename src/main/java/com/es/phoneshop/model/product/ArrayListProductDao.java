@@ -1,10 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -12,7 +9,7 @@ public class ArrayListProductDao implements ProductDao {
     private long maxId;
     private List<Product> products;
 
-    public ArrayListProductDao() {
+    public ArrayListProductDao() throws ProductAlreadyExistsException {
         this.products = new ArrayList<>();
         saveSampleProducts();
     }
@@ -34,26 +31,25 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void save(Product product) {
+    public synchronized void save(Product product) throws ProductAlreadyExistsException {
+        boolean existedProduct = products.stream().anyMatch(product1 -> product1.equals(product));
+        if (existedProduct)
+            throw new ProductAlreadyExistsException();
+
         product.setId(maxId++);
         products.add(product);
     }
 
     @Override
     public synchronized void delete(Long id) throws ProductNotFoundException {
-        Product productToDelete = products.stream()
-                .filter(product -> id.equals(product.getId()))
-                .findAny()
-                .orElse(null);
-
-        if (productToDelete != null) {
-            products.remove(productToDelete);
-        } else {
+        boolean existedProduct = products.stream().anyMatch(product -> product.getId().equals(id));
+        if (!existedProduct)
             throw new ProductNotFoundException();
-        }
+
+        products.removeIf(product -> product.getId().equals(id));
     }
 
-    private void saveSampleProducts() {
+    private void saveSampleProducts() throws ProductAlreadyExistsException {
         Currency usd = Currency.getInstance("USD");
         save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
