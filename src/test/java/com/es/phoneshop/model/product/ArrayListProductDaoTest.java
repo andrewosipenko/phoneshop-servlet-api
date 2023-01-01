@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -40,9 +41,17 @@ public class ArrayListProductDaoTest
         Product product = new Product("test-product", "Samsung Galaxy S I", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
 
-        // проверить что продукт не находится
+        assertTrue(product.getStock() == 0);
+        assertNotNull(productDao.findProducts().stream().filter(product1 -> product.getStock() == 0));
     }
 
-    // покрыть бизнес требования, все строчки кода
-    // покрыть все публичные методы, метод дел
+    @Test(expected = NoSuchElementException.class)
+    public void testDeleteNewProduct() {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+        productDao.delete(product.getId());
+
+        assertNull(productDao.getProduct(Long.valueOf(product.getId())));
+    }
 }
