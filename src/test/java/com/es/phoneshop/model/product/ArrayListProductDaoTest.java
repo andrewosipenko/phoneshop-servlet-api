@@ -38,11 +38,19 @@ public class ArrayListProductDaoTest
     @Test
     public void testFindProductWithZeroStock() {
         Currency usd = Currency.getInstance("USD");
-        Product product = new Product("test-product", "Samsung Galaxy S I", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        productDao.save(product);
+        productDao.save(new Product("test-product", "Samsung Galaxy S I", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
 
-        assertTrue(product.getStock() == 0);
-        assertNotNull(productDao.findProducts().stream().filter(product1 -> product.getStock() == 0));
+        assertTrue(productDao.findProducts().stream().
+                noneMatch(product -> product.getStock() == 0));
+    }
+
+    @Test
+    public void testFindProductWithZeroPrice() {
+        Currency usd = Currency.getInstance("USD");
+        productDao.save(new Product("test-product", "Samsung Galaxy S I", new BigDecimal(0), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
+
+        assertTrue(productDao.findProducts().stream().
+                noneMatch(product -> product.getPrice() == null));
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -50,6 +58,12 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
+
+        assertTrue(product.getId()>0);
+        Product result = productDao.getProduct(Long.valueOf(product.getId()));
+        assertNotNull(result);
+        assertEquals("test", result.getCode());
+
         productDao.delete(product.getId());
 
         assertNull(productDao.getProduct(Long.valueOf(product.getId())));
