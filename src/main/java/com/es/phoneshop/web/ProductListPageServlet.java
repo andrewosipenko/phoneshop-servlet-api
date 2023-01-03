@@ -1,8 +1,6 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductAlreadyExistsException;
 import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.ServletConfig;
@@ -11,10 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao;
@@ -22,11 +16,7 @@ public class ProductListPageServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        try {
-            productDao = new ArrayListProductDao();
-        } catch (ProductAlreadyExistsException ignored) {
-
-        }
+        productDao = new ArrayListProductDao();
     }
 
     @Override

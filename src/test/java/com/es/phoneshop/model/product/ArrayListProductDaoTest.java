@@ -16,24 +16,24 @@ public class ArrayListProductDaoTest
     private ProductDao productDao;
 
     @Before
-    public void setup() throws ProductAlreadyExistsException {
+    public void setup() {
         productDao = new ArrayListProductDao();
     }
 
     @Test
-    public void testSaveNewProduct() throws ProductNotFoundException, ProductAlreadyExistsException {
+    public void testSaveNewProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
 
         assertTrue(product.getId() > 0);
-        Product result = productDao.getProduct(Long.valueOf(product.getId()));
+        Product result = productDao.getProduct(product.getId());
         assertNotNull(result);
         assertEquals("test", result.getCode());
     }
 
     @Test
-    public void testSaveNewProductCorrectIdSet() throws ProductAlreadyExistsException {
+    public void testSaveNewProductCorrectIdSet() {
         Currency usd = Currency.getInstance("USD");
         Product product1 = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         Product product2 = new Product("test2", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
@@ -43,17 +43,24 @@ public class ArrayListProductDaoTest
         assertEquals(1L, product2.getId() - product1.getId());
     }
 
-    @Test(expected = ProductAlreadyExistsException.class)
-    public void testSaveExistedProduct() throws ProductAlreadyExistsException {
+    @Test
+    public void testSaveExistedProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
-        Product product = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        productDao.save(product);
+        Product productBeforeChanges = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        productDao.save(product);
+        productDao.save(productBeforeChanges);
+
+        Product productAfterChanges = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productAfterChanges.setId(productBeforeChanges.getId());
+        productAfterChanges.setCode("test2");
+
+        productDao.save(productAfterChanges);
+
+        assertEquals(productDao.getProduct(productBeforeChanges.getId()), productAfterChanges);
     }
 
     @Test
-    public void testGetProductCorrectId() throws ProductNotFoundException, ProductAlreadyExistsException {
+    public void testGetProductCorrectId() throws ProductNotFoundException{
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
@@ -62,7 +69,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test(expected = ProductNotFoundException.class)
-    public void testGetProductIncorrectId() throws ProductNotFoundException, ProductAlreadyExistsException {
+    public void testGetProductIncorrectId() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
@@ -71,19 +78,16 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testFindProductsWithCorrectConditions() throws ProductAlreadyExistsException {
+    public void testFindProductsWithCorrectConditions() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
         productDao.save(product);
 
-        List<Product> products = new ArrayList<>();
-        products.add(product);
-
         assertTrue(productDao.findProducts().contains(product));
     }
     @Test
-    public void testFindProductsWithIncorrectPrice() throws ProductAlreadyExistsException {
+    public void testFindProductsWithIncorrectPrice() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", null, usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
@@ -93,7 +97,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testFindProductsWithIncorrectStock() throws ProductAlreadyExistsException {
+    public void testFindProductsWithIncorrectStock() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, -5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
@@ -103,15 +107,24 @@ public class ArrayListProductDaoTest
     }
 
     @Test(expected = ProductNotFoundException.class)
-    public void testDeleteNonExistedProduct() throws ProductNotFoundException {
+    public void testDeleteNullIdProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
         productDao.delete(product.getId());
     }
 
+    @Test(expected = ProductNotFoundException.class)
+    public void testDeleteNonExistedProduct() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productDao.save(product);
+
+        productDao.delete(product.getId() + 1L);
+    }
+
     @Test
-    public void testDeleteExistedProduct() throws ProductNotFoundException, ProductAlreadyExistsException {
+    public void testDeleteExistedProduct() throws ProductNotFoundException {
         List<Product> productsBeforeDeleting = productDao.findProducts();
 
         Currency usd = Currency.getInstance("USD");
