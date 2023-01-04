@@ -54,7 +54,6 @@ public class ArrayListProductDao implements ProductDao {
         }
 
         Product product = getProduct(id);
-
         products.remove(product);
     }
 
