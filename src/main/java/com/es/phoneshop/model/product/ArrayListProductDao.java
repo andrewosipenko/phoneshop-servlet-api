@@ -33,26 +33,20 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void save(Product product) {
+    public synchronized void save(Product product) throws NoSuchElementException {
         if (product.getId() != null) {
-            Product product1 = products.stream()
-                    .filter(item -> product.getId().equals(item.getId()))
-                    .findAny()
-                    .get();
-            products.set(products.indexOf(product1), product);
-        } else {
+            products.set(products.indexOf(getProduct(product.getId())), product);
+        } else if (product.getId() == null) {
             product.setId(maxId++);
             products.add(product);
+        } else {
+            throw new NoSuchElementException();
         }
     }
 
     @Override
-    public synchronized void delete(Long id) throws NoSuchElementException{
-        products.stream()
-                .filter(product -> id.equals(product.getId()))
-                .findAny()
-                .orElseThrow(NoSuchElementException::new);
-        products.removeIf(product -> id.equals(product.getId()));
+    public synchronized void delete(Long id) throws NoSuchElementException {
+        products.remove(getProduct(id));
     }
 
     private void saveSampleProducts(){
@@ -70,6 +64,5 @@ public class ArrayListProductDao implements ProductDao {
         save(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
         save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
-        save(products.get(0));
     }
 }
