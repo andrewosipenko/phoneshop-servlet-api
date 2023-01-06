@@ -27,6 +27,16 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+    }
+
     public Long getId() {
         return id;
     }
@@ -81,5 +91,48 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", currency=" + currency +
+                ", stock=" + stock +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+
+        Product product = (Product) o;
+
+        if (getStock() != product.getStock()) return false;
+        if (getId() != null ? !getId().equals(product.getId()) : product.getId() != null) return false;
+        if (getCode() != null ? !getCode().equals(product.getCode()) : product.getCode() != null) return false;
+        if (getDescription() != null ? !getDescription().equals(product.getDescription()) : product.getDescription() != null)
+            return false;
+        if (getPrice() != null ? !getPrice().equals(product.getPrice()) : product.getPrice() != null) return false;
+        if (getCurrency() != null ? !getCurrency().equals(product.getCurrency()) : product.getCurrency() != null)
+            return false;
+        return getImageUrl() != null ? getImageUrl().equals(product.getImageUrl()) : product.getImageUrl() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getCode() != null ? getCode().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
+        result = 31 * result + (getCurrency() != null ? getCurrency().hashCode() : 0);
+        result = 31 * result + getStock();
+        result = 31 * result + (getImageUrl() != null ? getImageUrl().hashCode() : 0);
+        return result;
     }
 }
