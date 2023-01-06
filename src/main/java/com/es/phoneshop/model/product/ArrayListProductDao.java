@@ -1,8 +1,9 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -17,6 +18,10 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized Product getProduct(Long id) throws ProductNotFoundException {
+        if (id == null) {
+            throw new ProductNotFoundException();
+        }
+
         return products.stream()
                 .filter(product -> id.equals(product.getId()))
                 .findAny()
@@ -33,26 +38,18 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void save(Product product) {
-        if (product.getId() != null) {
-            Product nonUpdatedProduct = products.stream()
-                    .filter(product1 -> product1.getId().equals(product.getId()))
-                    .findAny()
-                    .get();
-
-            products.remove(nonUpdatedProduct);
-            products.add(product);
-        } else {
+        try {
+            Product productToUpdate = getProduct(product.getId());
+            products.remove(productToUpdate);
+        } catch (ProductNotFoundException e) {
             product.setId(maxId++);
+        } finally {
             products.add(product);
         }
     }
 
     @Override
     public synchronized void delete(Long id) throws ProductNotFoundException {
-        if (id == null) {
-            throw new ProductNotFoundException();
-        }
-
         Product product = getProduct(id);
         products.remove(product);
     }

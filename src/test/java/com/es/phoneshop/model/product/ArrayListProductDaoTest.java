@@ -4,15 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Currency;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ArrayListProductDaoTest
-{
+public class ArrayListProductDaoTest {
     private ProductDao productDao;
 
     @Before
@@ -60,13 +57,14 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testGetProductCorrectId() throws ProductNotFoundException{
+    public void testGetProductCorrectId() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
 
         assertEquals(product, productDao.getProduct(product.getId()));
     }
+
 
     @Test(expected = ProductNotFoundException.class)
     public void testGetProductIncorrectId() throws ProductNotFoundException {
@@ -75,6 +73,11 @@ public class ArrayListProductDaoTest
         productDao.save(product);
 
         productDao.getProduct(product.getId() + 1L);
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void testGetProductNullId() throws ProductNotFoundException {
+        productDao.getProduct(null);
     }
 
     @Test
@@ -86,6 +89,7 @@ public class ArrayListProductDaoTest
 
         assertTrue(productDao.findProducts().contains(product));
     }
+
     @Test
     public void testFindProductsWithIncorrectPrice() {
         Currency usd = Currency.getInstance("USD");
