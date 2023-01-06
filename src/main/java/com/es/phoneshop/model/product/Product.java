@@ -94,19 +94,6 @@ public class Product {
     }
 
     @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", currency=" + currency +
-                ", stock=" + stock +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product)) return false;
@@ -122,17 +109,5 @@ public class Product {
         if (getCurrency() != null ? !getCurrency().equals(product.getCurrency()) : product.getCurrency() != null)
             return false;
         return getImageUrl() != null ? getImageUrl().equals(product.getImageUrl()) : product.getImageUrl() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getCode() != null ? getCode().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
-        result = 31 * result + (getCurrency() != null ? getCurrency().hashCode() : 0);
-        result = 31 * result + getStock();
-        result = 31 * result + (getImageUrl() != null ? getImageUrl().hashCode() : 0);
-        return result;
     }
 }
