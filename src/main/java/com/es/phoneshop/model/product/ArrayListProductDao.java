@@ -34,13 +34,16 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized void save(Product product) throws NoSuchElementException {
-        if (product.getId() != null) {
-            products.set(products.indexOf(getProduct(product.getId())), product);
-        } else if (product.getId() == null) {
+        Product newProduct = products.stream().
+                filter(product1 -> product1.getId().equals(product.getId())).
+                findAny().
+                orElse(null);
+        if (newProduct == null) {
             product.setId(maxId++);
             products.add(product);
-        } else {
-            throw new NoSuchElementException();
+        }
+        else if (product.getId() != null) {
+            products.set(products.indexOf(newProduct), product);
         }
     }
 
