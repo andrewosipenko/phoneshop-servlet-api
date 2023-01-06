@@ -1,4 +1,7 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.dao;
+
+import com.es.phoneshop.model.exceptions.ProductNotFoundException;
+import com.es.phoneshop.model.entity.product.Product;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,10 +22,13 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public Product getProduct(Long id) throws ProductNotFoundException {
         synchronized (lock) {
-            return products.stream().
-                    filter(product -> id.equals(product.getId()))
+            if(id == null) {
+                throw new ProductNotFoundException("Given id is null when using getProduct");
+            }
+            return products.stream()
+                    .filter(product -> id.equals(product.getId()))
                     .findAny()
-                    .orElseThrow(ProductNotFoundException::new);
+                    .orElseThrow(() -> new ProductNotFoundException("No product with such id when using getProduct"));
         }
     }
 
@@ -39,20 +45,26 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void save(Product product) {
         synchronized (lock) {
-            if (product.getId() != null) {
-                delete(product.getId());
+            try {
+                getProduct(product.getId()).update(product);
             }
-            product.setId(currId++);
-            products.add(product);
+            catch(ProductNotFoundException exception) { // if getProduct throws exception -> no such id in products or id == null
+                product.setId(currId++);
+                products.add(product);
+            }
+
         }
     }
 
     @Override
     public void delete(Long id) {
         synchronized (lock) {
-            products = products.stream()
-                    .filter(currProduct -> !id.equals(currProduct.getId()))
-                    .collect(Collectors.toList());
+            if(id == null) {
+                throw new ProductNotFoundException("Given id is null when using delete");
+            }
+            if (!products.removeIf(currProduct -> id.equals(currProduct.getId()))) {
+                    throw new ProductNotFoundException("Given non-existing product when using delete");
+            }
         }
     }
 
