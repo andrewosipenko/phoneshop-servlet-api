@@ -1,6 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 
 public class Product {
@@ -13,6 +14,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private String histories;
 
     public Product() {
     }
@@ -32,6 +34,7 @@ public class Product {
         this.code = code;
         this.description = description;
         this.price = price;
+        this.histories = String.valueOf(price);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -66,6 +69,7 @@ public class Product {
     }
 
     public void setPrice(BigDecimal price) {
+        histories = histories + "," + price;
         this.price = price;
     }
 
@@ -92,7 +96,6 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,5 +112,9 @@ public class Product {
         if (getCurrency() != null ? !getCurrency().equals(product.getCurrency()) : product.getCurrency() != null)
             return false;
         return getImageUrl() != null ? getImageUrl().equals(product.getImageUrl()) : product.getImageUrl() == null;
+    }
+
+    public String getHistories() {
+        return histories + " $";
     }
 }
