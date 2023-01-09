@@ -36,14 +36,6 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void update(Product newProduct) {
-        this.code = newProduct.code;
-        this.description = newProduct.description;
-        this.price = newProduct.price;
-        this.currency = newProduct.currency;
-        this.stock = newProduct.stock;
-        this.imageUrl = newProduct.imageUrl;
-    }
     public Long getId() {
         return id;
     }
