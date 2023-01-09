@@ -1,6 +1,5 @@
 package com.es.phoneshop.model.dao.impl;
 
-import com.es.phoneshop.model.dao.ArrayListProductDao;
 import com.es.phoneshop.model.dao.ProductDao;
 import com.es.phoneshop.model.entity.product.Product;
 import com.es.phoneshop.model.exceptions.ProductNotFoundException;

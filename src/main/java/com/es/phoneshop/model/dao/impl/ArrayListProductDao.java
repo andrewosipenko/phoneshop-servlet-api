@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.dao;
+package com.es.phoneshop.model.dao.impl;
 
 import com.es.phoneshop.model.dao.ProductDao;
 import com.es.phoneshop.model.exceptions.ProductNotFoundException;
@@ -46,14 +46,13 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void save(Product product) {
         synchronized (lock) {
-            try {
+            if(product.getId() != null) {
                 products.set(Math.toIntExact(getProduct(product.getId()).getId()), product);
             }
-            catch(RuntimeException exception) { // if getProduct throws exception -> no such id in products or id == null
+            else {
                 product.setId(currId++);
                 products.add(product);
             }
-
         }
     }
 
