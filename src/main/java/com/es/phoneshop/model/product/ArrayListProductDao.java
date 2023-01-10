@@ -32,35 +32,32 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         Comparator<Product> comparator = getProductComparator(sortField);
-        if (query == null || query.isEmpty()) {
+        if ((query == null || query.isEmpty()) && sortField == null) {
             return products.stream()
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .collect(Collectors.toList());
+        } else if (sortField != null) {
+            String[] queryWords = query.split(" ");
+            return products.stream()
+                    .filter(product -> Arrays.stream(queryWords).anyMatch(queryWord -> product.getDescription().contains(queryWord)))
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getStock() > 0)
+                    .sorted(sortOrder == SortOrder.asc ? comparator : comparator.reversed())
+                    .collect(Collectors.toList());
         } else {
-            if (sortField == null) {
-                String[] queryWords = query.split(" ");
-                return products.stream()
-                        .filter(product -> Arrays.stream(queryWords).anyMatch(queryWord -> product.getDescription().contains(queryWord)))
-                        .filter(product -> product.getPrice() != null)
-                        .filter(product -> product.getStock() > 0)
-                        .sorted((product1, product2) -> (int) (Arrays.stream(queryWords).
-                                filter(queryWord -> product2.getDescription().contains(queryWord))
-                                .count() - Arrays.stream(queryWords)
-                                .filter(queryWord -> product1.getDescription().contains(queryWord))
-                                .count()))
-                        .collect(Collectors.toList());
-            } else {
-                String[] queryWords = query.split(" ");
-                return products.stream()
-                        .filter(product -> Arrays.stream(queryWords).anyMatch(queryWord -> product.getDescription().contains(queryWord)))
-                        .filter(product -> product.getPrice() != null)
-                        .filter(product -> product.getStock() > 0)
-                        .sorted(sortOrder == SortOrder.asc ? comparator : comparator.reversed())
-                        .collect(Collectors.toList());
-            }
+            String[] queryWords = query.split(" ");
+            return products.stream()
+                    .filter(product -> Arrays.stream(queryWords).anyMatch(queryWord -> product.getDescription().contains(queryWord)))
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getStock() > 0)
+                    .sorted((product1, product2) -> (int) (Arrays.stream(queryWords).
+                            filter(queryWord -> product2.getDescription().contains(queryWord))
+                            .count() - Arrays.stream(queryWords)
+                            .filter(queryWord -> product1.getDescription().contains(queryWord))
+                            .count()))
+                    .collect(Collectors.toList());
         }
-
     }
 
     private static Comparator<Product> getProductComparator(SortField sortField) {
