@@ -13,6 +13,7 @@ public class ArrayListProductDao implements ProductDao {
         }
         return instance;
     }
+
     private List<Product> products;
     private long maxId;
 
@@ -30,20 +31,14 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
-        Comparator<Product> comparator = Comparator.comparing(product -> {
-            if (SortField.description == sortField) {
-                return (Comparable) product.getDescription();
-            } else {
-                return (Comparable) product.getPrice();
-            }
-        });
-            if (query == null || query.isEmpty()) {
-                return products.stream()
-                        .filter(product -> product.getPrice() != null)
-                        .filter(product -> product.getStock() > 0)
-                        .sorted(sortOrder == SortOrder.asc ? comparator : comparator.reversed())
-                        .collect(Collectors.toList());
-            } else if (sortField == null) {
+        Comparator<Product> comparator = getProductComparator(sortField);
+        if (query == null || query.isEmpty()) {
+            return products.stream()
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getStock() > 0)
+                    .collect(Collectors.toList());
+        } else {
+            if (sortField == null) {
                 String[] queryWords = query.split(" ");
                 return products.stream()
                         .filter(product -> Arrays.stream(queryWords).anyMatch(queryWord -> product.getDescription().contains(queryWord)))
@@ -64,6 +59,19 @@ public class ArrayListProductDao implements ProductDao {
                         .sorted(sortOrder == SortOrder.asc ? comparator : comparator.reversed())
                         .collect(Collectors.toList());
             }
+        }
+
+    }
+
+    private static Comparator<Product> getProductComparator(SortField sortField) {
+        Comparator<Product> comparator = Comparator.comparing(product -> {
+            if (SortField.description == sortField) {
+                return (Comparable) product.getDescription();
+            } else {
+                return (Comparable) product.getPrice();
+            }
+        });
+        return comparator;
     }
 
     @Override
@@ -75,8 +83,7 @@ public class ArrayListProductDao implements ProductDao {
         if (newProduct == null) {
             product.setId(maxId++);
             products.add(product);
-        }
-        else if (product.getId() != null) {
+        } else if (product.getId() != null) {
             products.set(products.indexOf(newProduct), product);
         }
     }
