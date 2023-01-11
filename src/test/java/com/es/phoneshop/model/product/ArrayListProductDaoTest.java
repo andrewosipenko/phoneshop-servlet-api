@@ -18,12 +18,12 @@ public class ArrayListProductDaoTest
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
     }
 
     @Test
     public void testFindProductsSomeResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts("",null,null).isEmpty());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ArrayListProductDaoTest
         Currency usd=Currency.getInstance("USD");
         productDao.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
 
-        List<Product> testList=productDao.findProducts();
+        List<Product> testList=productDao.findProducts("",null,null);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getStock() == 0));
     }
@@ -79,7 +79,7 @@ public class ArrayListProductDaoTest
         Currency usd=Currency.getInstance("USD");
         productDao.save(new Product("sgs", "Samsung Galaxy S", null, usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
 
-        List<Product> testList=productDao.findProducts();
+        List<Product> testList=productDao.findProducts("",null,null);
         assertTrue(testList.stream().
                 noneMatch(product -> product.getPrice() == null));
     }

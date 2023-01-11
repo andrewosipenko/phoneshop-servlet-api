@@ -1,7 +1,9 @@
 package com.es.phoneshop.web;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -18,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -27,20 +29,19 @@ public class ProductListPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig config;
+    @Mock
+    private ProductDetailsPageServlet servlet;
 
-    private ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
-        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getRequestDispatcher("http://localhost:8080/phoneshop-servlet-api/products/3")).thenReturn(requestDispatcher);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
-        servlet.doGet(request, response);
-
-        verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("products"), any());
+    public void testServletInit() throws ServletException, IOException {
+        request.getRequestDispatcher("http://localhost:8080/phoneshop-servlet-api/products/3").forward(request, response);
+        verify(servlet).init(config);
     }
 }
