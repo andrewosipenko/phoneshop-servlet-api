@@ -32,32 +32,34 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         Comparator<Product> comparator = getProductComparator(sortField);
+        List<Product> findProducts;
 
         if (query == null || query.isEmpty()) {
-            products = products.stream()
+            findProducts = products.stream()
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .collect(Collectors.toList());
         } else {
             String[] queryWords = query.split(" ");
-            products = products.stream()
+            findProducts = products.stream()
                     .filter(product -> Arrays.stream(queryWords).anyMatch(queryWord -> product.getDescription().contains(queryWord)))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
+                    .sorted((product1, product2) -> (int) (Arrays.stream(queryWords).
+                            filter(queryWord -> product2.getDescription().contains(queryWord))
+                            .count() - Arrays.stream(queryWords)
+                            .filter(queryWord -> product1.getDescription().contains(queryWord))
+                            .count()))
                     .collect(Collectors.toList());
         }
 
         if (sortField == null) {
-            return products;
+            return findProducts;
         } else {
-            return getSortedProducts(sortOrder, comparator);
+            return findProducts.stream()
+                    .sorted(sortOrder == SortOrder.asc ? comparator : comparator.reversed())
+                    .collect(Collectors.toList());
         }
-    }
-
-    private List<Product> getSortedProducts(SortOrder sortOrder, Comparator<Product> comparator) {
-        return products.stream()
-                .sorted(sortOrder == SortOrder.asc ? comparator : comparator.reversed())
-                .collect(Collectors.toList());
     }
 
     private static Comparator<Product> getProductComparator(SortField sortField) {
