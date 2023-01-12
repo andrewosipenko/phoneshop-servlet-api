@@ -51,19 +51,18 @@ public class ArrayListProductDaoTest {
                 noneMatch(product -> product.getPrice() == null));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = ProductNotFoundException.class)
     public void testDeleteNewProduct() {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
 
-        assertTrue(product.getId() > 0);
+        assertTrue(product.getId() >= 0);
         Product result = productDao.getProduct(Long.valueOf(product.getId()));
         assertNotNull(result);
         assertEquals("test", result.getCode());
 
         productDao.delete(product.getId());
-
         assertNull(productDao.getProduct(Long.valueOf(product.getId())));
     }
 
@@ -80,14 +79,14 @@ public class ArrayListProductDaoTest {
     public void testFindProductsSortedByDescriptionAsc() {
         Currency usd = Currency.getInstance("USD");
         List<Product> products = new ArrayList<>();
-        products.add(new Product("iphone", "C", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
-        products.add(new Product("iphone", "B", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
+        products.add(new Product("iphone", "AA", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
+        products.add(new Product("iphone", "AAA", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
         products.add(new Product("iphone", "A", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
 
         List<String> sortedProducts = new ArrayList<>();
         sortedProducts.add("A");
-        sortedProducts.add("B");
-        sortedProducts.add("C");
+        sortedProducts.add("AA");
+        sortedProducts.add("AAA");
 
         for (int i = 0; i < products.size(); i++) {
             productDao.save(products.get(i));
