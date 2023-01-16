@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +14,7 @@ public class ArrayListProductDaoTest {
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        this.productDao = ArrayListProductDao.getInstance();
     }
 
     @Test
@@ -57,6 +57,32 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
+    public void testSaveExistedProductPriceHistoryUpdates() throws ProductNotFoundException {
+        Currency usd = Currency.getInstance("USD");
+        Product productBeforeChanges = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(productBeforeChanges);
+
+        Product productAfterChanges = new Product("test1", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        productAfterChanges.setId(productBeforeChanges.getId());
+        productAfterChanges.setPrice(new BigDecimal(200));
+
+        productDao.save(productAfterChanges);
+
+        List<BigDecimal> actualPriceHistoryList = productAfterChanges
+                .getPriceHistoryList()
+                .stream()
+                .map(priceHistory -> priceHistory.getPrice())
+                .collect(Collectors.toList());
+
+        List<BigDecimal> expectedPriceHistoryList = new ArrayList<>();
+        expectedPriceHistoryList.add(productBeforeChanges.getPrice());
+        expectedPriceHistoryList.add(productAfterChanges.getPrice());
+
+        assertEquals(expectedPriceHistoryList, actualPriceHistoryList);
+    }
+
+    @Test
     public void testGetProductCorrectId() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
@@ -87,7 +113,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertTrue(productDao.findProducts().contains(product));
+        assertTrue(productDao.findProducts(null, null, null).contains(product));
     }
 
     @Test
@@ -97,7 +123,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertFalse(productDao.findProducts().contains(product));
+        assertFalse(productDao.findProducts(null, null, null).contains(product));
     }
 
     @Test
@@ -107,7 +133,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertFalse(productDao.findProducts().contains(product));
+        assertFalse(productDao.findProducts(null, null, null).contains(product));
     }
 
     @Test(expected = ProductNotFoundException.class)
@@ -129,7 +155,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testDeleteExistedProduct() throws ProductNotFoundException {
-        List<Product> productsBeforeDeleting = productDao.findProducts();
+        List<Product> productsBeforeDeleting = productDao.findProducts(null, null, null);
 
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
@@ -137,8 +163,110 @@ public class ArrayListProductDaoTest {
         productDao.save(product);
 
         productDao.delete(product.getId());
-        List<Product> productsAfterDeleting = productDao.findProducts();
+        List<Product> productsAfterDeleting = productDao.findProducts(null, null, null);
 
         assertTrue(productsBeforeDeleting.equals(productsAfterDeleting));
+    }
+
+    @Test
+    public void testFindProductsNullSortFieldAndNullString() {
+        List<Product> actualProductsOrder = productDao.findProducts(null, null, null);
+        List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
+                product -> product.getPrice()
+        )).collect(Collectors.toList());
+
+        assertEquals(actualProductsOrder, expectedProductsOrder);
+    }
+
+    @Test
+    public void testFindProductsNullSortFieldAndStringOfSpaces() {
+        List<Product> actualProductsOrder = productDao.findProducts("   ", null, null);
+        List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
+                product -> product.getPrice()
+        )).collect(Collectors.toList());
+
+        assertEquals(actualProductsOrder, expectedProductsOrder);
+    }
+
+    @Test
+    public void testFindProductsContainingQuery() {
+        Currency usd = Currency.getInstance("USD");
+        Product product1 = new Product("test", "Samsung Galaxy", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product2 = new Product("test", "Samsung", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product3 = new Product("test", "Apple", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(product1);
+        productDao.save(product2);
+        productDao.save(product3);
+
+        List<Product> products = productDao.findProducts("samsung Galaxy", null, null);
+
+        assertTrue(products.contains(product1) && products.contains(product2) &&
+                !products.contains(product3));
+    }
+
+    @Test
+    public void testFindProductsWithNullSortFieldInRelevanceOrder() {
+        Currency usd = Currency.getInstance("USD");
+        Product product1 = new Product("test", "Samsung Galaxy 45", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product2 = new Product("test", "Samsung", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        Product product3 = new Product("test", "galaxy 23 samsung 1 2 4 5 6", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+
+        productDao.save(product1);
+        productDao.save(product2);
+        productDao.save(product3);
+
+        List<Product> products = productDao.findProducts("samsung Galaxy", null, null);
+        int product1Index = products.indexOf(product1);
+        int product2Index = products.indexOf(product2);
+        int product3Index = products.indexOf(product3);
+
+        assertTrue(product2Index < product1Index && product1Index < product3Index);
+    }
+
+    @Test
+    public void testFindProductsDescriptionSortFieldAscOrder() {
+        List<Product> actualProductsOrder = productDao.findProducts(null,
+                SortField.description, SortOrder.asc);
+        List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
+                product -> product.getDescription()
+        )).collect(Collectors.toList());
+
+        assertEquals(actualProductsOrder, expectedProductsOrder);
+    }
+
+    @Test
+    public void testFindProductsDescriptionSortFieldDescOrder() {
+        List<Product> actualProductsOrder = productDao.findProducts(null,
+                SortField.description, SortOrder.desc);
+        List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
+                product -> product.getDescription()
+        )).collect(Collectors.toList());
+        Collections.reverse(expectedProductsOrder);
+
+        assertEquals(actualProductsOrder, expectedProductsOrder);
+    }
+
+    @Test
+    public void testFindProductsPriceSortFieldAscOrder() {
+        List<Product> actualProductsOrder = productDao.findProducts(null,
+                SortField.price, SortOrder.asc);
+        List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
+                product -> product.getPrice()
+        )).collect(Collectors.toList());
+
+        assertEquals(actualProductsOrder, expectedProductsOrder);
+    }
+
+    @Test
+    public void testFindProductsPriceSortFieldDescOrder() {
+        List<Product> actualProductsOrder = productDao.findProducts(null,
+                SortField.price, SortOrder.desc);
+        List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
+                product -> product.getDescription()
+        )).collect(Collectors.toList());
+        Collections.reverse(expectedProductsOrder);
+
+        assertEquals(actualProductsOrder, expectedProductsOrder);
     }
 }

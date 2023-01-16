@@ -2,8 +2,6 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.SortField;
-import com.es.phoneshop.model.product.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,16 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Currency;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -38,33 +34,29 @@ public class ProductListPageServletTest {
     private ArrayListProductDao productDao;
 
     @InjectMocks
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
     public void setup() {
+        Long id = 1L;
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getPathInfo()).thenReturn("/" + id);
 
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        List<Product> products = new ArrayList<>();
-        products.add(product);
-
-        when(request.getParameter("query")).thenReturn("samsung galaxy");
-        when(request.getParameter("sort")).thenReturn("price");
-        when(request.getParameter("order")).thenReturn("asc");
-        when(productDao.findProducts("samsung galaxy", SortField.price, SortOrder.asc)).thenReturn(products);
+        when(productDao.getProduct(id)).thenReturn(product);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
+        verify(request).getPathInfo();
+
         verify(requestDispatcher).forward(request, response);
 
-        verify(productDao).findProducts("samsung galaxy", SortField.price, SortOrder.asc);
-
-        List<Product> products = productDao.findProducts("samsung galaxy", SortField.price, SortOrder.asc);
-        verify(request).setAttribute("products", products);
+        Product product = productDao.getProduct(1L);
+        verify(request).setAttribute("product", product);
     }
 }
