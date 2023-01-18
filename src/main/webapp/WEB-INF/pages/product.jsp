@@ -6,38 +6,79 @@
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
     <p>
+        Cart: ${cart}
+    </p>
+    <c:if test="${not empty param.message}">
+        <div class="success">
+                ${param.message}
+        </div>
+    </c:if>
+    <c:if test="${not empty error}">
+        <div class="error">
+                There was an error adding to cart
+        </div>
+    </c:if>
+    <p>
             ${product.description}
     </p>
+    <form method="post">
+        <table>
+            <tr>
+                <td>Image</td>
+                <td>
+                    <img src="${product.imageUrl}">
+                </td>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>
+                    ${product.code}
+                </td>
+            </tr>
+            <tr>
+                <td>stock</td>
+                <td>
+                    ${product.stock}
+                </td>
+            </tr>
+            <tr>
+                <td>price</td>
+                <td class="price">
+                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>quantity</td>
+                <td>
+                    <input name="quantity" value="${not empty error ? param.quantity : 1}" class="quantity">
+                    <c:if test="${not empty error}">
+                       <div class="error">
+                            ${error}
+                       </div>
+                    </c:if>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <button>Add to cart</button>
+        </p>
+    </form>
     <table>
-        <tr>
-            <td>Image</td>
+        <h3>Recently viewed</h3>
+        <c:forEach var="product" items="${history}">
             <td>
-                <img src="${product.imageUrl}">
+                <p class="info">
+                    <img class="product-tile" src="${product.imageUrl}">
+                </p>
+                <p class="info">
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
+                        ${product.description}
+                </p>
+                <p class="info">
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
+                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                </p>
             </td>
-        </tr>
-        <tr>
-            <td>code</td>
-            <td>
-                ${product.code}
-            </td>
-        </tr>
-        <tr>
-            <td>stock</td>
-            <td>
-                ${product.stock}
-            </td>
-        </tr>
-        <tr>
-            <td>price</td>
-            <td>
-                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-            </td>
-        </tr>
-        <tr>
-            <td>history</td>
-            <td>
-                    ${product.histories}
-            </td>
-        </tr>
+        </c:forEach>
     </table>
 </tags:master>

@@ -4,46 +4,66 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+<jsp:useBean id="history" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
-  <p>
-    Welcome to Expert-Soft training!
-  </p>
-  <form>
-    <input name="query" value="${param.query}">
-    <button>Search</button>
-  </form>
-  <table>
-    <thead>
-      <tr>
-        <td>Image</td>
-        <td>
-          Description
-          <tags:sortLink sort="description" order="asc"/>
-          <tags:sortLink sort="description" order="desc"/>
-        </td>
-        <td class="price">
-          Price
-          <tags:sortLink sort="price" order="asc"/>
-          <tags:sortLink sort="price" order="desc"/>
-        </td>
-      </tr>
-    </thead>
-    <c:forEach var="product" items="${products}">
-      <tr>
-        <td>
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-        </td>
-        <td>
-          <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-            ${product.description}
-          </a>
-        </td>
-        <td class="price">
-          <div title=${product.getHistories()}>
-            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-          </div>
-        </td>
-      </tr>
-    </c:forEach>
-  </table>
+    <p>
+        Welcome to Expert-Soft training!
+    </p>
+    <form>
+        <input name="query" value="${param.query}">
+        <button>Search</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <td>Image</td>
+            <td>
+                Description
+                <tags:sortLink sort="description" order="asc"/>
+                <tags:sortLink sort="description" order="desc"/>
+            </td>
+            <td class="price">
+                Price
+                <tags:sortLink sort="price" order="asc"/>
+                <tags:sortLink sort="price" order="desc"/>
+            </td>
+        </tr>
+        </thead>
+        <c:forEach var="product" items="${products}">
+            <tr>
+                <td>
+                    <img class="product-tile" src="${product.imageUrl}">
+                </td>
+                <td>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                            ${product.description}
+                    </a>
+                </td>
+                <td class="price">
+                    <div title=${product.getHistories()}>
+                        <fmt:formatNumber value="${product.price}" type="currency"
+                                          currencySymbol="${product.currency.symbol}"/>
+                    </div>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+    <table>
+        <h3>Recently viewed</h3>
+        <c:forEach var="product" items="${history}">
+            <td>
+                <p>
+                    <img class="product-tile" src="${product.imageUrl}">
+                </p>
+                <p>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
+                        ${product.description}
+                </p>
+                <p>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
+                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                </p>
+            </td>
+        </c:forEach>
+    </table>
 </tags:master>

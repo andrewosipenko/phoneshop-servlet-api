@@ -14,7 +14,7 @@ public class ArrayListProductDao implements ProductDao {
         return instance;
     }
 
-    private List<Product> products;
+    private static List<Product> products;
     private long maxId;
 
     private ArrayListProductDao() {
