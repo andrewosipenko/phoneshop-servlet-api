@@ -1,9 +1,14 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortOrder;
+import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProducts;
+import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProductsService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,10 +38,12 @@ public class ProductListPageServletTest {
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
-
     @Mock
     private ArrayListProductDao productDao;
-
+    @Mock
+    private CartService cartService;
+    @Mock
+    private RecentlyViewedProductsService recentlyViewedProductsService;
     @InjectMocks
     private ProductListPageServlet servlet = new ProductListPageServlet();
 
@@ -53,6 +60,10 @@ public class ProductListPageServletTest {
         when(request.getParameter("query")).thenReturn("samsung galaxy");
         when(request.getParameter("sort")).thenReturn("price");
         when(request.getParameter("order")).thenReturn("asc");
+
+        when(cartService.getCart(request)).thenReturn(new Cart());
+        when(recentlyViewedProductsService.getProducts(request)).thenReturn(new RecentlyViewedProducts());
+
         when(productDao.findProducts("samsung galaxy", SortField.price, SortOrder.asc)).thenReturn(products);
     }
 

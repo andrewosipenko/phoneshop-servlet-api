@@ -42,12 +42,12 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return stock == product.stock && Objects.equals(code, product.code) && Objects.equals(description, product.description) && Objects.equals(price, product.price) && Objects.equals(currency, product.currency) && Objects.equals(imageUrl, product.imageUrl);
+        return Objects.equals(code, product.code) && Objects.equals(description, product.description) && Objects.equals(price, product.price) && Objects.equals(currency, product.currency) && Objects.equals(imageUrl, product.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, description, price, currency, stock, imageUrl);
+        return Objects.hash(id, code, description, price, currency, imageUrl);
     }
 
     public Long getId() {
@@ -112,5 +112,10 @@ public class Product {
 
     public void setPriceHistoryList(List<PriceHistory> priceHistoryList) {
         this.priceHistoryList = priceHistoryList;
+    }
+    
+    @Override
+    public String toString() {
+        return description;
     }
 }

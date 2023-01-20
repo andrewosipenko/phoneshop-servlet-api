@@ -1,7 +1,13 @@
 package com.es.phoneshop.web;
 
+
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProducts;
+import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProductsService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -29,22 +36,30 @@ public class ProductDetailsPageServletTest {
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
-
     @Mock
     private ArrayListProductDao productDao;
-
+    @Mock
+    private CartService cartService;
+    @Mock
+    private RecentlyViewedProductsService recentlyViewedProductsService;
     @InjectMocks
     private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
-    public void setup() {
+    public void doGetSetup() {
         Long id = 1L;
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getPathInfo()).thenReturn("/" + id);
 
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        
+        RecentlyViewedProducts recentlyViewedProducts = new RecentlyViewedProducts();
+        recentlyViewedProducts.getProducts().push(product);
 
+        when(cartService.getCart(request)).thenReturn(new Cart());
+        when(recentlyViewedProductsService.getProducts(request)).thenReturn(recentlyViewedProducts);
+        
         when(productDao.getProduct(id)).thenReturn(product);
     }
 
@@ -57,6 +72,51 @@ public class ProductDetailsPageServletTest {
         verify(requestDispatcher).forward(request, response);
 
         Product product = productDao.getProduct(1L);
+
+        RecentlyViewedProducts recentlyViewedProducts = new RecentlyViewedProducts();
+        recentlyViewedProducts.getProducts().push(product);
+
         verify(request).setAttribute("product", product);
+        verify(request).setAttribute("recently_viewed", recentlyViewedProducts);
+    }
+
+    @Test
+    public void testDoPostDecimalQuantity() throws ServletException, IOException {
+        when(request.getLocale()).thenReturn(Locale.ROOT);
+        when(request.getParameter("quantity")).thenReturn("1.5");
+
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute("error", "Number should be integer");
+    }
+
+    @Test
+    public void testDoPostNonNumericalQuantity() throws ServletException, IOException {
+        when(request.getLocale()).thenReturn(Locale.ROOT);
+        when(request.getParameter("quantity")).thenReturn("Not a number");
+
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute("error", "Not a number");
+    }
+
+    @Test
+    public void testDoPostNegativeQuantity() throws ServletException, IOException {
+        when(request.getLocale()).thenReturn(Locale.ROOT);
+        when(request.getParameter("quantity")).thenReturn("-1");
+
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute("error", "Number should be greater than zero");
+    }
+
+    @Test
+    public void testDoPost() throws ServletException, IOException {
+        when(request.getLocale()).thenReturn(Locale.ROOT);
+        when(request.getParameter("quantity")).thenReturn("100");
+
+        servlet.doPost(request, response);
+
+        verify(request).setAttribute("message", "Product added to cart");
     }
 }

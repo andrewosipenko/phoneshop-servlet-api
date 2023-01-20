@@ -9,11 +9,12 @@ public class ArrayListProductDao implements ProductDao {
     private static ProductDao instance;
 
     public static synchronized ProductDao getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new ArrayListProductDao();
         }
         return instance;
     }
+
     private long maxId;
     private List<Product> products;
 
@@ -24,7 +25,8 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public synchronized Product getProduct(Long id) throws ProductNotFoundException {
-        if (id == null) {throw new ProductNotFoundException(null);
+        if (id == null) {
+            throw new ProductNotFoundException(null);
         }
 
         return products.stream()
@@ -61,8 +63,9 @@ public class ArrayListProductDao implements ProductDao {
 
     private Comparator<Product> sortByRelevance(String query) {
         String[] queryWords = query.toLowerCase().split("\\s+");
-        return Comparator.comparing(product ->
+        Comparator<Product> comparator = Comparator.comparing(product ->
                 productSearchRelevance(product.getDescription().toLowerCase(), queryWords));
+        return comparator.reversed();
     }
 
     private Comparator<Product> sortBySortOrderAndSortField(SortField sortField, SortOrder sortOrder) {
@@ -107,10 +110,9 @@ public class ArrayListProductDao implements ProductDao {
         try {
             Product productToUpdate = getProduct(product.getId());
             product.setPriceHistoryList(productToUpdate.getPriceHistoryList());
-            if(product.getPriceHistoryList()
+            if (product.getPriceHistoryList()
                     .stream()
-                    .noneMatch(p -> Objects.equals(p.getPrice(), product.getPrice())))
-            {
+                    .noneMatch(p -> Objects.equals(p.getPrice(), product.getPrice()))) {
                 product.getPriceHistoryList()
                         .add(new PriceHistory(LocalDateTime.now(), product.getPrice(), product.getCurrency()));
             }

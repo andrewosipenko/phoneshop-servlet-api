@@ -21,11 +21,37 @@ td {
   border : 1px solid gray;
   vertical-align: top;
 }
-.price {
+.price, .quantity {
   text-align: right;
 }
 img.product-tile {
   max-width: 64px;
+}
+.error {
+  color: red;
+}
+
+.success {
+  color: green
+}
+
+.popup {
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border : 10px black;
+  box-shadow: 0 0 10px black;
+}
+.popup {
+  text-align: left;
+}
+.popup.th, .popup.td {
+  text-align: center;
 }
 
 /* Page specific styles */
