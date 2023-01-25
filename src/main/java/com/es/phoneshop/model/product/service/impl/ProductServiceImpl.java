@@ -5,6 +5,8 @@ import com.es.phoneshop.model.product.service.ProductService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -55,5 +57,21 @@ public class ProductServiceImpl implements ProductService {
     public void setRecentProductsInSession(HttpServletRequest request, Set<Product> products) {
         HttpSession currentSession = request.getSession();
         currentSession.setAttribute("recentProducts", products);
+    }
+
+    @Override
+    public Long parseProductIdFromDeleteOrAddRequest(HttpServletRequest request) throws NumberFormatException {
+        return Long.parseLong(request.getPathInfo().substring(1));
+    }
+    @Override
+    public int parseQuantity(String quantity, HttpServletRequest request) throws ParseException {
+        int result;
+        if (!quantity.matches("^\\d+([\\.\\,]\\d+)?$")) {
+            throw new ParseException("Not a number!", 0);
+        }
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(request.getLocale());
+        result = numberFormat.parse(quantity).intValue();
+
+        return result;
     }
 }

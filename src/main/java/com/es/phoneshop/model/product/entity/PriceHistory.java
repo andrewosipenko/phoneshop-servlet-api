@@ -1,6 +1,8 @@
 package com.es.phoneshop.model.product.entity;
 
-public class PriceHistory {
+import java.io.Serializable;
+
+public class PriceHistory implements Serializable {
     private String date;
     private Long price;
 

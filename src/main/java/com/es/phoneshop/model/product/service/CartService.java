@@ -9,4 +9,11 @@ public interface CartService {
     Cart getCart(HttpServletRequest request);
 
     void add(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException;
+
+    void update(Cart cart, Long productId, int quantity, HttpServletRequest request) throws OutOfStockException;
+
+    void delete(Cart cart, Long productId, HttpServletRequest request);
+
+    void reCalculateCart(Cart cartToRecalculate);
+
 }

@@ -3,7 +3,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <html>
-<tags:header pageTitle="Product List"/>
+<tags:header pageTitle="${pageTitle}"/>
 <main>
     <jsp:doBody/>
 </main>
