@@ -2,6 +2,8 @@ package com.es.phoneshop.model.dao.impl;
 
 import com.es.phoneshop.model.dao.ProductDao;
 import com.es.phoneshop.model.entity.product.Product;
+import com.es.phoneshop.model.entity.sortParams.SortField;
+import com.es.phoneshop.model.entity.sortParams.SortOrder;
 import com.es.phoneshop.model.exceptions.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,25 +19,25 @@ public class ArrayListProductDaoTest
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
     }
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts("", SortField.description, SortOrder.asc).isEmpty());
     }
 
     @Test
     public void testFindProductsWithCondition() {
-        assertNotEquals(productDao.getAmountOfProducts(), productDao.findProducts().size());
-        assertEquals(productDao.getAmountOfProducts(), productDao.findProducts().size() + 1);
+        assertNotEquals(productDao.getAmountOfProducts(), productDao.findProducts("", SortField.description, SortOrder.asc).size());
+        assertEquals(productDao.getAmountOfProducts(), productDao.findProducts("", SortField.description, SortOrder.asc).size() + 1);
     }
     @Test
     public void testSaveNewProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
-        assertTrue(product.getId() > 0);
+        assertTrue(product.getId() >= 0);
         Product result = productDao.getProduct(product.getId());
         assertNotNull(result);
         assertEquals("test-product", result.getCode());
