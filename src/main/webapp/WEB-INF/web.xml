@@ -5,9 +5,18 @@
          version="3.1">
   <display-name>Phoneshop servlet api training</display-name>
 
+  <context-param>
+    <param-name>insertSampleData</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>com.es.phoneshop.web.listeners.SampleDataServletContextListener</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>productList</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.pages.ProductListPageServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -15,4 +24,52 @@
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>miniCart</servlet-name>
+    <servlet-class>com.es.phoneshop.web.pages.MiniCartServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>miniCart</servlet-name>
+    <url-pattern>/cart/miniCart</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>deleteCartItem</servlet-name>
+    <servlet-class>com.es.phoneshop.web.pages.DeleteCartItemServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>deleteCartItem</servlet-name>
+    <url-pattern>/cart/deleteCartItem/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>cart</servlet-name>
+    <servlet-class>com.es.phoneshop.web.pages.CartPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>cart</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>productDetails</servlet-name>
+    <servlet-class>com.es.phoneshop.web.pages.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>productDetails</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
+    <location>/WEB-INF/pages/noProductError.jsp</location>
+    <exception-type>java.util.NoSuchElementException</exception-type>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/error.jsp</location>
+    <error-code>500</error-code>
+  </error-page>
 </web-app>
