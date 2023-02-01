@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="cart" class="com.es.phoneshop.model.product.cart.Cart" scope="session"/>
+<jsp:useBean id="cart" class="com.es.phoneshop.model.product.entity.Cart" scope="session"/>
 <tags:master pageTitle="Cart">
     <c:choose>
         <c:when test="${not empty inputErrors}">
@@ -87,6 +87,11 @@
                 </button>
             </c:if>
         </p>
+    </form>
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+        <button>
+            Checkout
+        </button>
     </form>
     <p>
         <tags:recentlyViewedProducts products="${recentProducts}"/>

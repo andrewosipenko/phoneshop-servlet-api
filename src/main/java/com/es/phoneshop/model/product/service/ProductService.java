@@ -18,4 +18,7 @@ public interface ProductService {
     void setRecentProductsInSession(HttpServletRequest request, Set<Product> products);
 
     int parseQuantity(String quantity, HttpServletRequest request) throws ParseException;
+
+
+    String POSSIBLE_ERROR_MESSAGE = "No such product with given code";
 }

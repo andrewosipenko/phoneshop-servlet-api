@@ -1,10 +1,10 @@
-package com.es.phoneshop.model.product.cart;
+package com.es.phoneshop.model.product.entity;
 
 import com.es.phoneshop.model.product.entity.Product;
 
 import java.io.Serializable;
 
-public class CartItem implements Serializable {
+public class CartItem implements Serializable, Cloneable {
     private Product product;
     private int quantity;
 
@@ -31,5 +31,14 @@ public class CartItem implements Serializable {
                 "product=" + product +
                 ", quantity=" + quantity +
                 '}';
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e.getMessage(), e.getCause());
+        }
     }
 }

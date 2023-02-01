@@ -1,17 +1,21 @@
 package com.es.phoneshop.model.product.dao.impl;
 
+import com.es.phoneshop.model.product.dao.EntityDao;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.entity.Product;
 import com.es.phoneshop.model.product.enums.SortField;
 import com.es.phoneshop.model.product.enums.SortOrder;
 import com.es.phoneshop.model.product.exception.ProductNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends EntityDao<Product> implements ProductDao {
     private static volatile ProductDao instance;
 
     public static ProductDao getInstance() {
@@ -26,38 +30,20 @@ public class ArrayListProductDao implements ProductDao {
         return localInstance;
     }
 
-    private List<Product> products;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private long currentMaxId = 1;
 
 
     private ArrayListProductDao() {
-        products = new ArrayList<>();
-    }
-
-    @Override
-    public Product getProduct(Long id) throws ProductNotFoundException {
-        if (id == null) {
-            throw new IllegalArgumentException("Parameter id is null");
-        }
-        lock.readLock().lock();
-        try {
-            Product product = products.stream().
-                    filter(currProduct -> id.equals(currProduct.getId())).
-                    findAny().
-                    orElseThrow(() -> new ProductNotFoundException(String.format("No such product with given code:%d", id)));
-            return product;
-        } finally {
-            lock.readLock().unlock();
-        }
+        entities = new ArrayList<>();
     }
 
     @Override
     public List<Product> findProducts(String query, SortField sort, SortOrder order) {
         lock.readLock().lock();
         try {
-            List<Product> foundProducts = products.stream().
+            List<Product> foundProducts = entities.stream().
                     filter(Objects::nonNull).
                     filter(product -> query == null || query.isEmpty() || containsAnyWordFrom(query, product.getDescription())).
                     sorted((p1, p2) -> {
@@ -89,24 +75,9 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) {
-        lock.writeLock().lock();
-        try {
-            if (product.getId() != null) {
-                Optional<Product> productToAdd = products.stream().
-                        filter(currProduct -> currProduct.getId().equals(product.getId())).
-                        findAny();
-                if (productToAdd.isEmpty()) {
-                    addNewProduct(product, products);
-                } else {
-                    products.set(products.indexOf(productToAdd.get()), product);
-                }
-            } else {
-                addNewProduct(product, products);
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+    protected final void addNewEntity(Product entity, List<Product> entities) {
+        entity.setId(currentMaxId++);
+        entities.add(entity);
     }
 
     @Override
@@ -116,18 +87,12 @@ public class ArrayListProductDao implements ProductDao {
         }
         lock.writeLock().lock();
         try {
-            if (!products.removeIf(product -> id.equals(product.getId()))) {
+            if (!entities.removeIf(product -> id.equals(product.getId()))) {
                 throw new ProductNotFoundException(String.format("Cannot delete product with given id:%d", id));
             }
         } finally {
             lock.writeLock().unlock();
         }
-    }
-
-
-    private void addNewProduct(Product product, List<Product> products) {
-        product.setId(currentMaxId++);
-        products.add(product);
     }
 
     private boolean containsAnyWordFrom(String query, String desc) {

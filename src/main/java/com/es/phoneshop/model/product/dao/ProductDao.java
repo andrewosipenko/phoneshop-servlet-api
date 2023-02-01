@@ -8,8 +8,11 @@ import com.es.phoneshop.model.product.exception.ProductNotFoundException;
 import java.util.List;
 
 public interface ProductDao {
-    Product getProduct(Long id) throws ProductNotFoundException;
+    Product getEntity(Long id, String message) throws ProductNotFoundException;
+
     List<Product> findProducts(String query, SortField sort, SortOrder order);
+
     void save(Product product);
+
     void delete(Long id);
 }

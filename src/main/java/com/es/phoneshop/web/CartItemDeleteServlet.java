@@ -23,6 +23,7 @@ public class CartItemDeleteServlet extends HttpServlet {
         productService = ProductServiceImpl.getInstance();
     }
 
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         cartService.delete(

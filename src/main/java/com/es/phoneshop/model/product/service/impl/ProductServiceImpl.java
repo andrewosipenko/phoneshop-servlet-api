@@ -17,7 +17,7 @@ public class ProductServiceImpl implements ProductService {
     public static ProductServiceImpl getInstance() {
         ProductServiceImpl localInstance = instance;
         if (localInstance == null) {
-            synchronized (CartServiceImpl.class) {
+            synchronized (ProductServiceImpl.class) {
                 localInstance = instance;
                 if (localInstance == null)
                     instance = localInstance = new ProductServiceImpl();
@@ -63,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
     public Long parseProductIdFromDeleteOrAddRequest(HttpServletRequest request) throws NumberFormatException {
         return Long.parseLong(request.getPathInfo().substring(1));
     }
+
     @Override
     public int parseQuantity(String quantity, HttpServletRequest request) throws ParseException {
         int result;

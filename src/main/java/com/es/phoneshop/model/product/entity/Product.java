@@ -5,8 +5,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
-public class Product implements Serializable {
-    private Long id;
+public class Product extends Entity implements Serializable {
     private String code;
     private String description;
     /**
@@ -54,14 +53,6 @@ public class Product implements Serializable {
         this.stock = stock;
         this.imageUrl = imageUrl;
         this.priceHistory = null;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCode() {

@@ -1,17 +1,7 @@
 package com.es.phoneshop.model.product.exception;
 
-public class ProductNotFoundException extends RuntimeException {
-    private String message;
-
+public class ProductNotFoundException extends EntityNotFoundException {
     public ProductNotFoundException(String message) {
-        this.message = message;
-    }
-
-    public ProductNotFoundException() {
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+        super(message);
     }
 }

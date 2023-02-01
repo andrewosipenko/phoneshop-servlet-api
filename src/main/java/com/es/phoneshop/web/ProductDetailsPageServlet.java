@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.model.product.entity.Cart;
 import com.es.phoneshop.model.product.entity.Product;
 import com.es.phoneshop.model.product.exception.OutOfStockException;
 import com.es.phoneshop.model.product.service.CartService;
@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
+
+import static com.es.phoneshop.model.product.service.ProductService.POSSIBLE_ERROR_MESSAGE;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
@@ -35,11 +37,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getPathInfo().substring(1).contains("/")) {
-            request.setAttribute("product", productDao.getProduct(
-                    productService.parseProductIdFromRequestWithHistory(request)));
+            request.setAttribute("product", productDao.getEntity(
+                    productService.parseProductIdFromRequestWithHistory(request), POSSIBLE_ERROR_MESSAGE));
             request.getRequestDispatcher("/WEB-INF/pages/productPriceHistory.jsp").forward(request, response);
         } else {
-            Product product = productDao.getProduct(productService.parseProductIdFromRequestWithoutHistory(request));
+            Product product = productDao.getEntity(productService.parseProductIdFromRequestWithoutHistory(request), POSSIBLE_ERROR_MESSAGE);
             request.setAttribute("product", product);
             productService.includeProductInRecentProducts(product, request);
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
@@ -70,7 +72,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             return;
         }
 
-        request.setAttribute("product", productDao.getProduct(productId));
+        request.setAttribute("product", productDao.getEntity(productId, POSSIBLE_ERROR_MESSAGE));
         response.sendRedirect(String.format("%s/products/%d?message=Product was added to cart successfully!", request.getContextPath(), productId));
     }
 }

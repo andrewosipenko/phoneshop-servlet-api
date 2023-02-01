@@ -19,6 +19,8 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.es.phoneshop.model.product.service.ProductService.POSSIBLE_ERROR_MESSAGE;
+
 public class CartItemAddServlet extends HttpServlet {
     private CartService cartService;
     private ProductService productService;
@@ -59,7 +61,7 @@ public class CartItemAddServlet extends HttpServlet {
             request.getSession().setAttribute("inputError", inputError);
             response.sendRedirect(String.format("%s/products?message=%s was successfully added to the cart!",
                     request.getContextPath(),
-                    productDao.getProduct(productId).getDescription()));
+                    productDao.getEntity(productId, POSSIBLE_ERROR_MESSAGE).getDescription()));
         } else {
             request.getSession().setAttribute("enteredQuantity", request.getParameter("quantity"));
             response.sendRedirect(String.format("%s/products", request.getContextPath()));
