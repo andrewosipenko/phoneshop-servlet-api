@@ -11,12 +11,12 @@
   </context-param>
 
   <listener>
-    <listener-class>com.es.phoneshop.web.DemoDataServletContextListener</listener-class>
+    <listener-class>com.es.phoneshop.web.listener.DemoDataServletContextListener</listener-class>
   </listener>
 
   <servlet>
     <servlet-name>productList</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.ProductListPageServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -25,8 +25,38 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>miniCart</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.MiniCartServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>miniCart</servlet-name>
+    <url-pattern>/cart/minicart</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>cart</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.CartPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>cart</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>deleteCartItem</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.DeleteCartItemServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>deleteCartItem</servlet-name>
+    <url-pattern>/cart/deleteCartItem/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>product</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.ProductDetailsPageServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -34,9 +64,19 @@
     <url-pattern>/products/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>addCartItem</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.AddCartItemServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>addCartItem</servlet-name>
+    <url-pattern>/products/addCartItem/*</url-pattern>
+  </servlet-mapping>
+
   <error-page>
     <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
-    <exception-type>com.es.phoneshop.model.product.ProductNotFoundException</exception-type>
+    <exception-type>com.es.phoneshop.exception.ProductNotFoundException</exception-type>
   </error-page>
 
   <error-page>

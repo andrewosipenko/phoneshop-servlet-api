@@ -40,10 +40,10 @@ img.product-tile {
   width: fit-content;
   height: fit-content;
   margin: auto;
-  left: 0;
+  left: 200px;
   right: 0;
-  top: 0;
-  bottom: 0;
+  top: auto;
+  bottom: auto;
   border : 10px black;
   box-shadow: 0 0 10px black;
 }
@@ -51,7 +51,7 @@ img.product-tile {
   text-align: left;
 }
 .popup.th, .popup.td {
-  text-align: center;
+  text-align: right;
 }
 
 /* Page specific styles */

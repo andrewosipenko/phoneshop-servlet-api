@@ -1,8 +1,10 @@
 package com.es.phoneshop.model.recentlyViewedProducts;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.service.DefaultRecentlyViewedProductsService;
+import com.es.phoneshop.service.RecentlyViewedProductsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

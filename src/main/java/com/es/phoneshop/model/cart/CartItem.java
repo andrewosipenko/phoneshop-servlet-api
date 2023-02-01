@@ -2,9 +2,12 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CartItem {
+public class CartItem implements Serializable {
+    private static final long serialVersionUID = -8700653357405546820L;
+
     private Product product;
     private int quantity;
 
@@ -13,8 +16,15 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public CartItem() {
+    }
+
     public Product getProduct() {
         return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public int getQuantity() {

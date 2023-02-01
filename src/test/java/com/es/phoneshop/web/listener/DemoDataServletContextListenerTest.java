@@ -1,6 +1,6 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.listener;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.dao.ArrayListProductDao;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;

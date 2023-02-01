@@ -1,13 +1,11 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlet;
 
-
+import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.model.cart.Cart;
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProducts;
-import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProductsService;
-
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.RecentlyViewedProductsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,13 +51,11 @@ public class ProductDetailsPageServletTest {
 
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        
         RecentlyViewedProducts recentlyViewedProducts = new RecentlyViewedProducts();
         recentlyViewedProducts.getProducts().push(product);
 
         when(cartService.getCart(request)).thenReturn(new Cart());
         when(recentlyViewedProductsService.getProducts(request)).thenReturn(recentlyViewedProducts);
-        
         when(productDao.getProduct(id)).thenReturn(product);
     }
 
@@ -72,7 +68,6 @@ public class ProductDetailsPageServletTest {
         verify(requestDispatcher).forward(request, response);
 
         Product product = productDao.getProduct(1L);
-
         RecentlyViewedProducts recentlyViewedProducts = new RecentlyViewedProducts();
         recentlyViewedProducts.getProducts().push(product);
 

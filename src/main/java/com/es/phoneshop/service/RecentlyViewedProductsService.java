@@ -1,4 +1,6 @@
-package com.es.phoneshop.model.recentlyViewedProducts;
+package com.es.phoneshop.service;
+
+import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProducts;
 
 import javax.servlet.http.HttpServletRequest;
 

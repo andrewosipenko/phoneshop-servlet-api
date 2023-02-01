@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,7 +8,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product {
+public class Product implements Serializable {
+    private static final long serialVersionUID = 622427696017415963L;
+
     private Long id;
     private String code;
     private String description;
@@ -113,7 +116,7 @@ public class Product {
     public void setPriceHistoryList(List<PriceHistory> priceHistoryList) {
         this.priceHistoryList = priceHistoryList;
     }
-    
+
     @Override
     public String toString() {
         return description;

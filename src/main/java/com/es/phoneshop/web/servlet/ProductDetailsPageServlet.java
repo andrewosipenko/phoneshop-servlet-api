@@ -1,13 +1,14 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.HttpSessionCartService;
-import com.es.phoneshop.model.cart.OutOfStockException;
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.recentlyViewedProducts.DefaultRecentlyViewedProductsService;
+import com.es.phoneshop.util.CartItemQuantityValidationUtil;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.HttpSessionCartService;
+import com.es.phoneshop.exception.OutOfStockException;
+import com.es.phoneshop.dao.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.service.DefaultRecentlyViewedProductsService;
 import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProducts;
-import com.es.phoneshop.model.recentlyViewedProducts.RecentlyViewedProductsService;
+import com.es.phoneshop.service.RecentlyViewedProductsService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,11 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Locale;
-
 public class ProductDetailsPageServlet extends HttpServlet {
+    private static final long serialVersionUID = 5487646042246219153L;
+
     private ProductDao productDao;
 
     private CartService cartService;
@@ -31,7 +30,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
-
         cartService = HttpSessionCartService.getInstance();
         recentlyViewedProductsService = DefaultRecentlyViewedProductsService.getInstance();
     }
@@ -55,26 +53,16 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long productId = parseProductId(request);
         String quantityString = request.getParameter("quantity");
 
-        int quantity;
-        try {
-            Locale locale = request.getLocale();
-            NumberFormat format = NumberFormat.getInstance(locale);
-            Double doubleQuantity = format.parse(quantityString).doubleValue();
-            quantity = doubleQuantity.intValue();
-            if (quantity - doubleQuantity != 0.0) {
-                incorrectQuantityError(request, response, "Number should be integer");
-                return;
-            }
-        } catch (ParseException e) {
-            incorrectQuantityError(request, response, "Not a number");
+        String errorMessage = CartItemQuantityValidationUtil
+                .validateQuantity(request, quantityString);
+
+        if(errorMessage != null)
+        {
+            incorrectQuantityError(request, response, errorMessage);
             return;
         }
 
-        if (quantity <= 0) {
-            incorrectQuantityError(request, response, "Number should be greater than zero");
-            return;
-        }
-
+        int quantity = CartItemQuantityValidationUtil.parseQuantity(request, quantityString).intValue();
         try {
             cartService.add(productId, quantity, request);
         } catch (OutOfStockException e) {

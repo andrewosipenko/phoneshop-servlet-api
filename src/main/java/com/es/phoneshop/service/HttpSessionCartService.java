@@ -1,14 +1,21 @@
-package com.es.phoneshop.model.cart;
+package com.es.phoneshop.service;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.exception.OutOfStockException;
+import com.es.phoneshop.dao.ArrayListProductDao;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.exception.ProductNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class HttpSessionCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = HttpSessionCartService.class.getName() + ".cart";
+
     private ProductDao productDao;
 
     private HttpSessionCartService() {
@@ -47,17 +54,47 @@ public class HttpSessionCartService implements CartService {
             Product product = productDao.getProduct(productId);
             Cart cart = getCart(request);
 
-            CartItem cartItem = cart.getItems()
-                    .stream()
-                    .filter(item -> item.getProduct().equals(product))
-                    .findAny()
-                    .orElse(null);
+            CartItem cartItem = findCartItemByProduct(cart, product);
 
             if (cartItem != null) {
                 addExistedInCartProduct(product, cartItem, quantity);
             } else {
                 addNonExistedInCartProduct(cart, product, quantity);
             }
+
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void update(Long productId, int quantity, HttpServletRequest request) throws OutOfStockException {
+        HttpSession session = request.getSession();
+
+        synchronized (session) {
+            Product product = productDao.getProduct(productId);
+            Cart cart = getCart(request);
+
+            CartItem cartItem = findCartItemByProduct(cart, product);
+
+            if (cartItem != null) {
+                checkIfQuantityGreaterThanStock(product, quantity);
+                cartItem.setQuantity(quantity);
+            } else {
+                throw new ProductNotFoundException(productId);
+            }
+
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void delete(Long productId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        synchronized (session) {
+            Cart cart = getCart(request);
+            cart.getItems().removeIf(item -> Objects.equals(item.getProduct().getId(), productId));
+            recalculateCart(cart);
         }
     }
 
@@ -76,5 +113,22 @@ public class HttpSessionCartService implements CartService {
         if (product.getStock() < quantity) {
             throw new OutOfStockException(product, quantity, product.getStock());
         }
+    }
+
+    private void recalculateCart(Cart cart) {
+        cart.setTotalQuantity(cart.getItems().stream()
+                .map(CartItem::getQuantity)
+                .mapToInt(q -> q).sum());
+        cart.setTotalCost(cart.getItems().stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
+    private CartItem findCartItemByProduct(Cart cart, Product product) {
+        return cart.getItems()
+                .stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findAny()
+                .orElse(null);
     }
 }
