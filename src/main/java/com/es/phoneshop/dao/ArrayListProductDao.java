@@ -8,10 +8,11 @@ import com.es.phoneshop.model.product.Product;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends GenericDao<Product> implements ProductDao {
     private static ProductDao instance;
 
     public static synchronized ProductDao getInstance() {
@@ -21,30 +22,14 @@ public class ArrayListProductDao implements ProductDao {
         return instance;
     }
 
-    private long maxId;
-    private List<Product> products;
-
     private ArrayListProductDao() {
-        this.maxId = 1L;
-        this.products = new ArrayList<>();
+
     }
 
     @Override
-    public synchronized Product getProduct(Long id) throws ProductNotFoundException {
-        if (id == null) {
-            throw new ProductNotFoundException(null);
-        }
-
-        return products.stream()
-                .filter(product -> id.equals(product.getId()))
-                .findAny()
-                .orElseThrow(new ProductNotFoundException(id));
-    }
-
-    @Override
-    public synchronized List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
+    public synchronized List<Product> findProductsByQueryAndSortParameters(String query, SortField sortField, SortOrder sortOrder) {
         Stream<Product> unsortedDesiredProductsStream =
-                products.stream()
+                items.stream()
                         .filter(product -> (
                                 query == null || query.trim().isEmpty()
                                         || containsAnyQueryWords(product.getDescription().toLowerCase(), query))
@@ -112,9 +97,15 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
+    protected Supplier<? extends NoSuchElementException> getItemNotFoundExceptionSupplier(Long id) {
+        ProductNotFoundException exception = new ProductNotFoundException(id);
+        return exception::get;
+    }
+
+    @Override
     public synchronized void save(Product product) {
         try {
-            Product productToUpdate = getProduct(product.getId());
+            Product productToUpdate = findById(product.getId());
             product.setPriceHistoryList(productToUpdate.getPriceHistoryList());
             if (product.getPriceHistoryList()
                     .stream()
@@ -122,17 +113,11 @@ public class ArrayListProductDao implements ProductDao {
                 product.getPriceHistoryList()
                         .add(new PriceHistory(LocalDateTime.now(), product.getPrice(), product.getCurrency()));
             }
-            products.remove(productToUpdate);
+            items.remove(productToUpdate);
         } catch (ProductNotFoundException e) {
             product.setId(maxId++);
         } finally {
-            products.add(product);
+            items.add(product);
         }
-    }
-
-    @Override
-    public synchronized void delete(Long id) throws ProductNotFoundException {
-        Product product = getProduct(id);
-        products.remove(product);
     }
 }

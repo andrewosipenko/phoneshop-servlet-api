@@ -56,7 +56,7 @@ public class ProductDetailsPageServletTest {
 
         when(cartService.getCart(request)).thenReturn(new Cart());
         when(recentlyViewedProductsService.getProducts(request)).thenReturn(recentlyViewedProducts);
-        when(productDao.getProduct(id)).thenReturn(product);
+        when(productDao.findById(id)).thenReturn(product);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ProductDetailsPageServletTest {
 
         verify(requestDispatcher).forward(request, response);
 
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
         RecentlyViewedProducts recentlyViewedProducts = new RecentlyViewedProducts();
         recentlyViewedProducts.getProducts().push(product);
 

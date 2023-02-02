@@ -54,7 +54,7 @@ public class DefaultRecentlyViewedProductsService implements RecentlyViewedProdu
         HttpSession session = request.getSession();
 
         synchronized (session) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.findById(productId);
             RecentlyViewedProducts recentlyViewedProducts = getProducts(request);
             Deque<Product> products = recentlyViewedProducts.getProducts();
 

@@ -57,7 +57,7 @@ public class DefaultRecentlyViewedProductsServiceTest {
 
     @Test
     public void testAddExistedProduct() {
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
 
         Deque<Product> recentlyViewedProductsDeque = recentlyViewedProductsService.getProducts(request).getProducts();
         recentlyViewedProductsService.add(1L, request);
@@ -67,7 +67,7 @@ public class DefaultRecentlyViewedProductsServiceTest {
 
     @Test
     public void testAddFourthProduct() {
-        Product fourthProduct = productDao.getProduct(4L);
+        Product fourthProduct = productDao.findById(4L);
 
         Deque<Product> recentlyViewedProductsDeque = recentlyViewedProductsService.getProducts(request).getProducts();
         recentlyViewedProductsService.add(4L, request);

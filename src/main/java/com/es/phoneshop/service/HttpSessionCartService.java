@@ -51,7 +51,7 @@ public class HttpSessionCartService implements CartService {
         HttpSession session = request.getSession();
 
         synchronized (session) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.findById(productId);
             Cart cart = getCart(request);
 
             CartItem cartItem = findCartItemByProduct(cart, product);
@@ -71,7 +71,7 @@ public class HttpSessionCartService implements CartService {
         HttpSession session = request.getSession();
 
         synchronized (session) {
-            Product product = productDao.getProduct(productId);
+            Product product = productDao.findById(productId);
             Cart cart = getCart(request);
 
             CartItem cartItem = findCartItemByProduct(cart, product);
@@ -94,6 +94,17 @@ public class HttpSessionCartService implements CartService {
         synchronized (session) {
             Cart cart = getCart(request);
             cart.getItems().removeIf(item -> Objects.equals(item.getProduct().getId(), productId));
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void clearCart(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        synchronized (session) {
+            Cart cart = getCart(request);
+            cart.getItems().clear();
             recalculateCart(cart);
         }
     }

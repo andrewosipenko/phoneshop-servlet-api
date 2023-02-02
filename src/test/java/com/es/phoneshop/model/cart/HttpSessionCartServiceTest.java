@@ -51,7 +51,7 @@ public class HttpSessionCartServiceTest {
 
     @Test
     public void testAddNewProduct() throws OutOfStockException {
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
         CartItem expectedCartItem = new CartItem(product, 1);
 
         cartService.add(product.getId(), 1, request);
@@ -61,7 +61,7 @@ public class HttpSessionCartServiceTest {
 
     @Test
     public void testAddExistedProduct() throws OutOfStockException {
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
 
         cartService.add(product.getId(), 1, request);
         cartService.add(product.getId(), 2, request);
@@ -73,14 +73,14 @@ public class HttpSessionCartServiceTest {
 
     @Test(expected = OutOfStockException.class)
     public void testAddProductWithQuantityGreaterThanStock() throws OutOfStockException {
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
 
         cartService.add(product.getId(), product.getStock() + 1, request);
     }
 
     @Test
     public void testUpdateProduct() throws OutOfStockException {
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
 
         cartService.add(product.getId(), 1, request);
         cartService.update(product.getId(), 3, request);
@@ -96,15 +96,15 @@ public class HttpSessionCartServiceTest {
 
     @Test(expected = ProductNotFoundException.class)
     public void testUpdateNonAddedToTheCartProduct() throws OutOfStockException {
-        Product product = productDao.getProduct(1L);
+        Product product = productDao.findById(1L);
 
         cartService.update(product.getId(), 1, request);
     }
 
     @Test
     public void testDelete() throws OutOfStockException {
-        Product product = productDao.getProduct(1L);
-        Product product1 = productDao.getProduct(2L);
+        Product product = productDao.findById(1L);
+        Product product1 = productDao.findById(2L);
 
         cartService.add(product.getId(), 1, request);
         cartService.add(product1.getId(), 1, request);

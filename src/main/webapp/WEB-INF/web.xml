@@ -65,6 +65,16 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>checkout</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.CheckoutPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>checkout</servlet-name>
+    <url-pattern>/checkout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>addCartItem</servlet-name>
     <servlet-class>com.es.phoneshop.web.servlet.AddCartItemServlet</servlet-class>
   </servlet>
@@ -74,9 +84,34 @@
     <url-pattern>/products/addCartItem/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>orderOverview</servlet-name>
+    <servlet-class>com.es.phoneshop.web.servlet.OrderOverviewPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>orderOverview</servlet-name>
+    <url-pattern>/order/overview/*</url-pattern>
+  </servlet-mapping>
+
+  <filter>
+    <filter-name>orderOverview</filter-name>
+    <filter-class>com.es.phoneshop.web.filter.DosFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>orderOverview</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <error-page>
     <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
     <exception-type>com.es.phoneshop.exception.ProductNotFoundException</exception-type>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/errorOrderNotFound.jsp</location>
+    <exception-type>com.es.phoneshop.exception.OrderNotFoundException</exception-type>
   </error-page>
 
   <error-page>

@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.DaoEntity;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,7 +10,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product implements Serializable {
+public class Product implements Serializable, DaoEntity<Product> {
     private static final long serialVersionUID = 622427696017415963L;
 
     private Long id;
@@ -53,10 +55,12 @@ public class Product implements Serializable {
         return Objects.hash(id, code, description, price, currency, imageUrl);
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

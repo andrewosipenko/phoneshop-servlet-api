@@ -29,7 +29,7 @@ public class ArrayListProductDaoTest {
         productDao.save(product);
 
         assertTrue(product.getId() > 0);
-        Product result = productDao.getProduct(product.getId());
+        Product result = productDao.findById(product.getId());
         assertNotNull(result);
         assertEquals("test", result.getCode());
     }
@@ -58,7 +58,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(productAfterChanges);
 
-        assertEquals(productDao.getProduct(productBeforeChanges.getId()), productAfterChanges);
+        assertEquals(productDao.findById(productBeforeChanges.getId()), productAfterChanges);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ArrayListProductDaoTest {
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
 
-        assertEquals(product, productDao.getProduct(product.getId()));
+        assertEquals(product, productDao.findById(product.getId()));
     }
 
 
@@ -103,12 +103,12 @@ public class ArrayListProductDaoTest {
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
 
-        productDao.getProduct(product.getId() + 1L);
+        productDao.findById(product.getId() + 1L);
     }
 
     @Test(expected = ProductNotFoundException.class)
     public void testGetProductNullId() throws ProductNotFoundException {
-        productDao.getProduct(null);
+        productDao.findById(null);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertTrue(productDao.findProducts(null, null, null).contains(product));
+        assertTrue(productDao.findProductsByQueryAndSortParameters(null, null, null).contains(product));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertFalse(productDao.findProducts(null, null, null).contains(product));
+        assertFalse(productDao.findProductsByQueryAndSortParameters(null, null, null).contains(product));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertFalse(productDao.findProducts(null, null, null).contains(product));
+        assertFalse(productDao.findProductsByQueryAndSortParameters(null, null, null).contains(product));
     }
 
     @Test(expected = ProductNotFoundException.class)
@@ -160,7 +160,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testDeleteExistedProduct() throws ProductNotFoundException {
-        List<Product> productsBeforeDeleting = productDao.findProducts(null, null, null);
+        List<Product> productsBeforeDeleting = productDao.findProductsByQueryAndSortParameters(null, null, null);
 
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
@@ -168,14 +168,14 @@ public class ArrayListProductDaoTest {
         productDao.save(product);
 
         productDao.delete(product.getId());
-        List<Product> productsAfterDeleting = productDao.findProducts(null, null, null);
+        List<Product> productsAfterDeleting = productDao.findProductsByQueryAndSortParameters(null, null, null);
 
         assertTrue(productsBeforeDeleting.equals(productsAfterDeleting));
     }
 
     @Test
     public void testFindProductsNullSortFieldAndNullString() {
-        List<Product> actualProductsOrder = productDao.findProducts(null, null, null);
+        List<Product> actualProductsOrder = productDao.findProductsByQueryAndSortParameters(null, null, null);
         List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
                 product -> product.getPrice()
         )).collect(Collectors.toList());
@@ -185,7 +185,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsNullSortFieldAndStringOfSpaces() {
-        List<Product> actualProductsOrder = productDao.findProducts("   ", null, null);
+        List<Product> actualProductsOrder = productDao.findProductsByQueryAndSortParameters("   ", null, null);
         List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
                 product -> product.getPrice()
         )).collect(Collectors.toList());
@@ -204,7 +204,7 @@ public class ArrayListProductDaoTest {
         productDao.save(product2);
         productDao.save(product3);
 
-        List<Product> products = productDao.findProducts("samsung Galaxy", null, null);
+        List<Product> products = productDao.findProductsByQueryAndSortParameters("samsung Galaxy", null, null);
 
         assertTrue(products.contains(product1) && products.contains(product2) &&
                 !products.contains(product3));
@@ -221,7 +221,7 @@ public class ArrayListProductDaoTest {
         productDao.save(product2);
         productDao.save(product3);
 
-        List<Product> products = productDao.findProducts("samsung Galaxy", null, null);
+        List<Product> products = productDao.findProductsByQueryAndSortParameters("samsung Galaxy", null, null);
         int product1Index = products.indexOf(product1);
         int product2Index = products.indexOf(product2);
         int product3Index = products.indexOf(product3);
@@ -231,7 +231,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsDescriptionSortFieldAscOrder() {
-        List<Product> actualProductsOrder = productDao.findProducts(null,
+        List<Product> actualProductsOrder = productDao.findProductsByQueryAndSortParameters(null,
                 SortField.description, SortOrder.asc);
         List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
                 product -> product.getDescription()
@@ -242,7 +242,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsDescriptionSortFieldDescOrder() {
-        List<Product> actualProductsOrder = productDao.findProducts(null,
+        List<Product> actualProductsOrder = productDao.findProductsByQueryAndSortParameters(null,
                 SortField.description, SortOrder.desc);
         List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
                 product -> product.getDescription()
@@ -254,7 +254,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsPriceSortFieldAscOrder() {
-        List<Product> actualProductsOrder = productDao.findProducts(null,
+        List<Product> actualProductsOrder = productDao.findProductsByQueryAndSortParameters(null,
                 SortField.price, SortOrder.asc);
         List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
                 product -> product.getPrice()
@@ -265,7 +265,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsPriceSortFieldDescOrder() {
-        List<Product> actualProductsOrder = productDao.findProducts(null,
+        List<Product> actualProductsOrder = productDao.findProductsByQueryAndSortParameters(null,
                 SortField.price, SortOrder.desc);
         List<Product> expectedProductsOrder = actualProductsOrder.stream().sorted(Comparator.comparing(
                 product -> product.getDescription()

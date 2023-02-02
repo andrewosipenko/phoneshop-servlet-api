@@ -61,7 +61,7 @@ public class ProductListPageServletTest {
         when(request.getParameter("order")).thenReturn("asc");
         when(cartService.getCart(request)).thenReturn(new Cart());
         when(recentlyViewedProductsService.getProducts(request)).thenReturn(new RecentlyViewedProducts());
-        when(productDao.findProducts("samsung galaxy", SortField.price, SortOrder.asc)).thenReturn(products);
+        when(productDao.findProductsByQueryAndSortParameters("samsung galaxy", SortField.price, SortOrder.asc)).thenReturn(products);
     }
 
     @Test
@@ -70,9 +70,9 @@ public class ProductListPageServletTest {
 
         verify(requestDispatcher).forward(request, response);
 
-        verify(productDao).findProducts("samsung galaxy", SortField.price, SortOrder.asc);
+        verify(productDao).findProductsByQueryAndSortParameters("samsung galaxy", SortField.price, SortOrder.asc);
 
-        List<Product> products = productDao.findProducts("samsung galaxy", SortField.price, SortOrder.asc);
+        List<Product> products = productDao.findProductsByQueryAndSortParameters("samsung galaxy", SortField.price, SortOrder.asc);
         verify(request).setAttribute("products", products);
     }
 }
