@@ -3,6 +3,8 @@ package com.es.phoneshop;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
+import java.nio.file.Paths;
+
 public class PhoneshopMain {
 
     public static void main(String[] args) throws Exception {
@@ -16,7 +18,7 @@ public class PhoneshopMain {
         tomcat.setPort(Integer.valueOf(webPort));
 
         String contextPath = "/phoneshop";
-        String warFilePath = "..\\target\\phoneshop-servlet-api.war";
+        String warFilePath = Paths.get("target\\phoneshop-servlet-api.war").toAbsolutePath().toString();;
 
         tomcat.getHost().setAppBase(".");
 
