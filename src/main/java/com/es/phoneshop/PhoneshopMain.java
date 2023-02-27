@@ -18,7 +18,7 @@ public class PhoneshopMain {
         tomcat.setPort(Integer.valueOf(webPort));
 
         String contextPath = "/phoneshop";
-        String warFilePath = Paths.get("target\\phoneshop-servlet-api.war").toAbsolutePath().toString();;
+        String warFilePath = Paths.get("target/phoneshop-servlet-api.war").toFile().getCanonicalPath();
 
         tomcat.getHost().setAppBase(".");
 
