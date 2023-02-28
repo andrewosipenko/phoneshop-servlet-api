@@ -3,27 +3,43 @@ package com.es.phoneshop;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
-import java.nio.file.Paths;
+import java.io.File;
 
 public class PhoneshopMain {
 
     public static void main(String[] args) throws Exception {
         Tomcat tomcat = new Tomcat();
 
-        String webPort = System.getenv("PORT");
-        if(webPort == null || webPort.isEmpty()) {
-            webPort = "8080";
+        String path = "";
+
+        for(int i = 0; i < args.length; ++i) {
+            switch (args[i]) {
+                case "--war" -> {
+                    ++i;
+                    if (i >= args.length) {
+                        throw new IllegalArgumentException("war value is not specified");
+                    }
+                    File war = new File(args[i]);
+                    tomcat.addWebapp(path, war.getAbsolutePath());
+                }
+                case "--path" -> {
+                    ++i;
+                    if (i >= args.length) {
+                        throw new IllegalArgumentException("path value is not specified");
+                    }
+                    path = args[i];
+                }
+                case "--port" -> {
+                    ++i;
+                    if (i >= args.length) {
+                        throw new IllegalArgumentException("port value is not specified");
+                    }
+                    tomcat.setPort(Integer.parseInt(args[i]));
+                }
+            }
         }
 
-        tomcat.setPort(Integer.valueOf(webPort));
-
-        String contextPath = "/phoneshop";
-        String warFilePath = Paths.get("target/phoneshop-servlet-api.war").toFile().getCanonicalPath();
-
         tomcat.getHost().setAppBase(".");
-
-        tomcat.addWebapp(contextPath, warFilePath);
-
 
         tomcat.enableNaming();
         tomcat.getConnector();
