@@ -1,10 +1,15 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.DAO;
+
+import com.es.phoneshop.model.product.entity.Product;
 
 import java.util.List;
 
 public interface ProductDao {
     Product getProduct(Long id);
+
     List<Product> findProducts();
-    void save(Product product);
+
+    Product save(Product product);
+
     void delete(Long id);
 }
