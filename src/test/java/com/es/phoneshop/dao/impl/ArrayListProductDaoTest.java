@@ -1,6 +1,7 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,13 +18,13 @@ public class ArrayListProductDaoTest
 {
     private ProductDao productDao;
     @Test
-    public void testGetProductByIdNotNull() {
+    public void testGetProductByIdNotNull() throws ProductNotFoundException {
         Long id = 1L;
         assertNotNull(productDao.getProduct(id));
     }
 
     @Test
-    public void testGetProductById() {
+    public void testGetProductById() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         product.setId(1L);
@@ -50,7 +51,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testSaveProduct() {
+    public void testSaveProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product("iphone7", "Apple iPhone 7", new BigDecimal(1100), usd, 30,"https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(product);
@@ -58,7 +59,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testUpdateProduct() {
+    public void testUpdateProduct() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         List<Product> products = productDao.findProducts();
         Product product = new Product(1L, "sgs", "Apple iPhone 7", new BigDecimal(1300), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
@@ -69,7 +70,7 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testDeleteProduct() {
+    public void testDeleteProduct() throws ProductNotFoundException {
         int initialSize = productDao.findProducts().size();
         productDao.delete(1L);
         assertEquals(initialSize - 1, productDao.findProducts().size());

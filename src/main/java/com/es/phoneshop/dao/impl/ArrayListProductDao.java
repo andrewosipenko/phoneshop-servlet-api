@@ -1,6 +1,7 @@
 package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Product;
 
 import java.math.BigDecimal;
@@ -30,8 +31,8 @@ public class ArrayListProductDao implements ProductDao {
         products.add(new Product(id.incrementAndGet(), "simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
     }
     @Override
-    public Product getProduct(Long id) {
-        return products.stream().filter(product -> product.getId() == id).findAny().get();
+    public Product getProduct(Long id) throws ProductNotFoundException {
+        return products.stream().filter(product -> product.getId() == id).findAny().orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
     }
 
     @Override
@@ -50,8 +51,8 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(Long id) {
-        Product foundProduct = products.stream().filter(product -> product.getId() == id).findAny().get();
+    public void delete(Long id) throws ProductNotFoundException {
+        Product foundProduct = products.stream().filter(product -> product.getId() == id).findAny().orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
         products.remove(foundProduct);
     }
 }
