@@ -8,13 +8,11 @@
   <name>phoneshop-servlet-api Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
       <version>3.10.1</version>
     </dependency>
-
 
     <dependency>
       <groupId>jakarta.servlet</groupId>
@@ -28,12 +26,12 @@
       <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
       <version>3.0.0</version>
     </dependency>
+
     <dependency>
       <groupId>org.glassfish.web</groupId>
       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
       <version>3.0.1</version>
     </dependency>
-
 
     <dependency>
       <groupId>junit</groupId>
@@ -41,6 +39,7 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
@@ -48,6 +47,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <finalName>phoneshop-servlet-api</finalName>
     <plugins>
