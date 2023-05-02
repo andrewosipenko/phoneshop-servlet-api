@@ -5,7 +5,7 @@ import java.util.Currency;
 import java.util.UUID;
 
 public class Product {
-    private String id;
+    private long id;
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
@@ -16,7 +16,8 @@ public class Product {
     private String imageUrl;
 
     public Product() {
-        this.id = UUID.randomUUID().toString();
+        UUID uuid = UUID.randomUUID();
+        this.id = uuid.getMostSignificantBits();
         this.code = "";
         this.description = "";
         this.price = BigDecimal.ZERO;
@@ -26,7 +27,8 @@ public class Product {
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = UUID.randomUUID().toString();
+        UUID uuid = UUID.randomUUID();
+        this.id = uuid.getMostSignificantBits();
         this.code = code;
         this.description = description;
         this.price = price;
@@ -35,11 +37,11 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

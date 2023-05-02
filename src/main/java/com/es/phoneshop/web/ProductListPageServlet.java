@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import service.ProductService;
-import service.ProductServiceImpl;
+import com.es.phoneshop.service.ProductService;
+import com.es.phoneshop.service.ProductServiceImpl;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -20,7 +20,7 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", productService.getProductDao().findProducts());
+        request.setAttribute("products", productService.findProducts());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

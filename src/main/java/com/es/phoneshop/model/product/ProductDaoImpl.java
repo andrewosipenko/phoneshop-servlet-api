@@ -28,11 +28,11 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Optional<Product> getProduct(String id) {
+    public Optional<Product> getProduct(long id) {
         productsLock.readLock().lock();
         try {
             return products.stream()
-                    .filter(product -> id.equals(product.getId()))
+                    .filter(product -> id == product.getId())
                     .findAny();
         } finally {
             productsLock.readLock().unlock();
@@ -58,9 +58,9 @@ public class ProductDaoImpl implements ProductDao {
         productsLock.writeLock().lock();
         try {
             products.stream()
-                    .filter(product1 -> product1.getId().equals(product.getId()))
+                    .filter(tempProduct -> tempProduct.getId() == product.getId())
                     .findAny()
-                    .map(product1 -> products.set(products.indexOf(product1), product))
+                    .map(tempProduct -> products.set(products.indexOf(tempProduct), product))
                     .orElseGet(() -> {
                         products.add(product);
                         return null;
@@ -71,11 +71,11 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public void delete(String id) throws ProductNotFoundException {
+    public void delete(long id) throws ProductNotFoundException {
         productsLock.writeLock().lock();
         try {
             products.stream()
-                    .filter(product -> id.equals(product.getId()))
+                    .filter(product -> id == product.getId())
                     .findAny()
                     .map(product -> products.remove(product))
                     .orElseThrow(ProductNotFoundException::new);

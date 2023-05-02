@@ -43,7 +43,7 @@ public class ProductListPageServletTest {
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void givenValidRequestResponseAttribute_whenDoGet_thenValidAttributeAndForward() throws ServletException, IOException {
         servlet.doGet(request, response);
         verify(requestDispatcher).forward(request, response);
         verify(request).setAttribute(eq("products"), any());
