@@ -2,9 +2,10 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.UUID;
 
 public class Product {
-    private Long id;
+    private String id;
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
@@ -15,19 +16,17 @@ public class Product {
     private String imageUrl;
 
     public Product() {
-    }
-
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = id;
-        this.code = code;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.stock = stock;
-        this.imageUrl = imageUrl;
+        this.id = UUID.randomUUID().toString();
+        this.code = "";
+        this.description = "";
+        this.price = BigDecimal.ZERO;
+        this.currency = Currency.getInstance("USD");
+        this.stock = 0;
+        this.imageUrl = "";
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        this.id = UUID.randomUUID().toString();
         this.code = code;
         this.description = description;
         this.price = price;
@@ -36,11 +35,11 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
