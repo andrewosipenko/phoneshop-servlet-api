@@ -23,19 +23,26 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void atTheBeginningArrayIsNotEmpty(){
+    public void whenFindProductsThenReturnNotEmptyProductsArray(){
         assertNotNull(productDao.findProducts());
         assertFalse(productDao.findProducts().isEmpty());
     }
 
-    @Test
-    public void getProduct(){
-        Long id = (long) (productDao.findProducts().size() - 1);
-        assertNotNull(productDao.getProduct(id));
+    @Test(expected = RuntimeException.class)
+    public void whenFindProductByIncorrectIdThenThrowException(){
+        productDao.getProduct(0L);
     }
 
     @Test
-    public void findProducts(){
+    public void whenFindProductByCorrectIdThenReturnProduct(){
+        for(Product product: productDao.findProducts()){
+            long id = product.getId();
+            assertNotNull(productDao.getProduct(id));
+        }
+    }
+
+    @Test
+    public void whenFindProductsThenReturnProductsWithNotNullPriceAndPositiveStock(){
         for(Product product: productDao.findProducts()){
             assertNotNull(product);
             assertNotNull(product.getPrice());
@@ -43,16 +50,41 @@ public class ArrayListProductDaoTest
         }
     }
 
+    @Test(expected = RuntimeException.class)
+    public void whenProductToSaveIsNullThenThrowException(){
+        productDao.save(null);
+    }
+
     @Test
-    public void save(){
+    public void whenSaveProductThenReturnEqualSavedProductToProductBeforeSaving(){
         productDao.save(productToSave);
         Product result = productDao.getProduct(productToSave.getId());
         assertEquals(result, productToSave);
     }
 
     @Test
-    public void delete(){
+    public void whenSaveProductThenProductIdShouldGetValue(){
+        productDao.save(productToSave);
+        assertNotNull(productToSave.getId());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void whenDeleteProductThenShouldThrowExceptionAfterGettingOfDeletedProduct(){
         productDao.delete(1L);
-        assertThrows(RuntimeException.class,()-> productDao.getProduct(1L));
+        productDao.getProduct(1L);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void whenDeleteProductWithIncorrectIdThenShouldThrowException(){
+        productDao.delete(0L);
+    }
+
+    @Test
+    public void whenProductToSaveHasNotNullExistedIdThenShouldUpdate() throws CloneNotSupportedException {
+        Product oldProduct = productDao.getProduct(1L).clone();
+        Product newProduct = new Product(1L, "update", "update", new BigDecimal(100), Currency.getInstance("USD"), 5, "xxxxxx");
+        productDao.save(newProduct);
+        assertNotEquals(oldProduct, newProduct);
+        assertEquals(productDao.getProduct(1L), newProduct);
     }
 }

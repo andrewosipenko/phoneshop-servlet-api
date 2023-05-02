@@ -13,14 +13,13 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
     private Long productId;
     private final List<Product> products;
-    private final ReadWriteLock readWriteLock;
     private final Lock readLock;
     private final Lock writeLock;
 
     public ArrayListProductDao(){
         this.productId = 1L;
         products = new ArrayList<>();
-        readWriteLock = new ReentrantReadWriteLock();
+        ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
         readLock = readWriteLock.readLock();
         writeLock = readWriteLock.writeLock();
         initProducts();
@@ -48,7 +47,6 @@ public class ArrayListProductDao implements ProductDao {
         } finally {
             readLock.unlock();
         }
-
     }
 
     private boolean productPriceNotNull(Product product){
@@ -61,13 +59,15 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product){
+        if(product == null)
+            throw new RuntimeException("Product is null");
+
         writeLock.lock();
         try {
             if(product.getId() == null) {
                 saveProduct(product);
                 return;
             }
-
             Optional<Product> optional = getOptionalOfProduct(product.getId());
             if (optional.isEmpty()) {
                 saveProduct(product);
@@ -105,11 +105,12 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void delete(Long id) {
         writeLock.lock();
+        Optional<Product> optional = getOptionalOfProduct(id);
         try {
-            if (getOptionalOfProduct(id).isEmpty()) {
+            if (optional.isEmpty()) {
                 throw new RuntimeException("No such element was found");
             }
-            products.remove(getOptionalOfProduct(id).get());
+            products.remove(optional.get());
         }finally {
             writeLock.unlock();
         }
