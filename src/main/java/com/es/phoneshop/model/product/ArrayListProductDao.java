@@ -59,8 +59,9 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product){
-        if(product == null)
+        if(product == null) {
             throw new RuntimeException("Product is null");
+        }
 
         writeLock.lock();
         try {
@@ -105,8 +106,9 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void delete(Long id) {
         writeLock.lock();
-        Optional<Product> optional = getOptionalOfProduct(id);
         try {
+            Optional<Product> optional = getOptionalOfProduct(id);
+
             if (optional.isEmpty()) {
                 throw new RuntimeException("No such element was found");
             }
