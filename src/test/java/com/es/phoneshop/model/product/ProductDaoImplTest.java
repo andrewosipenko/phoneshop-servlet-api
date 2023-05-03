@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ProductDaoImplTest {
+
     private ProductDaoImpl productDao;
     private List<Product> testProducts;
 

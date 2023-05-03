@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class ProductDaoImpl implements ProductDao {
+
     private static ProductDaoImpl instance;
     private List<Product> products;
     private final ReentrantReadWriteLock productsLock = new ReentrantReadWriteLock();

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
+
     private ProductDao productDao;
     private static ProductServiceImpl instance;
 
@@ -25,11 +26,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> getProduct(long id) {
-        Optional<Product> product = productDao.getProduct(id);
-        if (product.isEmpty()){
-            throw new IllegalArgumentException("Invalid id while getting product in service");
-        }
-        return product;
+        return productDao.getProduct(id)
+                .map(Optional::of)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid id while getting product in service"));
     }
 
     @Override
