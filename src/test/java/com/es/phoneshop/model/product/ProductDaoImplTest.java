@@ -19,7 +19,6 @@ public class ProductDaoImplTest {
     private ProductDaoImpl productDao;
     private List<Product> testProducts;
 
-
     @Before
     public void setup() {
         productDao = ProductDaoImpl.getInstance();

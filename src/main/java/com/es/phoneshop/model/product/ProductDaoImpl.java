@@ -57,14 +57,12 @@ public class ProductDaoImpl implements ProductDao {
     public void save(Product product) {
         productsLock.writeLock().lock();
         try {
-            products.stream()
-                    .filter(tempProduct -> tempProduct.getId() == product.getId())
-                    .findAny()
-                    .map(tempProduct -> products.set(products.indexOf(tempProduct), product))
-                    .orElseGet(() -> {
-                        products.add(product);
-                        return null;
-                    });
+            if (products.contains(product)) {
+                int index = products.indexOf(product);
+                products.set(index, product);
+            } else {
+                products.add(product);
+            }
         } finally {
             productsLock.writeLock().unlock();
         }
