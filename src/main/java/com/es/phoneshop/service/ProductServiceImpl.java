@@ -25,7 +25,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> getProduct(long id) {
-        return productDao.getProduct(id);
+        Optional<Product> product = productDao.getProduct(id);
+        if (product.isEmpty()){
+            throw new IllegalArgumentException("Invalid id while getting product in service");
+        }
+        return product;
     }
 
     @Override

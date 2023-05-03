@@ -20,7 +20,7 @@ public class ProductDaoImpl implements ProductDao {
         saveSampleProducts();
     }
 
-    public static ProductDaoImpl getInstance() {
+    public static synchronized ProductDaoImpl getInstance() {
         if (instance == null) {
             instance = new ProductDaoImpl();
         }
