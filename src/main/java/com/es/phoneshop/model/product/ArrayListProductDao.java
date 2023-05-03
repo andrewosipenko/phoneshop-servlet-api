@@ -16,7 +16,7 @@ public class ArrayListProductDao implements ProductDao {
     private final Lock readLock;
     private final Lock writeLock;
 
-    public ArrayListProductDao(){
+    public ArrayListProductDao() {
         this.productId = 1L;
         products = new ArrayList<>();
         ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -27,19 +27,19 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Product getProduct(Long id) {
-        readLock.lock();
         try {
+            readLock.lock();
             return getOptionalOfProduct(id)
                     .orElseThrow(() -> new RuntimeException("No such element was found"));
-        } finally{
+        } finally {
             readLock.unlock();
         }
     }
 
     @Override
     public List<Product> findProducts() {
-        readLock.lock();
         try {
+            readLock.lock();
             return products.stream()
                     .filter(this::productInStock)
                     .filter(this::productPriceNotNull)
@@ -49,23 +49,24 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private boolean productPriceNotNull(Product product){
-        return product.getPrice()!=null;
+    private boolean productPriceNotNull(Product product) {
+        return product.getPrice() != null;
     }
 
-    private boolean productInStock(Product product){
-        return product.getStock()>0;
+    private boolean productInStock(Product product) {
+        return product.getStock() > 0;
     }
 
     @Override
-    public void save(Product product){
-        if(product == null) {
+    public void save(Product product) {
+        if (product == null) {
             throw new RuntimeException("Product is null");
         }
 
-        writeLock.lock();
         try {
-            if(product.getId() == null) {
+            writeLock.lock();
+
+            if (product.getId() == null) {
                 saveProduct(product);
                 return;
             }
@@ -75,18 +76,20 @@ public class ArrayListProductDao implements ProductDao {
             } else {
                 changeProduct(optional.get(), product);
             }
-        }finally {
+        } finally {
             writeLock.unlock();
         }
     }
 
-    private void saveProduct(Product product){
+    private void saveProduct(Product product) {
         product.setId(productId++);
         products.add(product);
     }
 
-    /**this method uses inner class and replaces old values of existed product with new*/
-    private void changeProduct(Product existed, Product product){
+    /**
+     * this method uses inner class and replaces old values of existed product with new
+     */
+    private void changeProduct(Product existed, Product product) {
         existed.changer()
                 .code(product.getCode())
                 .imageUrl(product.getImageUrl())
@@ -96,8 +99,10 @@ public class ArrayListProductDao implements ProductDao {
                 .stock(product.getStock());
     }
 
-    /**return optional of product by id for next checking of existence */
-    private Optional<Product> getOptionalOfProduct(Long id){
+    /**
+     * return optional of product by id for next checking of existence
+     */
+    private Optional<Product> getOptionalOfProduct(Long id) {
         return products.stream()
                 .filter(product -> id.equals(product.getId()))
                 .findAny();
@@ -105,20 +110,20 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void delete(Long id) {
-        writeLock.lock();
         try {
+            writeLock.lock();
             Optional<Product> optional = getOptionalOfProduct(id);
 
             if (optional.isEmpty()) {
                 throw new RuntimeException("No such element was found");
             }
             products.remove(optional.get());
-        }finally {
+        } finally {
             writeLock.unlock();
         }
     }
 
-    private void initProducts(){
+    private void initProducts() {
         Currency usd = Currency.getInstance("USD");
         products.add(new Product(productId++, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         products.add(new Product(productId++, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));

@@ -2,16 +2,13 @@ package com.es.phoneshop.model.product;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.util.Currency;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ArrayListProductDaoTest
-{
+public class ArrayListProductDaoTest {
     private ProductDao productDao;
     private Product productToSave;
 
@@ -23,59 +20,59 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void whenFindProductsThenReturnNotEmptyProductsArray(){
+    public void whenFindProductsThenReturnNotEmptyProductsArray() {
         assertNotNull(productDao.findProducts());
         assertFalse(productDao.findProducts().isEmpty());
     }
 
     @Test(expected = RuntimeException.class)
-    public void whenFindProductByIncorrectIdThenThrowException(){
+    public void whenFindProductByIncorrectIdThenThrowException() {
         productDao.getProduct(0L);
     }
 
     @Test
-    public void whenFindProductByCorrectIdThenReturnProduct(){
-        for(Product product: productDao.findProducts()){
+    public void whenFindProductByCorrectIdThenReturnProduct() {
+        for (Product product : productDao.findProducts()) {
             long id = product.getId();
             assertNotNull(productDao.getProduct(id));
         }
     }
 
     @Test
-    public void whenFindProductsThenReturnProductsWithNotNullPriceAndPositiveStock(){
-        for(Product product: productDao.findProducts()){
+    public void whenFindProductsThenReturnProductsWithNotNullPriceAndPositiveStock() {
+        for (Product product : productDao.findProducts()) {
             assertNotNull(product);
             assertNotNull(product.getPrice());
-            assertTrue(product.getStock()>0);
+            assertTrue(product.getStock() > 0);
         }
     }
 
     @Test(expected = RuntimeException.class)
-    public void whenProductToSaveIsNullThenThrowException(){
+    public void whenProductToSaveIsNullThenThrowException() {
         productDao.save(null);
     }
 
     @Test
-    public void whenSaveProductThenReturnEqualSavedProductToProductBeforeSaving(){
+    public void whenSaveProductThenReturnEqualSavedProductToProductBeforeSaving() {
         productDao.save(productToSave);
         Product result = productDao.getProduct(productToSave.getId());
         assertEquals(result, productToSave);
     }
 
     @Test
-    public void whenSaveProductThenProductIdShouldGetValue(){
+    public void whenSaveProductThenProductIdShouldGetValue() {
         productDao.save(productToSave);
         assertNotNull(productToSave.getId());
     }
 
     @Test(expected = RuntimeException.class)
-    public void whenDeleteProductThenShouldThrowExceptionAfterGettingOfDeletedProduct(){
+    public void whenDeleteProductThenShouldThrowExceptionAfterGettingOfDeletedProduct() {
         productDao.delete(1L);
         productDao.getProduct(1L);
     }
 
     @Test(expected = RuntimeException.class)
-    public void whenDeleteProductWithIncorrectIdThenShouldThrowException(){
+    public void whenDeleteProductWithIncorrectIdThenShouldThrowException() {
         productDao.delete(0L);
     }
 

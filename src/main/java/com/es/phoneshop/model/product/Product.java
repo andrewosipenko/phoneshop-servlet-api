@@ -4,24 +4,32 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
-public class Product implements Cloneable{
+public class Product implements Cloneable {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
-    /** created inner class Changer for comfortable updating of product */
+    /**
+     * created inner class Changer for comfortable updating of product
+     */
     private Changer changer;
 
     public Product() {
         this.changer = new Changer();
     }
 
-    /**constructor for inner initialization*/
+    /**
+     * constructor for inner initialization
+     */
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.code = code;
@@ -33,7 +41,9 @@ public class Product implements Cloneable{
         this.changer = new Changer();
     }
 
-    /** constructor for saving from client*/
+    /**
+     * constructor for saving from client
+     */
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
         this.description = description;
@@ -100,65 +110,68 @@ public class Product implements Cloneable{
         this.imageUrl = imageUrl;
     }
 
-    public Changer changer(){
+    public Changer changer() {
         return this.changer;
     }
 
-    /**like builder but changer*/
-    public class Changer{
+    /**
+     * like builder but changer
+     */
+    public class Changer {
 
-        private Changer(){}
+        private Changer() {
+        }
 
         public Changer id(Long id) {
-            if(!Product.this.id.equals(id) && id!=null) {
+            if (!Product.this.id.equals(id) && id != null) {
                 Product.this.id = id;
             }
             return this;
         }
 
         public Changer code(String code) {
-            if(!Product.this.code.equals(code) && code!=null) {
+            if (!Product.this.code.equals(code) && code != null) {
                 Product.this.code = code;
             }
             return this;
         }
 
         public Changer description(String description) {
-            if(!Product.this.description.equals(description) && description!=null) {
+            if (!Product.this.description.equals(description) && description != null) {
                 Product.this.description = description;
             }
             return this;
         }
 
         public Changer price(BigDecimal price) {
-            if(!Product.this.price.equals(price) && price!=null) {
+            if (!Product.this.price.equals(price) && price != null) {
                 Product.this.price = price;
             }
             return this;
         }
 
         public Changer currency(Currency currency) {
-            if(!Product.this.currency.equals(currency) && currency!=null) {
+            if (!Product.this.currency.equals(currency) && currency != null) {
                 Product.this.currency = currency;
             }
             return this;
         }
 
         public Changer stock(int stock) {
-            if(Product.this.stock != stock) {
+            if (Product.this.stock != stock) {
                 Product.this.stock = stock;
             }
             return this;
         }
 
         public Changer imageUrl(String imageUrl) {
-            if(!Product.this.imageUrl.equals(imageUrl) && imageUrl!=null) {
+            if (!Product.this.imageUrl.equals(imageUrl) && imageUrl != null) {
                 Product.this.imageUrl = imageUrl;
             }
             return this;
         }
 
-        public Product change(){
+        public Product change() {
             return Product.this;
         }
     }
