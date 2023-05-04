@@ -96,6 +96,13 @@ public class ProductServiceImplTest {
         productService.delete(1L);
     }
 
+    @Test(expected = ProductNotFoundException.class)
+    public void givenInvalidProductId_whenGetProduct_thenThrowProductNotFoundException() throws ProductNotFoundException {
+        Mockito.when(productDaoMock.getProduct(1L)).thenReturn(Optional.empty());
+
+        productService.getProduct(1L);
+    }
+
     @Test
     public void givenValidProductId_whenDeleteProduct_thenDeleteThisProduct() throws ProductNotFoundException {
         productService.delete(1L);

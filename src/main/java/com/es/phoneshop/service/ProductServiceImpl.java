@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     public Optional<Product> getProduct(long id) {
         return productDao.getProduct(id)
                 .map(Optional::of)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid id while getting product in service"));
+                .orElseThrow(() -> new ProductNotFoundException("Invalid id while getting product in service"));
     }
 
     @Override
