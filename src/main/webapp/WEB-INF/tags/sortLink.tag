@@ -1,21 +1,6 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
-<%@ attribute name="pageTitle" required="true" %>
+<%@ attribute name="order" required="true" %>
+<%@ attribute name="sort" required="true" %>
 
-<html>
-<head>
-  <title>${pageTitle}</title>
-  <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
-</head>
-<body class="product-list">
-  <header>
-    <a href="${pageContext.servletContext.contextPath}">
-      <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-      PhoneShop
-    </a>
-  </header>
-  <main>
-    <jsp:doBody/>
-  </main>
-</body>
-</html>
+<a href="?sort=${sort}&order=${order}&query=${param.query}"
+style="${sort eq param.sort and order eq param.order ? 'font-weight: bold' : ''}">${order}</a>
