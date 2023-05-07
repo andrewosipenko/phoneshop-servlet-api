@@ -1,17 +1,17 @@
 package com.es.phoneshop.service;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 
+import com.es.phoneshop.model.product.ProductDaoImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.Mock;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ public class ProductServiceImplTest {
     private ProductServiceImpl productService;
 
     @Mock
-    private ProductDao productDaoMock;
+    private ProductDaoImpl productDaoMock;
 
     @Before
     public void setup() {
         productService = ProductServiceImpl.getInstance();
-        productDaoMock = Mockito.mock(ProductDao.class);
+        productDaoMock = Mockito.mock(ProductDaoImpl.class);
         productService.setProductDao(productDaoMock);
     }
 
@@ -66,8 +66,8 @@ public class ProductServiceImplTest {
         product2.setStock(5);
         productList.add(product2);
 
-        Mockito.when(productDaoMock.findProducts()).thenReturn(productList);
-        List<Product> result = productService.findProducts();
+        Mockito.when(productDaoMock.findProducts(null, null, null)).thenReturn(productList);
+        List<Product> result = productService.findProducts(null, null, null);
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
