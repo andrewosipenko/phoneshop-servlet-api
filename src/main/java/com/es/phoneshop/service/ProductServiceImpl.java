@@ -2,15 +2,16 @@ package com.es.phoneshop.service;
 
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductDaoImpl;
+import com.es.phoneshop.model.product.SortOrder;
+import com.es.phoneshop.model.product.SortField;
 
 import java.util.List;
 import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
 
-    private ProductDao productDao;
+    private ProductDaoImpl productDao;
     private static ProductServiceImpl instance;
 
     private ProductServiceImpl() {
@@ -32,8 +33,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findProducts() {
-        return productDao.findProducts();
+    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
+        return productDao.findProducts(query, sortField, sortOrder);
     }
 
     @Override
@@ -46,11 +47,11 @@ public class ProductServiceImpl implements ProductService {
         productDao.delete(id);
     }
 
-    public ProductDao getProductDao() {
+    public ProductDaoImpl getProductDao() {
         return productDao;
     }
 
-    public void setProductDao(ProductDao productDao) {
+    public void setProductDao(ProductDaoImpl productDao) {
         this.productDao = productDao;
     }
 }
