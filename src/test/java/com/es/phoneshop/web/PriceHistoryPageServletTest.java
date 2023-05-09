@@ -14,7 +14,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,13 +54,12 @@ public class PriceHistoryPageServletTest {
 
     @Test
     public void givenValidProductId_whenDoGet_thenValidAttributeAndForward() throws Exception {
-        ProductServiceImpl productService1 = ProductServiceImpl.getInstance();
-        Product product = new Product();
-        String productId = String.valueOf(product.getId());
-        productService1.save(product);
+        long productId = 1L;
+        Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        when(productService.getProduct(productId)).thenReturn(product);
+        when(request.getPathInfo()).thenReturn("/products/" + productId);
 
-        when(request.getPathInfo()).thenReturn("/" + productId);
-
+        servlet.setProductService(productService);
         servlet.doGet(request, response);
 
         verify(request).setAttribute("product", product);
@@ -71,9 +70,8 @@ public class PriceHistoryPageServletTest {
     public void givenInvalidProductId_whenDoGet_thenThrowProductNotFoundException() throws Exception {
         String productId = "12345";
         when(request.getPathInfo()).thenReturn("/" + productId);
-        when(productService.getProduct(Long.parseLong(productId))).thenReturn(Optional.empty());
+        when(productService.getProduct(Long.parseLong(productId))).thenReturn(null);
 
         servlet.doGet(request, response);
     }
-
 }

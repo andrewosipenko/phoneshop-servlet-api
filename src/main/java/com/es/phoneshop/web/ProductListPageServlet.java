@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.SortField;
-import com.es.phoneshop.model.product.SortOrder;
+import com.es.phoneshop.sort.SortField;
+import com.es.phoneshop.sort.SortOrder;
 import com.es.phoneshop.service.ProductService;
 import com.es.phoneshop.service.ProductServiceImpl;
 import jakarta.servlet.ServletConfig;
@@ -30,10 +30,13 @@ public class ProductListPageServlet extends HttpServlet {
         String sortOrder = request.getParameter("order");
 
         request.setAttribute("products", productService.findProducts(query,
-                Optional.ofNullable(sortField).map(SortField::valueOf).orElse(null),
-                Optional.ofNullable(sortOrder).map(SortOrder::valueOf).orElse(null)
+                sortField,
+                sortOrder
         ));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
 }

@@ -1,17 +1,17 @@
 package com.es.phoneshop.service;
 
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDaoImpl;
-import com.es.phoneshop.model.product.SortOrder;
-import com.es.phoneshop.model.product.SortField;
+import com.es.phoneshop.dao.ProductDaoImpl;
+import com.es.phoneshop.sort.SortOrder;
+import com.es.phoneshop.sort.SortField;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
 
-    private ProductDaoImpl productDao;
+    private ProductDao productDao;
     private static ProductServiceImpl instance;
 
     private ProductServiceImpl() {
@@ -26,14 +26,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> getProduct(long id) {
+    public Product getProduct(long id) {
         return productDao.getProduct(id)
-                .map(Optional::of)
-                .orElseThrow(() -> new ProductNotFoundException("Invalid id while getting product in service"));
+                .orElseThrow(() -> new ProductNotFoundException("Invalid id " + id + " while getting product in service"));
     }
 
     @Override
-    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
+    public List<Product> findProducts() {
+        return productDao.findProducts();
+    }
+
+    @Override
+    public List<Product> findProducts(String query, String sortField, String sortOrder) {
         return productDao.findProducts(query, sortField, sortOrder);
     }
 
@@ -47,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
         productDao.delete(id);
     }
 
-    public ProductDaoImpl getProductDao() {
+    public ProductDao getProductDao() {
         return productDao;
     }
 

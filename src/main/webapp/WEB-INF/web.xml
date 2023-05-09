@@ -53,4 +53,9 @@
         <location>/WEB-INF/pages/error.jsp</location>
         <error-code>500</error-code>
     </error-page>
+
+    <error-page>
+        <location>/WEB-INF/pages/error.jsp</location>
+        <error-code>404</error-code>
+    </error-page>
 </web-app>

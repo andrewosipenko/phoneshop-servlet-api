@@ -24,12 +24,16 @@ public class PriceHistoryPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo();
-        if (productId != null) {
-            productId = productId.substring(1);
+        while (productId != null && productId.contains("/")) {
+            productId = productId.substring(productId.indexOf('/') + 1);
         }
-        Product product = productService.getProduct(Long.parseLong(productId)).get();
+        Product product = productService.getProduct(Long.parseLong(productId));
 
         request.setAttribute("product", product);
         request.getRequestDispatcher("/WEB-INF/pages/priceHistory.jsp").forward(request, response);
+    }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
     }
 }

@@ -1,6 +1,9 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
 
 import com.es.phoneshop.exceptions.ProductNotFoundException;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.sort.SortField;
+import com.es.phoneshop.sort.SortOrder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -52,25 +55,27 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
+    public List<Product> findProducts(String query, String sortField, String sortOrder) {
         productsLock.readLock().lock();
         try {
             Comparator<Product> comparator = Comparator.comparing(product -> {
-                if (SortField.description == sortField){
-                    return (Comparable)product.getDescription();
+                if (sortField != null && !sortField.isEmpty()) {
+                    SortField field = SortField.valueOf(sortField);
+                    return switch (field) {
+                        case description -> (Comparable) product.getDescription();
+                        case price -> (Comparable) product.getPrice();
+                    };
                 }
-                else if (SortField.price == sortField) {
-                    return (Comparable)product.getPrice();
-                }
-                else {
-                    return (Comparable)0;
-                }
+                return (Comparable) 0;
             });
-            comparator = (sortOrder == SortOrder.desc) ? comparator.reversed() : comparator;
+
+            if (sortOrder != null) {
+                comparator = (SortOrder.valueOf(sortOrder) == SortOrder.desc) ? comparator.reversed() : comparator;
+            }
 
             return products.stream()
-                    .filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word -> product.getDescription()
-                            .toLowerCase().contains(word.toLowerCase())))
+                    .filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word ->
+                            product.getDescription().toLowerCase().contains(word.toLowerCase())))
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getPrice().compareTo(BigDecimal.ZERO) > 0)
                     .filter(product -> product.getStock() > 0)
@@ -83,6 +88,20 @@ public class ProductDaoImpl implements ProductDao {
                         }
                     }))
                     .sorted(comparator)
+                    .collect(Collectors.toList());
+        } finally {
+            productsLock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public List<Product> findProducts() {
+        productsLock.readLock().lock();
+        try {
+            return products.stream()
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getPrice().compareTo(BigDecimal.ZERO) > 0)
+                    .filter(product -> product.getStock() > 0)
                     .collect(Collectors.toList());
         } finally {
             productsLock.readLock().unlock();

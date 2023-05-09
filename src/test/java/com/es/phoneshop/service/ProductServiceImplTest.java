@@ -1,11 +1,10 @@
 package com.es.phoneshop.service;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 
-import com.es.phoneshop.model.product.ProductDaoImpl;
+import com.es.phoneshop.dao.ProductDaoImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,10 +41,9 @@ public class ProductServiceImplTest {
         product.setStock(10);
 
         Mockito.when(productDaoMock.getProduct(1L)).thenReturn(Optional.of(product));
-        Optional<Product> result = productService.getProduct(1L);
+        Product result = productService.getProduct(1L);
 
-        assertTrue(result.isPresent());
-        assertEquals(product, result.get());
+        assertEquals(product, result);
     }
 
     @Test
@@ -66,7 +64,7 @@ public class ProductServiceImplTest {
         product2.setStock(5);
         productList.add(product2);
 
-        Mockito.when(productDaoMock.findProducts(null, null, null)).thenReturn(productList);
+        Mockito.when(productDaoMock.findProducts()).thenReturn(productList);
         List<Product> result = productService.findProducts(null, null, null);
 
         assertNotNull(result);
