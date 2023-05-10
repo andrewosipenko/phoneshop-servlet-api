@@ -1,7 +1,9 @@
 package com.es.phoneshop.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 public class Product {
     private Long id;
@@ -13,6 +15,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private List<PriceHistory> histories = new ArrayList<>();
 
     public Product() {
     }
@@ -90,5 +93,13 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<PriceHistory> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<PriceHistory> histories) {
+        this.histories = histories;
     }
 }
