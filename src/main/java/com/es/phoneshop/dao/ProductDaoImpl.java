@@ -51,20 +51,23 @@ public class ProductDaoImpl implements ProductDao {
                 matches++;
             }
         }
+
         return -matches;
     }
 
-    private Comparator<Product> getProductComparator(String sortField, String sortOrder){
-        Comparator<Product> comparator = Comparator.comparing(product -> {
-            if (sortField != null && !sortField.isEmpty()) {
-                SortField field = SortField.valueOf(sortField);
-                return switch (field) {
-                    case description -> (Comparable) product.getDescription();
-                    case price -> (Comparable) product.getPrice();
-                };
-            }
-            return (Comparable) 0;
-        });
+    private Comparator<Product> getProductComparator(String sortField, String sortOrder) {
+        Comparator<Product> comparator;
+
+        if (sortField != null && !sortField.isEmpty()) {
+            SortField field = SortField.valueOf(sortField);
+            comparator = switch (field) {
+                case description -> Comparator.comparing(Product::getDescription);
+                case price -> Comparator.comparing(Product::getPrice);
+            };
+        }
+        else {
+            comparator = Comparator.comparing(o -> 0);
+        }
 
         if (sortOrder != null) {
             comparator = (SortOrder.valueOf(sortOrder) == SortOrder.desc) ? comparator.reversed() : comparator;
@@ -84,14 +87,7 @@ public class ProductDaoImpl implements ProductDao {
             return validProducts.stream()
                     .filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word ->
                             product.getDescription().toLowerCase().contains(word.toLowerCase())))
-                    .sorted(Comparator.comparingInt((Product product) -> {
-                        if (query != null) {
-                            return queryCompare(query, product);
-                        }
-                        else {
-                            return 0;
-                        }
-                    }))
+                    .sorted(Comparator.comparingInt((Product product) -> query != null ? queryCompare(query, product) : 0))
                     .sorted(comparator)
                     .collect(Collectors.toList());
         } finally {

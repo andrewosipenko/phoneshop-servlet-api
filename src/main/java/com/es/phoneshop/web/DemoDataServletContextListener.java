@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class DemoDataServletContextListener implements ServletContextListener {
+
     private ProductService productService;
 
     public DemoDataServletContextListener(){
@@ -20,9 +21,8 @@ public class DemoDataServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
-
         boolean insertDemoData = Boolean.parseBoolean(servletContext.getInitParameter("insertDemoData"));
-        if (insertDemoData){
+        if (insertDemoData) {
             saveSampleProducts();
         }
     }

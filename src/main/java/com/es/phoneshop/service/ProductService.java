@@ -2,8 +2,6 @@ package com.es.phoneshop.service;
 
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.sort.SortField;
-import com.es.phoneshop.sort.SortOrder;
 
 import java.util.List;
 
