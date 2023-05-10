@@ -25,18 +25,15 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo();
-        while (productId != null && productId.contains("/")) {
+        if (productId != null && productId.contains("/")) {
             productId = productId.substring(productId.indexOf('/') + 1);
         }
 
         long id = Long.parseLong(productId);
-        Product productOptional = productService.getProduct(id);
-        if (productOptional != null) {
-            Product product = productOptional;
+        Product product = productService.getProduct(id);
+        if (product != null) {
             request.setAttribute("product", product);
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
-        } else {
-            throw new ProductNotFoundException();
         }
     }
 

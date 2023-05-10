@@ -54,31 +54,36 @@ public class ProductDaoImpl implements ProductDao {
         return -matches;
     }
 
+    private Comparator<Product> getProductComparator(String sortField, String sortOrder){
+        Comparator<Product> comparator = Comparator.comparing(product -> {
+            if (sortField != null && !sortField.isEmpty()) {
+                SortField field = SortField.valueOf(sortField);
+                return switch (field) {
+                    case description -> (Comparable) product.getDescription();
+                    case price -> (Comparable) product.getPrice();
+                };
+            }
+            return (Comparable) 0;
+        });
+
+        if (sortOrder != null) {
+            comparator = (SortOrder.valueOf(sortOrder) == SortOrder.desc) ? comparator.reversed() : comparator;
+        }
+
+        return comparator;
+    }
+
     @Override
     public List<Product> findProducts(String query, String sortField, String sortOrder) {
         productsLock.readLock().lock();
         try {
-            Comparator<Product> comparator = Comparator.comparing(product -> {
-                if (sortField != null && !sortField.isEmpty()) {
-                    SortField field = SortField.valueOf(sortField);
-                    return switch (field) {
-                        case description -> (Comparable) product.getDescription();
-                        case price -> (Comparable) product.getPrice();
-                    };
-                }
-                return (Comparable) 0;
-            });
+            Comparator<Product> comparator = getProductComparator(sortField, sortOrder);
 
-            if (sortOrder != null) {
-                comparator = (SortOrder.valueOf(sortOrder) == SortOrder.desc) ? comparator.reversed() : comparator;
-            }
+            List<Product> validProducts = findProducts();
 
-            return products.stream()
+            return validProducts.stream()
                     .filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word ->
                             product.getDescription().toLowerCase().contains(word.toLowerCase())))
-                    .filter(product -> product.getPrice() != null)
-                    .filter(product -> product.getPrice().compareTo(BigDecimal.ZERO) > 0)
-                    .filter(product -> product.getStock() > 0)
                     .sorted(Comparator.comparingInt((Product product) -> {
                         if (query != null) {
                             return queryCompare(query, product);
