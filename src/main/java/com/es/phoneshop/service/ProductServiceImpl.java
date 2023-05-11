@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProduct(long id) {
         return productDao.getProduct(id).orElseThrow(() ->
-                new ProductNotFoundException("Invalid id " + id + " while getting product in service"));
+                        new ProductNotFoundException("Invalid id " + id + " while getting product in service"));
     }
 
     @Override

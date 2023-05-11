@@ -35,7 +35,9 @@ public class ProductDaoImplTest {
         testProducts.add(new Product("test", "Test product", new BigDecimal(100), Currency.getInstance("USD"), 10, ""));
         productDao.setProducts(testProducts);
 
-        List<Product> result = productDao.findProducts("Test product", String.valueOf(SortField.description), String.valueOf(SortOrder.asc));
+        List<Product> result = productDao.findProducts("Test product",
+                String.valueOf(SortField.description),
+                String.valueOf(SortOrder.asc));
 
         assertFalse(result.isEmpty());
     }
@@ -67,7 +69,9 @@ public class ProductDaoImplTest {
         testProducts.add(product);
         productDao.setProducts(testProducts);
 
-        List<Product> result = productDao.findProducts("Samsung Galaxy S", String.valueOf(SortField.description), String.valueOf(SortOrder.asc));
+        List<Product> result = productDao.findProducts("Samsung Galaxy S",
+                String.valueOf(SortField.description),
+                String.valueOf(SortOrder.asc));
 
         assertNotNull(result);
     }
@@ -120,7 +124,9 @@ public class ProductDaoImplTest {
         testProducts.add(product);
         productDao.setProducts(testProducts);
 
-        List<Product> products = productDao.findProducts("Samsung Galaxy S", String.valueOf(SortField.description), String.valueOf(SortOrder.asc));
+        List<Product> products = productDao.findProducts("Samsung Galaxy S",
+                String.valueOf(SortField.description),
+                String.valueOf(SortOrder.asc));
 
         assertFalse(products.contains(product));
     }
