@@ -1,26 +1,25 @@
 package com.es.phoneshop.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
-
 import com.es.phoneshop.dao.ProductDaoImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.Mock;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+
 public class ProductServiceImplTest {
 
     private ProductServiceImpl productService;
-
     @Mock
     private ProductDaoImpl productDaoMock;
 
@@ -65,7 +64,7 @@ public class ProductServiceImplTest {
         productList.add(product2);
 
         Mockito.when(productDaoMock.findProducts()).thenReturn(productList);
-        List<Product> result = productService.findProducts(null, null, null);
+        List<Product> result = productService.findProducts();
 
         assertNotNull(result);
         assertFalse(result.isEmpty());

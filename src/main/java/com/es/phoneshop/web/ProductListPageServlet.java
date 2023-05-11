@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.ProductService;
 import com.es.phoneshop.service.ProductServiceImpl;
 import jakarta.servlet.ServletConfig;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ProductListPageServlet extends HttpServlet {
 
@@ -26,10 +28,17 @@ public class ProductListPageServlet extends HttpServlet {
         String sortField = request.getParameter("sort");
         String sortOrder = request.getParameter("order");
 
-        request.setAttribute("products", productService.findProducts(query,
-                sortField,
-                sortOrder
-        ));
+        List<Product> products;
+
+        if (query != null && sortField != null && sortOrder != null) {
+            products = productService.findProducts(query, sortField, sortOrder);
+        } else if (query != null) {
+            products = productService.findProducts(query);
+        } else {
+            products = productService.findProducts();
+        }
+
+        request.setAttribute("products", products);
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

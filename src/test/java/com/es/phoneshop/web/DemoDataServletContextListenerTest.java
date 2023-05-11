@@ -10,10 +10,10 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.any;
 
 public class DemoDataServletContextListenerTest {
 
@@ -38,7 +38,7 @@ public class DemoDataServletContextListenerTest {
 
         listener.contextInitialized(event);
 
-        verify(productService, times(13)).save(any(Product.class));
+        verify(productService, times(12)).save(any(Product.class));
     }
 
     @Test

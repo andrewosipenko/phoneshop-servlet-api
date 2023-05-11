@@ -14,7 +14,7 @@ public class DemoDataServletContextListener implements ServletContextListener {
 
     private ProductService productService;
 
-    public DemoDataServletContextListener(){
+    public DemoDataServletContextListener() {
         this.productService = ProductServiceImpl.getInstance();
     }
 
@@ -71,7 +71,7 @@ public class DemoDataServletContextListener implements ServletContextListener {
         product.setPrice(new BigDecimal(180));
         product.setPrice(new BigDecimal(190));
         productService.save(product);
-        product =(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
+        product = (new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         product.setPrice(new BigDecimal(100));
         product.setPrice(new BigDecimal(80));
         productService.save(product);

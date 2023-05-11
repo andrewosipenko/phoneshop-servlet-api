@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class ProductDaoImpl implements ProductDao {
 
     private static ProductDaoImpl instance;
-    private List<Product> products;
     private final ReentrantReadWriteLock productsLock = new ReentrantReadWriteLock();
+    private List<Product> products;
 
-    private ProductDaoImpl () {
+    private ProductDaoImpl() {
         this.products = new ArrayList<>();
     }
 
@@ -35,9 +35,7 @@ public class ProductDaoImpl implements ProductDao {
     public Optional<Product> getProduct(long id) {
         productsLock.readLock().lock();
         try {
-            return products.stream()
-                    .filter(product -> id == product.getId())
-                    .findAny();
+            return products.stream().filter(product -> id == product.getId()).findAny();
         } finally {
             productsLock.readLock().unlock();
         }
@@ -56,7 +54,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     private Comparator<Product> getProductComparator(String sortField, String sortOrder) {
-        Comparator<Product> comparator;
+        Comparator<Product> comparator = null;
 
         if (sortField != null && !sortField.isEmpty()) {
             SortField field = SortField.valueOf(sortField);
@@ -64,9 +62,6 @@ public class ProductDaoImpl implements ProductDao {
                 case description -> Comparator.comparing(Product::getDescription);
                 case price -> Comparator.comparing(Product::getPrice);
             };
-        }
-        else {
-            comparator = Comparator.comparing(o -> 0);
         }
 
         if (sortOrder != null) {
@@ -84,12 +79,19 @@ public class ProductDaoImpl implements ProductDao {
 
             List<Product> validProducts = findProducts();
 
-            return validProducts.stream()
-                    .filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word ->
-                            product.getDescription().toLowerCase().contains(word.toLowerCase())))
-                    .sorted(Comparator.comparingInt((Product product) -> query != null ? queryCompare(query, product) : 0))
-                    .sorted(comparator)
-                    .collect(Collectors.toList());
+            return validProducts.stream().filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word -> product.getDescription().toLowerCase().contains(word.toLowerCase()))).sorted(Comparator.comparingInt((Product product) -> query != null ? queryCompare(query, product) : 0)).sorted(comparator).collect(Collectors.toList());
+        } finally {
+            productsLock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public List<Product> findProducts(String query) {
+        productsLock.readLock().lock();
+        try {
+            List<Product> validProducts = findProducts();
+
+            return validProducts.stream().filter(product -> query == null || Arrays.stream(query.split("\\s+")).anyMatch(word -> product.getDescription().toLowerCase().contains(word.toLowerCase()))).sorted(Comparator.comparingInt((Product product) -> query != null ? queryCompare(query, product) : 0)).collect(Collectors.toList());
         } finally {
             productsLock.readLock().unlock();
         }
@@ -99,11 +101,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> findProducts() {
         productsLock.readLock().lock();
         try {
-            return products.stream()
-                    .filter(product -> product.getPrice() != null)
-                    .filter(product -> product.getPrice().compareTo(BigDecimal.ZERO) > 0)
-                    .filter(product -> product.getStock() > 0)
-                    .collect(Collectors.toList());
+            return products.stream().filter(product -> product.getPrice() != null).filter(product -> product.getPrice().compareTo(BigDecimal.ZERO) > 0).filter(product -> product.getStock() > 0).collect(Collectors.toList());
         } finally {
             productsLock.readLock().unlock();
         }
@@ -128,11 +126,7 @@ public class ProductDaoImpl implements ProductDao {
     public void delete(long id) throws ProductNotFoundException {
         productsLock.writeLock().lock();
         try {
-            products.stream()
-                    .filter(product -> id == product.getId())
-                    .findAny()
-                    .map(product -> products.remove(product))
-                    .orElseThrow(ProductNotFoundException::new);
+            products.stream().filter(product -> id == product.getId()).findAny().map(product -> products.remove(product)).orElseThrow(ProductNotFoundException::new);
         } finally {
             productsLock.writeLock().unlock();
         }

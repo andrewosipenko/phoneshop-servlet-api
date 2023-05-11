@@ -8,8 +8,14 @@ import java.util.Optional;
 
 public interface ProductDao {
     Optional<Product> getProduct(long id);
+
     List<Product> findProducts(String query, String sortField, String sortOrder);
+
+    List<Product> findProducts(String query);
+
     List<Product> findProducts();
+
     void save(Product product);
+
     void delete(long id) throws ProductNotFoundException;
 }

@@ -1,32 +1,27 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.ProductService;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ProductDetailsPageServletTest {
 
     @Mock
     private ProductService productService;
-
-    @Mock
-    private ProductDao productDao;
 
     @Mock
     private HttpServletRequest request;
@@ -55,7 +50,7 @@ public class ProductDetailsPageServletTest {
         long productId = 1L;
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         when(productService.getProduct(productId)).thenReturn(product);
-        when(request.getPathInfo()).thenReturn("/products/" + productId);
+        when(request.getPathInfo()).thenReturn("/" + productId);
 
         servlet.setProductService(productService);
         servlet.doGet(request, response);
