@@ -24,7 +24,7 @@ public class PriceHistoryPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo();
-        while (productId != null && productId.contains("/")) {
+        if (productId != null && productId.contains("/")) {
             productId = productId.substring(productId.indexOf('/') + 1);
         }
         Product product = productService.getProduct(Long.parseLong(productId));
