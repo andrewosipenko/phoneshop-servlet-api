@@ -24,7 +24,7 @@
       <tr>
         <td>Stock</td>
         <td>
-          <fmt:formatNumber value="${product.stock}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <fmt:formatNumber value="${product.stock}"/>
         </td>
       </tr>
       <tr>
