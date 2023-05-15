@@ -1,7 +1,7 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao;
 
-import com.es.phoneshop.dao.ProductDaoImpl;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.sort.SortField;
 import com.es.phoneshop.sort.SortOrder;
 import org.junit.Before;

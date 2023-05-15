@@ -27,4 +27,6 @@
       </c:forEach>
     </tbody>
   </table>
+
+  <%@ include file="/WEB-INF/pages/recentlyViewedProducts.jsp"%>
 </tags:master>

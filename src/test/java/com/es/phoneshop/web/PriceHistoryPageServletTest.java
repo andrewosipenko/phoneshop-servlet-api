@@ -55,7 +55,7 @@ public class PriceHistoryPageServletTest {
         long productId = 1L;
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         when(productService.getProduct(productId)).thenReturn(product);
-        when(request.getPathInfo()).thenReturn("/products/" + productId);
+        when(request.getPathInfo()).thenReturn("/" + productId);
 
         servlet.setProductService(productService);
         servlet.doGet(request, response);

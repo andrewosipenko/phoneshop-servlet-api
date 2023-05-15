@@ -5,8 +5,10 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.ProductService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,7 +33,13 @@ public class ProductDetailsPageServletTest {
     private HttpServletResponse response;
 
     @Mock
+    private ServletContext context;
+
+    @Mock
     private ServletConfig config;
+
+    @Mock
+    private HttpSession session;
 
     @Mock
     private RequestDispatcher requestDispatcher;
@@ -43,6 +52,9 @@ public class ProductDetailsPageServletTest {
         servlet = new ProductDetailsPageServlet();
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         servlet.init(config);
+        when(request.getServletContext()).thenReturn(context);
+        when(request.getSession(anyBoolean())).thenReturn(session);
+
     }
 
     @Test
@@ -51,6 +63,8 @@ public class ProductDetailsPageServletTest {
         Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         when(productService.getProduct(productId)).thenReturn(product);
         when(request.getPathInfo()).thenReturn("/" + productId);
+        when(request.getSession()).thenReturn(session);
+        when(config.getServletContext()).thenReturn(context);
 
         servlet.setProductService(productService);
         servlet.doGet(request, response);

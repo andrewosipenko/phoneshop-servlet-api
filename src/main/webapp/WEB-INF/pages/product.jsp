@@ -4,36 +4,66 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
+
 <tags:master pageTitle="Product List">
   <p>
     ${product.description}
   </p>
-  <table>
-      <tr>
-        <td>Image</td>
-        <td>
-         <img src="${product.imageUrl}">
-        </td>
-      </tr>
-      <tr>
-        <td>Code</td>
-        <td>
-         ${product.code}
-        </td>
-      </tr>
-      <tr>
-        <td>Stock</td>
-        <td>
-          <fmt:formatNumber value="${product.stock}"/>
-        </td>
-      </tr>
-      <tr>
-        <td>Price</td>
-        <td>
-          <a href="${pageContext.servletContext.contextPath}/priceHistory/${product.id}"/>
-           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-          </a>
-        </td>
-      </tr>
-  </table>
+  <c:if test="${not empty message}">
+         <div class="success">
+             ${message}
+         </div>
+  </c:if>
+  <c:if test="${not empty error}">
+           <div class="error">
+               Error in adding to cart
+           </div>
+    </c:if>
+  <p>
+       Cart: ${cart}
+  </p>
+  <form method="post">
+      <table>
+          <tr>
+            <td>Image</td>
+            <td>
+             <img src="${product.imageUrl}">
+            </td>
+          </tr>
+          <tr>
+            <td>Code</td>
+            <td>
+             ${product.code}
+            </td>
+          </tr>
+          <tr>
+            <td>Stock</td>
+            <td>
+              <fmt:formatNumber value="${product.stock}"/>
+            </td>
+          </tr>
+          <tr>
+            <td>Price</td>
+            <td class="price">
+              <a href="${pageContext.servletContext.contextPath}/priceHistory/${product.id}"/>
+               <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+              </a>
+            </td>
+          </tr>
+          <tr>
+              <td>Quantity</td>
+              <td>
+                 <input name="quantity" value="${not empty error ? param.quantity : 1}" class="quantity">
+                 <c:if test="${not empty error}">
+                     <div class="error">
+                         ${error}
+                     </div>
+                 </c:if>
+              </td>
+          </tr>
+      </table>
+      <button>Add to cart</button>
+  </form>
+
+  <%@ include file="/WEB-INF/pages/recentlyViewedProducts.jsp"%>
 </tags:master>

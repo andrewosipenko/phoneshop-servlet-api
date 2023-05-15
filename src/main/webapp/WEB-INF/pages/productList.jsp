@@ -4,14 +4,17 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+
 <tags:master pageTitle="Product List">
   <p>
     Welcome to Expert-Soft training!
   </p>
+
   <form>
     <input name="query" value="${param.query}">
     <button>Search</button>
   </form>
+
   <table>
     <thead>
       <tr>
@@ -40,10 +43,12 @@
         </td>
         <td class="price">
             <a href="${pageContext.servletContext.contextPath}/priceHistory/${product.id}"/>
-                        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                 <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
             </a>
         </td>
       </tr>
     </c:forEach>
   </table>
+
+  <%@ include file="/WEB-INF/pages/recentlyViewedProducts.jsp"%>
 </tags:master>
