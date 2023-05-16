@@ -14,5 +14,48 @@
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
+  
+  <listener>
+    <listener-class>com.es.phoneshop.web.ProductDemoDataServletContextListener</listener-class>
+  </listener>
+  
+  <context-param>
+    <param-name>demoData</param-name>
+    <param-value>true</param-value>
+  </context-param>
 
+  <servlet>
+    <servlet-name>product</servlet-name>
+    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>product</servlet-name>
+    <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>history</servlet-name>
+    <servlet-class>com.es.phoneshop.web.PriceHistoryPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>history</servlet-name>
+    <url-pattern>/history/*</url-pattern>
+  </servlet-mapping>
+  
+  <error-page>
+    <location>/WEB-INF/pages/productNotFoundError.jsp</location>
+    <exception-type>com.es.phoneshop.exception.ProductNotFoundException</exception-type>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/status500Error.jsp</location>
+    <error-code>500</error-code>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/status404Error.jsp</location>
+    <error-code>404</error-code>
+  </error-page>
 </web-app>
