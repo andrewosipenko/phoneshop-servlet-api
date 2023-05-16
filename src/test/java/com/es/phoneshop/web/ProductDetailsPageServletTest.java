@@ -54,7 +54,6 @@ public class ProductDetailsPageServletTest {
         servlet.init(config);
         when(request.getServletContext()).thenReturn(context);
         when(request.getSession(anyBoolean())).thenReturn(session);
-
     }
 
     @Test

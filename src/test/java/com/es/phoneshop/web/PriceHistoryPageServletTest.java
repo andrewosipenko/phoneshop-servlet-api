@@ -2,7 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.service.ProductServiceImpl;
+import com.es.phoneshop.service.impl.ProductServiceImpl;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -47,6 +47,7 @@ public class PriceHistoryPageServletTest {
         when(servletConfig.getServletContext()).thenReturn(servletContext);
         servlet = new PriceHistoryPageServlet();
         servlet.init(servletConfig);
+        servlet.setProductService(productService);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
@@ -57,7 +58,6 @@ public class PriceHistoryPageServletTest {
         when(productService.getProduct(productId)).thenReturn(product);
         when(request.getPathInfo()).thenReturn("/" + productId);
 
-        servlet.setProductService(productService);
         servlet.doGet(request, response);
 
         verify(request).setAttribute("product", product);
