@@ -19,9 +19,11 @@ import static org.junit.Assert.assertFalse;
 
 public class ProductServiceImplTest {
 
-    private ProductServiceImpl productService;
+
     @Mock
     private ProductDaoImpl productDaoMock;
+
+    private ProductServiceImpl productService;
 
     @Before
     public void setup() {

@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -64,6 +66,9 @@ public class ProductDetailsPageServletTest {
         when(request.getPathInfo()).thenReturn("/" + productId);
         when(request.getSession()).thenReturn(session);
         when(config.getServletContext()).thenReturn(context);
+        List<Product> productList = new ArrayList<>();
+        productList.add(product);
+        when(session.getAttribute("recentlyViewedProducts")).thenReturn(productList);
 
         servlet.setProductService(productService);
         servlet.doGet(request, response);

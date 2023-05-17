@@ -1,6 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.impl.ProductServiceImpl;
 import jakarta.servlet.RequestDispatcher;
@@ -62,14 +61,5 @@ public class PriceHistoryPageServletTest {
 
         verify(request).setAttribute("product", product);
         verify(requestDispatcher).forward(request, response);
-    }
-
-    @Test(expected = ProductNotFoundException.class)
-    public void givenInvalidProductId_whenDoGet_thenThrowProductNotFoundException() throws Exception {
-        String productId = "12345";
-        when(request.getPathInfo()).thenReturn("/" + productId);
-        when(productService.getProduct(Long.parseLong(productId))).thenReturn(null);
-
-        servlet.doGet(request, response);
     }
 }

@@ -32,18 +32,12 @@ public class CartServiceImpl implements CartService {
     public Cart getCart(HttpServletRequest request) {
         HttpSession session = request.getSession();
         synchronized (session) {
-            Cart cart = (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
-            if (cart == null) {
-                cart = new Cart();
-                session.setAttribute(CART_SESSION_ATTRIBUTE, cart);
-            }
-            return cart;
+            return (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
         }
     }
 
     @Override
-    public void add(Cart cart, long productId, int quantity) throws OutOfStockException {
-        Product product = productService.getProduct(productId);
+    public void addToCart(Cart cart, Product product, int quantity) throws OutOfStockException {
         synchronized (cart) {
             Optional<CartItem> existingCartItem = cart.getItems()
                     .stream()

@@ -7,16 +7,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.anyInt;
+
 
 public class RecentlyViewedProductsServiceImplTest {
 
@@ -32,7 +33,7 @@ public class RecentlyViewedProductsServiceImplTest {
     }
 
     @Test
-    public void givenValidProducts_whenAddRecentlyViewedProduct_thenAddProducts() {
+    public void givenProductsList_whenAddRecentlyViewedProduct_thenAddProduct() {
         Product product1 = new Product();
         product1.setId(1L);
         Product product2 = new Product();
@@ -52,12 +53,12 @@ public class RecentlyViewedProductsServiceImplTest {
     }
 
     @Test
-    public void givenEmptyList_whenGetRecentlyViewedProducts_thenReturnEmptyArray() {
+    public void givenEmptyList_whenGetRecentlyViewedProducts_thenGetEmptyList() {
+        when(session.getAttribute("recentlyViewedProducts")).thenReturn(new ArrayList<>());
+
         List<Product> recentlyViewedProducts = recentlyViewedProductsService.getRecentlyViewedProducts(session);
 
         assertEquals(0, recentlyViewedProducts.size());
-
         verify(session, times(1)).getAttribute("recentlyViewedProducts");
-        verify(session, times(1)).setAttribute(eq("recentlyViewedProducts"), any(List.class));
     }
 }

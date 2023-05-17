@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -45,19 +45,18 @@ public class CartServiceImplTest {
         cartService = CartServiceImpl.getInstance();
         productService = mock(ProductService.class);
         product = new Product("TestProduct", "TestBrand", null, null, 10, null);
-        cartService.setProductService(productService);
         when(productService.getProduct(anyLong())).thenReturn(product);
         when(request.getSession()).thenReturn(session);
+
     }
 
     @Test
-    public void givenNotPresentedCart_whenGetCart_thenGiveCart() {
+    public void givenNotPresentedCart_whenGetCart_thenReturnNull() {
         when(session.getAttribute(cartService.getCartSessionAttribute())).thenReturn(null);
 
         Cart cart = cartService.getCart(request);
 
-        assertNotNull(cart);
-        verify(request.getSession()).setAttribute(eq(cartService.getCartSessionAttribute()), any(Cart.class));
+        assertNull(cart);
     }
 
     @Test
@@ -75,8 +74,9 @@ public class CartServiceImplTest {
     public void givenNewCartItem_whenAdd_thenGiveCart() throws OutOfStockException {
         Cart cart = new Cart();
         int quantity = 5;
+        cartService.setProductService(productService);
 
-        cartService.add(cart, 1L, quantity);
+        cartService.addToCart(cart, productService.getProduct(1L), quantity);
 
         assertEquals(1, cart.getItems().size());
         CartItem cartItem = cart.getItems().get(0);
@@ -91,8 +91,9 @@ public class CartServiceImplTest {
         CartItem existingCartItem = new CartItem(product, 3);
         cart.getItems().add(existingCartItem);
         int quantity = 5;
+        cartService.setProductService(productService);
 
-        cartService.add(cart, 1L, quantity);
+        cartService.addToCart(cart, productService.getProduct(1L), quantity);
 
         assertEquals(1, cart.getItems().size());
         CartItem updatedCartItem = cart.getItems().get(0);
@@ -107,8 +108,9 @@ public class CartServiceImplTest {
         Cart cart = new Cart();
         product.setStock(5);
         int quantity = 10;
+        cartService.setProductService(productService);
 
-        cartService.add(cart, 1L, quantity);
+        cartService.addToCart(cart, productService.getProduct(1L), quantity);
     }
 }
 

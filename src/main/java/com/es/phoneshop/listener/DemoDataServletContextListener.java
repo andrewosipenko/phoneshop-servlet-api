@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.listener;
 
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.ProductService;

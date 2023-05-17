@@ -4,7 +4,6 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.RecentlyViewedProductsService;
 import jakarta.servlet.http.HttpSession;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProductsService {
@@ -40,11 +39,8 @@ public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProducts
 
     @Override
     public List<Product> getRecentlyViewedProducts(HttpSession session) {
-            List<Product> recentlyViewedProducts = (List<Product>) session.getAttribute("recentlyViewedProducts");
-            if (recentlyViewedProducts == null) {
-                recentlyViewedProducts = new ArrayList<>();
-                session.setAttribute("recentlyViewedProducts", recentlyViewedProducts);
-            }
-            return recentlyViewedProducts;
+        synchronized (session) {
+            return (List<Product>) session.getAttribute("recentlyViewedProducts");
+        }
     }
 }

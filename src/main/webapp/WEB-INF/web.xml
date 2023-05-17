@@ -11,7 +11,15 @@
   </context-param>
 
   <listener>
-    <listener-class>com.es.phoneshop.web.DemoDataServletContextListener</listener-class>
+    <listener-class>com.es.phoneshop.listener.DemoDataServletContextListener</listener-class>
+  </listener>
+
+  <listener>
+      <listener-class>com.es.phoneshop.listener.CartListener</listener-class>
+  </listener>
+
+  <listener>
+      <listener-class>com.es.phoneshop.listener.RecentlyViewedProductsListener</listener-class>
   </listener>
 
    <servlet>

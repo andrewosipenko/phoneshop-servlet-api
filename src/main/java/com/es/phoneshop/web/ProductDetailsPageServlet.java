@@ -32,7 +32,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
         productService = ProductServiceImpl.getInstance();
         cartService = CartServiceImpl.getInstance();
         recentlyViewedProductsService = RecentlyViewedProductsServiceImpl.getInstance();
-
     }
 
     @Override
@@ -67,7 +66,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
         Cart cart = cartService.getCart(request);
         try {
-            cartService.add(cart, productId, quantity);
+            Product product = productService.getProduct(productId);
+            cartService.addToCart(cart, product, quantity);
         } catch (OutOfStockException e) {
             request.setAttribute("error", "Out of stock, available " + e.getStockAvailable());
             doGet(request, response);
