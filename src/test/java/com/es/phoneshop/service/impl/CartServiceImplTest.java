@@ -47,7 +47,6 @@ public class CartServiceImplTest {
         product = new Product("TestProduct", "TestBrand", null, null, 10, null);
         when(productService.getProduct(anyLong())).thenReturn(product);
         when(request.getSession()).thenReturn(session);
-
     }
 
     @Test

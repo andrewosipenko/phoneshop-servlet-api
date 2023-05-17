@@ -5,7 +5,6 @@ import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
-import com.es.phoneshop.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -15,10 +14,9 @@ public class CartServiceImpl implements CartService {
 
     private final String CART_SESSION_ATTRIBUTE = CartServiceImpl.class.getName() + ".cart";
     private static CartServiceImpl instance;
-    private ProductService productService;
 
     private CartServiceImpl() {
-        productService = ProductServiceImpl.getInstance();
+
     }
 
     public static synchronized CartServiceImpl getInstance() {
@@ -58,10 +56,6 @@ public class CartServiceImpl implements CartService {
                 cart.getItems().add(new CartItem(product, quantity));
             }
         }
-    }
-
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
     }
 
     public String getCartSessionAttribute() {
