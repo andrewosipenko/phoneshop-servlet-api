@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Objects;
 
 public class Product {
     private Long id;
@@ -37,6 +38,32 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+    }
+
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, List<PriceHistory> histories) {
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+        this.histories = histories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return stock == product.stock && Objects.equals(id, product.id) && Objects.equals(code, product.code)
+                && Objects.equals(description, product.description) && Objects.equals(price, product.price)
+                && Objects.equals(currency, product.currency) && Objects.equals(imageUrl, product.imageUrl)
+                && Objects.equals(histories, product.histories);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, description, price, currency, stock, imageUrl, histories);
     }
 
     public Long getId() {

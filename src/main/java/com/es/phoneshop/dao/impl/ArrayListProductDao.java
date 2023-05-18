@@ -58,8 +58,7 @@ public class ArrayListProductDao implements ProductDao {
                 .collect(Collectors.toList()));
     }
 
-    @Override
-    public int countFoundWords(String description, String productDescription) {
+    private int countFoundWords(String description, String productDescription) {
         return (int) Stream.of(description.split("[^A-Za-z0-9I]+"))
                 .distinct()
                 .filter(productDescription::contains)

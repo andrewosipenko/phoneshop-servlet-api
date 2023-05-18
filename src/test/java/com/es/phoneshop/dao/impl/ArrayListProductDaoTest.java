@@ -34,7 +34,6 @@ public class ArrayListProductDaoTest {
     private List<Product> products;
     private static final Long NOT_EXISTING_ID = 100L;
     private static final String SEARCHING_PHASE = "Samsung II";
-    private static final String PRODUCT_DESCRIPTION = "Samsung Galaxy S II";
     private static final String EMPTY_DESCRIPTION = "";
     private static final SortingField SORTING_FIELD = SortingField.DESCRIPTION;
     private static final SortingType SORTING_TYPE = SortingType.ASC;
@@ -66,14 +65,6 @@ public class ArrayListProductDaoTest {
         when(productDao.findProducts(anyString(), any(), any())).thenReturn(products);
 
         assertFalse(productDao.findProducts(EMPTY_DESCRIPTION, SORTING_FIELD, SORTING_TYPE).isEmpty());
-    }
-
-    @Test
-    public void testCountFoundWords() {
-        int result = productDao.countFoundWords(SEARCHING_PHASE, PRODUCT_DESCRIPTION);
-
-        int expectedCountOfWords = 2;
-        assertEquals(expectedCountOfWords, result);
     }
 
     @Test

@@ -4,6 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
+<jsp:useBean id="productsRecentlyViewed" type="java.util.LinkedList" scope="request"/>
 <tags:master pageTitle="Product List">
     <p>
         Welcome to Expert-Soft training!
@@ -47,4 +48,29 @@
             </tr>
         </c:forEach>
     </table>
+    <footer>
+        <h1>Recently Viewed</h1>
+        <div id="mainDiv">
+            <c:forEach var="product" items="${productsRecentlyViewed}">
+                <table>
+                    <tr>
+                        <td><img src="${product.imageUrl}"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                                    ${product.description}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <fmt:formatNumber value="${product.price}" type="currency"
+                                              currencySymbol="${product.currency.symbol}"/>
+                        </td>
+                    </tr>
+                </table>
+            </c:forEach>
+        </div>
+    </footer>
 </tags:master>
