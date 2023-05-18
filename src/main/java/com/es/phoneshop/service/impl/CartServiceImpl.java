@@ -35,8 +35,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addToCart(Cart cart, Product product, int quantity) throws OutOfStockException {
-        synchronized (cart) {
+    public void addToCart(Product product, int quantity, HttpServletRequest request) throws OutOfStockException {
+        HttpSession session = request.getSession();
+        synchronized (session) {
+            Cart cart = getCart(request);
             Optional<CartItem> existingCartItem = cart.getItems()
                     .stream()
                     .filter(item -> item.getProduct().equals(product))
@@ -55,6 +57,7 @@ public class CartServiceImpl implements CartService {
                 }
                 cart.getItems().add(new CartItem(product, quantity));
             }
+            session.setAttribute(CART_SESSION_ATTRIBUTE, cart);
         }
     }
 

@@ -10,6 +10,8 @@ import java.util.UUID;
 import java.util.Date;
 import java.util.Objects;
 
+import static java.lang.Math.abs;
+
 public class Product {
 
     private long id;
@@ -29,7 +31,7 @@ public class Product {
 
     public Product() {
         UUID uuid = UUID.randomUUID();
-        this.id = uuid.getMostSignificantBits();
+        this.id = abs(uuid.getMostSignificantBits());
         this.code = "";
         this.description = "";
         this.price = BigDecimal.ZERO;

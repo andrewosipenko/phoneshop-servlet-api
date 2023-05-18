@@ -7,5 +7,5 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface CartService {
     Cart getCart(HttpServletRequest request);
-    void addToCart(Cart cart, Product product, int quantity) throws OutOfStockException;
+    void addToCart(Product product, int quantity, HttpServletRequest request) throws OutOfStockException;
 }

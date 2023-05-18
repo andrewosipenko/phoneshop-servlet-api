@@ -43,7 +43,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         if (product != null) {
             recentlyViewedProductsService.addRecentlyViewedProduct(session, product);
             request.setAttribute("product", product);
-            request.setAttribute("cart", cartService.getCart(request));
+            session.setAttribute("cart", cartService.getCart(request));
 
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         }
@@ -64,10 +64,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
             return;
         }
 
-        Cart cart = cartService.getCart(request);
         try {
             Product product = productService.getProduct(productId);
-            cartService.addToCart(cart, product, quantity);
+            cartService.addToCart(product, quantity, request);
         } catch (OutOfStockException e) {
             request.setAttribute("error", "Out of stock, available " + e.getStockAvailable());
             doGet(request, response);
