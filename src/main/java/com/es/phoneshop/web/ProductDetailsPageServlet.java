@@ -1,7 +1,6 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.exceptions.OutOfStockException;
-import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.impl.CartServiceImpl;
@@ -43,7 +42,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
         if (product != null) {
             recentlyViewedProductsService.addRecentlyViewedProduct(session, product);
             request.setAttribute("product", product);
-            session.setAttribute("cart", cartService.getCart(request));
 
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         }

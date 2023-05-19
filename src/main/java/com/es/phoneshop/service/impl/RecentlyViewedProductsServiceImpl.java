@@ -32,8 +32,6 @@ public class RecentlyViewedProductsServiceImpl implements RecentlyViewedProducts
             if (recentlyViewedProducts.size() > MAX_RECENTLY_VIEWED_PRODUCTS) {
                 recentlyViewedProducts.remove(MAX_RECENTLY_VIEWED_PRODUCTS);
             }
-
-            session.setAttribute("recentlyViewedProducts", recentlyViewedProducts);
         }
     }
 

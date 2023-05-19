@@ -84,7 +84,6 @@ public class CartServiceImplTest {
         CartItem cartItem = cart.getItems().get(0);
         assertEquals(product, cartItem.getProduct());
         assertEquals(5, cartItem.getQuantity());
-        verify(session).setAttribute(anyString(), eq(cart));
     }
 
     @Test(expected = OutOfStockException.class)

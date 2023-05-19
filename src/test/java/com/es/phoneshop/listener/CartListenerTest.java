@@ -1,6 +1,5 @@
 package com.es.phoneshop.listener;
 
-import com.es.phoneshop.service.impl.CartServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import org.junit.Before;
@@ -35,6 +34,6 @@ public class CartListenerTest {
 
         listener.sessionCreated(event);
 
-        verify(session).setAttribute(eq(CartServiceImpl.class.getName() + ".cart"), any());
+        verify(session).setAttribute(eq("cart"), any());
     }
 }

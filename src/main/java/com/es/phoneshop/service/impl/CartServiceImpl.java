@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class CartServiceImpl implements CartService {
 
-    private final String CART_SESSION_ATTRIBUTE = CartServiceImpl.class.getName() + ".cart";
+    private final String CART_SESSION_ATTRIBUTE = "cart";
     private static CartServiceImpl instance;
 
     private CartServiceImpl() {
@@ -57,7 +57,6 @@ public class CartServiceImpl implements CartService {
                 }
                 cart.getItems().add(new CartItem(product, quantity));
             }
-            session.setAttribute(CART_SESSION_ATTRIBUTE, cart);
         }
     }
 
