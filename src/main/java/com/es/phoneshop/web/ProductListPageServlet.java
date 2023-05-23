@@ -5,31 +5,29 @@ import com.es.phoneshop.dao.impl.ArrayListProductDao;
 
 import com.es.phoneshop.enums.SortingField;
 import com.es.phoneshop.enums.SortingType;
-import com.es.phoneshop.model.BrowsingHistory;
+import com.es.phoneshop.exception.OutOfStockException;
+import com.es.phoneshop.model.Cart;
 import com.es.phoneshop.model.Product;
-import com.es.phoneshop.service.BrowsingHistoryService;
-import com.es.phoneshop.service.impl.BrowsingHistoryServiceImpl;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
 
-public class ProductListPageServlet extends HttpServlet {
-    private ProductDao productDao;
-    private BrowsingHistoryService browsingHistoryService;
+public class ProductListPageServlet extends AbstractServlet {
+    private static final String PRODUCT_LIST_JSP_PATH = "/WEB-INF/pages/productList.jsp";
     private static final String DESCRIPTION = "description";
     private static final String SORTING = "sorting";
     private static final String SORTING_TYPE = "type";
     private static final String PRODUCTS = "products";
     private static final String PRODUCTS_RECENTLY_VIEWED = "productsRecentlyViewed";
-
-    @Override
-    public void init() {
-        productDao = ArrayListProductDao.getInstance();
-        browsingHistoryService = BrowsingHistoryServiceImpl.getInstance();
-    }
+    private static final String ERROR = "error";
+    private static final String QUANTITY = "quantity";
+    private static final String SUCCESSFULLY_ADD_MESSAGE = "Added to card successfully";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,6 +39,26 @@ public class ProductListPageServlet extends HttpServlet {
                 Optional.ofNullable(sortingType).map(SortingType::valueOf).orElse(null)));
         LinkedList<Product> productList = browsingHistoryService.getBrowsingHistory(request).getProducts();
         request.setAttribute(PRODUCTS_RECENTLY_VIEWED, productList);
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_LIST_JSP_PATH).forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map<Long, String> error = new HashMap<>();
+        Long productId = getProductIdFromUrl(request);
+        try {
+            int quantity = validateQuantityInput(request, request.getParameter(QUANTITY));
+            Cart cart = cartService.getCart(request);
+            cartService.add(productId, quantity, cart);
+        } catch (ParseException | NumberFormatException | OutOfStockException e) {
+            error.put(productId, e.getMessage());
+        }
+        if(error.isEmpty()) {
+            response.sendRedirect(String.format("%s/products/addCartItem/%d?message=%s",
+                    request.getContextPath(), productId, SUCCESSFULLY_ADD_MESSAGE));
+        } else {
+            request.setAttribute(ERROR, error);
+            doGet(request, response);
+        }
     }
 }

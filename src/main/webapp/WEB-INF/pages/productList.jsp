@@ -13,6 +13,16 @@
         <input type="text" name="description" value="${param.description}">
         <button>Search</button>
     </form>
+    <c:if test="${not empty param.message && empty error}">
+        <p class="success">
+                ${param.message}
+        </p>
+    </c:if>
+    <c:if test="${not empty error}">
+        <p class="error">
+            An error occurred while adding to the cart
+        </p>
+    </c:if>
     <table>
         <thead>
         <tr>
@@ -22,30 +32,50 @@
                 <tags:sortLink sorting="DESCRIPTION" type="ASC"></tags:sortLink>
                 <tags:sortLink sorting="DESCRIPTION" type="DESC"></tags:sortLink>
             </td>
+            <td class="quantity">Quantity</td>
             <td class="price">
                 Price
                 <tags:sortLink sorting="PRICE" type="ASC"></tags:sortLink>
                 <tags:sortLink sorting="PRICE" type="DESC"></tags:sortLink>
             </td>
+            <td>Operation</td>
         </tr>
         </thead>
-        <c:forEach var="product" items="${products}">
-            <tr>
-                <td>
-                    <img class="product-tile" src="${product.imageUrl}">
-                </td>
-                <td>
-                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                            ${product.description}
-                    </a>
-                </td>
-                <td class="price">
-                    <a href="${pageContext.servletContext.contextPath}/history/${product.id}">
-                        <fmt:formatNumber value="${product.price}" type="currency"
-                                          currencySymbol="${product.currency.symbol}"/>
-                    </a>
-                </td>
-            </tr>
+        <c:forEach var="product" items="${products}" varStatus="status">
+            <form action="${pageContext.servletContext.contextPath}/products/addCartItem/${product.productId}"
+                  method="post">
+                <tr>
+                    <td>
+                        <img class="product-tile" src="${product.imageUrl}">
+                    </td>
+                    <td>
+                        <a href="${pageContext.servletContext.contextPath}/products/${product.productId}">
+                                ${product.description}
+                        </a>
+                    </td>
+                    <td class="quantity">
+                        <c:set var="err" value="${error[product.productId]}"/>
+                        <input name="quantity"
+                               value="${not empty err ? param.quantity : 1}"
+                               class="quantity"/>
+                        <c:if test="${not empty err}">
+                            <p class="error">
+                                    ${error[product.productId]}
+                            </p>
+                        </c:if>
+                        <input name="productId" type="hidden" value="${product.productId}"/>
+                    </td>
+                    <td class="price">
+                        <a href="${pageContext.servletContext.contextPath}/history/${product.productId}">
+                            <fmt:formatNumber value="${product.price}" type="currency"
+                                              currencySymbol="${product.currency.symbol}"/>
+                        </a>
+                    </td>
+                    <td>
+                        <button>Add to cart</button>
+                    </td>
+                </tr>
+            </form>
         </c:forEach>
     </table>
     <footer>
@@ -58,7 +88,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+                            <a href="${pageContext.servletContext.contextPath}/products/${product.productId}">
                                     ${product.description}
                             </a>
                         </td>

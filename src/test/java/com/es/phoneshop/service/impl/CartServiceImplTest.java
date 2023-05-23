@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -40,7 +41,9 @@ public class CartServiceImplTest {
     private static final Long EXISTING_IN_CART_ID = 3L;
     private static final int QUANTITY_MORE_THAN_STOCK = 40;
     private static final int QUANTITY_LESS_THAN_STOCK = 25;
+    private static final int CART_ITEM_INDEX = 2;
     private static final int QUANTITY = 1;
+    private static final int NEW_QUANTITY = 5;
 
     @Before
     public void setup() {
@@ -93,7 +96,27 @@ public class CartServiceImplTest {
         cartServiceImpl.add(EXISTING_IN_CART_ID, QUANTITY, cart);
 
         int expectedQuantity = 11;
-        assertEquals(expectedQuantity, cart.getCartItems().get(2).getQuantity());
+        assertEquals(expectedQuantity, cart.getCartItems().get(CART_ITEM_INDEX).getQuantity());
+    }
+
+    @Test
+    public void testUpdateProduct() {
+        Currency usd = Currency.getInstance("USD");
+        Product product = new Product(3L, "sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg");
+        when(productDao.getProduct(anyLong())).thenReturn(product);
+        Optional<CartItem> cartItem = Optional.of(new CartItem(product, 10));
+
+        cartServiceImpl.update(EXISTING_IN_CART_ID, NEW_QUANTITY, cart);
+
+        assertEquals(NEW_QUANTITY, cart.getCartItems().get(CART_ITEM_INDEX).getQuantity());
+    }
+
+    @Test
+    public void testDeleteProduct() {
+        cartServiceImpl.delete(EXISTING_IN_CART_ID, cart);
+
+        assertFalse(cart.getCartItems().stream()
+                .anyMatch(cartItem -> cartItem.getProduct().getProductId().equals(EXISTING_IN_CART_ID)));
     }
 
     @Test(expected = OutOfStockException.class)

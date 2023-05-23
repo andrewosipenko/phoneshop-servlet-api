@@ -41,7 +41,7 @@ public class ArrayListProductDao implements ProductDao {
             Optional.ofNullable(id)
                     .orElseThrow(() -> new IllegalArgumentException("It is impossible to find product with null ID"));
             return products.stream()
-                    .filter(product -> product.getId().equals(id))
+                    .filter(product -> product.getProductId().equals(id))
                     .findAny()
                     .orElseThrow(() -> new ProductNotFoundException("Product with ID = " + id + " Not Found"));
         });
@@ -70,14 +70,14 @@ public class ArrayListProductDao implements ProductDao {
         lock.write(() -> {
             Optional.ofNullable(product)
                     .orElseThrow(() -> new IllegalArgumentException("Product equals null"));
-            Optional.ofNullable(product.getId())
+            Optional.ofNullable(product.getProductId())
                     .ifPresentOrElse(
                             (id) -> {
-                                Product foundProduct = getProduct(product.getId());
+                                Product foundProduct = getProduct(product.getProductId());
                                 products.set(products.indexOf(foundProduct), product);
                             },
                             () -> {
-                                product.setId(productId.incrementAndGet());
+                                product.setProductId(productId.incrementAndGet());
                                 products.add(product);
                             });
         });
@@ -86,7 +86,7 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void delete(Long id) {
         lock.write(() -> {
-            products.removeIf(product -> product.getId().equals(id));
+            products.removeIf(product -> product.getProductId().equals(id));
         });
     }
 }

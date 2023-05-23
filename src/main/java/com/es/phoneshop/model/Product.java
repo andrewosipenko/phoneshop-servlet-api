@@ -1,13 +1,14 @@
 package com.es.phoneshop.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product {
-    private Long id;
+public class Product implements Serializable {
+    private Long productId;
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
@@ -17,12 +18,13 @@ public class Product {
     private int stock;
     private String imageUrl;
     private List<PriceHistory> histories = new ArrayList<>();
+    private static final long serialVersionUID = 1115L;
 
     public Product() {
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = id;
+        this.productId = id;
         this.code = code;
         this.description = description;
         this.price = price;
@@ -55,7 +57,7 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return stock == product.stock && Objects.equals(id, product.id) && Objects.equals(code, product.code)
+        return stock == product.stock && Objects.equals(productId, product.productId) && Objects.equals(code, product.code)
                 && Objects.equals(description, product.description) && Objects.equals(price, product.price)
                 && Objects.equals(currency, product.currency) && Objects.equals(imageUrl, product.imageUrl)
                 && Objects.equals(histories, product.histories);
@@ -66,12 +68,12 @@ public class Product {
         return Objects.hash(code, description, price, currency, stock, imageUrl, histories);
     }
 
-    public Long getId() {
-        return id;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getCode() {

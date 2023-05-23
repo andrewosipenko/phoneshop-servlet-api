@@ -89,15 +89,6 @@ public class ProductDetailsPageServletTest {
         verify(cartService).add(anyLong(), anyInt(), any());
     }
 
-    @Test
-    public void testGetProductIdFromUrl() {
-        when(request.getPathInfo()).thenReturn(PRODUCT_ID_FROM_URL);
-
-        String productId = request.getPathInfo();
-
-        assertEquals(PRODUCT_ID_FROM_URL, productId);
-    }
-
     @Test(expected = OutOfStockException.class)
     public void testExceptionForProductQuantityMoreThanStock() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn(PRODUCT_ID_FROM_URL);

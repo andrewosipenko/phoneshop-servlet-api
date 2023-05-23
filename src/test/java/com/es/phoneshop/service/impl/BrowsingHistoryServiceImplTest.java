@@ -74,7 +74,7 @@ public class BrowsingHistoryServiceImplTest {
         browsingHistoryService.add(4L, browsingHistory);
 
         Long expectedFirstProductId = 4L;
-        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getId());
+        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getProductId());
     }
 
     @Test
@@ -86,8 +86,8 @@ public class BrowsingHistoryServiceImplTest {
         browsingHistoryService.add(2L, browsingHistory);
 
         Long expectedFirstProductId = 2L;
-        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getId());
+        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getProductId());
         Long expectedSecondProductId = 1L;
-        assertEquals(expectedSecondProductId, browsingHistory.getProducts().get(1).getId());
+        assertEquals(expectedSecondProductId, browsingHistory.getProducts().get(1).getProductId());
     }
 }
