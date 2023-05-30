@@ -1,8 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.dao.impl.ArrayListProductDao;
-
 import com.es.phoneshop.enums.SortingField;
 import com.es.phoneshop.enums.SortingType;
 import com.es.phoneshop.exception.OutOfStockException;
@@ -25,9 +22,9 @@ public class ProductListPageServlet extends AbstractServlet {
     private static final String SORTING_TYPE = "type";
     private static final String PRODUCTS = "products";
     private static final String PRODUCTS_RECENTLY_VIEWED = "productsRecentlyViewed";
-    private static final String ERROR = "error";
     private static final String QUANTITY = "quantity";
     private static final String SUCCESSFULLY_ADD_MESSAGE = "Added to card successfully";
+    private static final String URL = "products/addCartItem/";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,21 +41,15 @@ public class ProductListPageServlet extends AbstractServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Map<Long, String> error = new HashMap<>();
-        Long productId = getProductIdFromUrl(request);
+        Map<Long, String> errors = new HashMap<>();
+        Long productId = getItemIdFromUrl(request);
         try {
             int quantity = validateQuantityInput(request, request.getParameter(QUANTITY));
             Cart cart = cartService.getCart(request);
             cartService.add(productId, quantity, cart);
         } catch (ParseException | NumberFormatException | OutOfStockException e) {
-            error.put(productId, e.getMessage());
+            errors.put(productId, e.getMessage());
         }
-        if(error.isEmpty()) {
-            response.sendRedirect(String.format("%s/products/addCartItem/%d?message=%s",
-                    request.getContextPath(), productId, SUCCESSFULLY_ADD_MESSAGE));
-        } else {
-            request.setAttribute(ERROR, error);
-            doGet(request, response);
-        }
+        handleErrors(request, response, errors, URL + productId, SUCCESSFULLY_ADD_MESSAGE);
     }
 }

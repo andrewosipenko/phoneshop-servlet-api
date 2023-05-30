@@ -41,8 +41,6 @@ public class AbstractServletTest {
 
     @Test(expected = NumberFormatException.class)
     public void testExceptionForProductQuantity() throws ParseException {
-        when(request.getLocale()).thenReturn(locale);
-
         servlet.validateQuantityInput(request, INVALID_QUANTITY);
     }
 

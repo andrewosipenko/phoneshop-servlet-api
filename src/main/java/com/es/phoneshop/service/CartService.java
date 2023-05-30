@@ -11,4 +11,6 @@ public interface CartService {
     void update(Long productId, int quantity, Cart cart);
 
     void delete(Long productId, Cart cart);
+
+    void clearCart(Cart cart, HttpServletRequest request);
 }

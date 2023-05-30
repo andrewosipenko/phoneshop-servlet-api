@@ -35,32 +35,32 @@
                         <img class="product-tile" src="${cartItem.product.imageUrl}">
                     </td>
                     <td>
-                        <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.productId}">
+                        <a href="${pageContext.servletContext.contextPath}/products/${cartItem.product.id}">
                                 ${cartItem.product.description}
                         </a>
                     </td>
                     <td class="quantity">
                         <fmt:formatNumber value="${cartItem.quantity}" var="quantity"/>
-                        <c:set var="error" value="${errors[cartItem.product.productId]}"/>
+                        <c:set var="error" value="${errors[cartItem.product.id]}"/>
                         <input name="quantity"
                                value="${not empty error ? paramValues['quantity'][status.index] : cartItem.quantity}"
                                class="quantity"/>
                         <c:if test="${not empty error}">
                             <p class="error">
-                                    ${errors[cartItem.product.productId]}
+                                    ${errors[cartItem.product.id]}
                             </p>
                         </c:if>
-                        <input name="productId" type="hidden" value="${cartItem.product.productId}"/>
+                        <input name="id" type="hidden" value="${cartItem.product.id}"/>
                     </td>
                     <td class="price">
-                        <a href="${pageContext.servletContext.contextPath}/history/${cartItem.product.productId}">
+                        <a href="${pageContext.servletContext.contextPath}/history/${cartItem.product.id}">
                             <fmt:formatNumber value="${cartItem.product.price}" type="currency"
                                               currencySymbol="${cartItem.product.currency.symbol}"/>
                         </a>
                     </td>
                     <td>
                         <button form="deleteCartItem"
-                                formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${cartItem.product.productId}">
+                                formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${cartItem.product.id}">
                             Delete
                         </button>
                     </td>
@@ -79,6 +79,11 @@
                 <button>Update</button>
             </c:if>
         </p>
+    </form>
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+        <c:if test="${not empty cartItems}">
+            <button>Checkout</button>
+        </c:if>
     </form>
     <form id="deleteCartItem" method="post"></form>
 </tags:master>

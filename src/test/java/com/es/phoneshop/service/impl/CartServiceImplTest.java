@@ -2,11 +2,9 @@ package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
-import com.es.phoneshop.exception.ProductNotFoundException;
 import com.es.phoneshop.model.Cart;
 import com.es.phoneshop.model.CartItem;
 import com.es.phoneshop.model.Product;
-import com.es.phoneshop.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
@@ -22,9 +20,14 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CartServiceImplTest {
@@ -104,7 +107,6 @@ public class CartServiceImplTest {
         Currency usd = Currency.getInstance("USD");
         Product product = new Product(3L, "sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg");
         when(productDao.getProduct(anyLong())).thenReturn(product);
-        Optional<CartItem> cartItem = Optional.of(new CartItem(product, 10));
 
         cartServiceImpl.update(EXISTING_IN_CART_ID, NEW_QUANTITY, cart);
 
@@ -116,7 +118,7 @@ public class CartServiceImplTest {
         cartServiceImpl.delete(EXISTING_IN_CART_ID, cart);
 
         assertFalse(cart.getCartItems().stream()
-                .anyMatch(cartItem -> cartItem.getProduct().getProductId().equals(EXISTING_IN_CART_ID)));
+                .anyMatch(cartItem -> cartItem.getProduct().getId().equals(EXISTING_IN_CART_ID)));
     }
 
     @Test(expected = OutOfStockException.class)

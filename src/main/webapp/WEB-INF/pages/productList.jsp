@@ -13,12 +13,12 @@
         <input type="text" name="description" value="${param.description}">
         <button>Search</button>
     </form>
-    <c:if test="${not empty param.message && empty error}">
+    <c:if test="${not empty param.message && empty errors}">
         <p class="success">
                 ${param.message}
         </p>
     </c:if>
-    <c:if test="${not empty error}">
+    <c:if test="${not empty errors}">
         <p class="error">
             An error occurred while adding to the cart
         </p>
@@ -42,31 +42,31 @@
         </tr>
         </thead>
         <c:forEach var="product" items="${products}" varStatus="status">
-            <form action="${pageContext.servletContext.contextPath}/products/addCartItem/${product.productId}"
+            <form action="${pageContext.servletContext.contextPath}/products/addCartItem/${product.id}"
                   method="post">
                 <tr>
                     <td>
                         <img class="product-tile" src="${product.imageUrl}">
                     </td>
                     <td>
-                        <a href="${pageContext.servletContext.contextPath}/products/${product.productId}">
+                        <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
                                 ${product.description}
                         </a>
                     </td>
                     <td class="quantity">
-                        <c:set var="err" value="${error[product.productId]}"/>
+                        <c:set var="err" value="${errors[product.id]}"/>
                         <input name="quantity"
                                value="${not empty err ? param.quantity : 1}"
                                class="quantity"/>
                         <c:if test="${not empty err}">
                             <p class="error">
-                                    ${error[product.productId]}
+                                    ${errors[product.id]}
                             </p>
                         </c:if>
-                        <input name="productId" type="hidden" value="${product.productId}"/>
+                        <input name="id" type="hidden" value="${product.id}"/>
                     </td>
                     <td class="price">
-                        <a href="${pageContext.servletContext.contextPath}/history/${product.productId}">
+                        <a href="${pageContext.servletContext.contextPath}/history/${product.id}">
                             <fmt:formatNumber value="${product.price}" type="currency"
                                               currencySymbol="${product.currency.symbol}"/>
                         </a>
@@ -88,7 +88,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <a href="${pageContext.servletContext.contextPath}/products/${product.productId}">
+                            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
                                     ${product.description}
                             </a>
                         </td>

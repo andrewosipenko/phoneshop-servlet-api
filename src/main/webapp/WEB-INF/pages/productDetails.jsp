@@ -69,7 +69,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <a href="${pageContext.servletContext.contextPath}/products/${product.productId}">
+                            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
                                     ${product.description}
                             </a>
                         </td>

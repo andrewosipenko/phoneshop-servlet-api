@@ -70,19 +70,19 @@ public class ArrayListProductDaoTest {
     @Test
     public void testGetProduct() {
         Product product = new Product();
-        product.setProductId(PRODUCT_ID);
+        product.setId(PRODUCT_ID);
         when(productDao.getProduct(anyLong())).thenReturn(product);
 
         Product result = productDao.getProduct(PRODUCT_ID);
 
         Long expectedProductId = 1L;
-        assertEquals(expectedProductId, result.getProductId());
+        assertEquals(expectedProductId, result.getId());
     }
 
     @Test
     public void testGetProductNotNull() {
         Product product = new Product();
-        product.setProductId(PRODUCT_ID);
+        product.setId(PRODUCT_ID);
         when(productDao.getProduct(anyLong())).thenReturn(product);
 
         Product result = productDao.getProduct(PRODUCT_ID);

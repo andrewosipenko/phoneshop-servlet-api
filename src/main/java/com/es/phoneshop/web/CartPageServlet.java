@@ -17,8 +17,8 @@ public class CartPageServlet extends AbstractServlet {
     private static final String PRODUCT_ID = "productId";
     private static final String QUANTITY = "quantity";
     private static final String ERROR = "error";
-    private static final String ERRORS = "errors";
     private static final String SUCCESSFULLY_UPDATE_MESSAGE = "Cart updated successfully";
+    private static final String URL = "cart";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,12 +42,6 @@ public class CartPageServlet extends AbstractServlet {
                 request.setAttribute(ERROR, e.getMessage());
             }
         }
-        if(errors.isEmpty()) {
-            response.sendRedirect(String.format("%s/cart?message=%s",
-                    request.getContextPath(), SUCCESSFULLY_UPDATE_MESSAGE));
-        } else {
-            request.setAttribute(ERRORS, errors);
-            doGet(request, response);
-        }
+        handleErrors(request, response, errors, URL, SUCCESSFULLY_UPDATE_MESSAGE);
     }
 }

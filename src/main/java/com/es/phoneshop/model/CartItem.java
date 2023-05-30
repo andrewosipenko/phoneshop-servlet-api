@@ -2,7 +2,7 @@ package com.es.phoneshop.model;
 
 import java.io.Serializable;
 
-public class CartItem implements Serializable {
+public class CartItem implements Serializable, Cloneable {
     private Long id;
     private Product product;
     private int quantity;
@@ -36,5 +36,18 @@ public class CartItem implements Serializable {
     @Override
     public String toString() {
         return product.getDescription() + " - " + quantity;
+    }
+
+    @Override
+    public Object clone() {
+        CartItem cartItem = null;
+        try {
+            cartItem = (CartItem) super.clone();
+            Product product = this.getProduct().clone();
+            cartItem.setProduct(product);
+            return cartItem;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

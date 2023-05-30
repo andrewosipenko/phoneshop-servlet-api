@@ -1,7 +1,8 @@
 package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.model.*;
+import com.es.phoneshop.model.BrowsingHistory;
+import com.es.phoneshop.model.Product;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
@@ -74,7 +75,7 @@ public class BrowsingHistoryServiceImplTest {
         browsingHistoryService.add(4L, browsingHistory);
 
         Long expectedFirstProductId = 4L;
-        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getProductId());
+        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getId());
     }
 
     @Test
@@ -86,8 +87,8 @@ public class BrowsingHistoryServiceImplTest {
         browsingHistoryService.add(2L, browsingHistory);
 
         Long expectedFirstProductId = 2L;
-        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getProductId());
+        assertEquals(expectedFirstProductId, browsingHistory.getProducts().get(0).getId());
         Long expectedSecondProductId = 1L;
-        assertEquals(expectedSecondProductId, browsingHistory.getProducts().get(1).getProductId());
+        assertEquals(expectedSecondProductId, browsingHistory.getProducts().get(1).getId());
     }
 }

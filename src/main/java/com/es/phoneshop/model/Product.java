@@ -7,8 +7,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class Product implements Serializable {
-    private Long productId;
+public class Product extends IdentifiableItem implements Serializable, Cloneable {
     private String code;
     private String description;
     /** null means there is no price because the product is outdated or new */
@@ -24,7 +23,7 @@ public class Product implements Serializable {
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.productId = id;
+        this.id = id;
         this.code = code;
         this.description = description;
         this.price = price;
@@ -57,7 +56,7 @@ public class Product implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return stock == product.stock && Objects.equals(productId, product.productId) && Objects.equals(code, product.code)
+        return stock == product.stock && Objects.equals(id, product.id) && Objects.equals(code, product.code)
                 && Objects.equals(description, product.description) && Objects.equals(price, product.price)
                 && Objects.equals(currency, product.currency) && Objects.equals(imageUrl, product.imageUrl)
                 && Objects.equals(histories, product.histories);
@@ -66,14 +65,6 @@ public class Product implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(code, description, price, currency, stock, imageUrl, histories);
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
     }
 
     public String getCode() {
@@ -130,5 +121,14 @@ public class Product implements Serializable {
 
     public void setHistories(List<PriceHistory> histories) {
         this.histories = histories;
+    }
+
+    @Override
+    public Product clone() {
+        try {
+            return (Product) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

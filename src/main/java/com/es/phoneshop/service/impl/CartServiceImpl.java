@@ -88,8 +88,17 @@ public class CartServiceImpl implements CartService {
     public void delete(Long productId, Cart cart) {
         lock.write(() -> {
             cart.getCartItems().removeIf(cartItem ->
-                    productId.equals(cartItem.getProduct().getProductId()));
+                    productId.equals(cartItem.getProduct().getId()));
             calculateMiniCart(cart);
+        });
+    }
+
+    @Override
+    public void clearCart(Cart cart, HttpServletRequest request) {
+        lock.write(() -> {
+            cart.getCartItems().stream()
+                    .forEach(item -> item.getProduct().setStock(item.getProduct().getStock() - item.getQuantity()));
+            request.getSession(false).removeAttribute(SEPARATE_CART_SESSION_ATTRIBUTE);
         });
     }
 
@@ -104,7 +113,7 @@ public class CartServiceImpl implements CartService {
 
     private Optional<CartItem> getCartItemByProductId(Long productId, Cart cart) {
         return cart.getCartItems().stream()
-                .filter(item -> item.getProduct().getProductId().equals(productId))
+                .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst();
     }
 }

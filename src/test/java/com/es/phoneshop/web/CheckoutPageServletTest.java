@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.Cart;
 import com.es.phoneshop.model.Product;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -15,44 +16,54 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PriceHistoryPageServletTest {
+public class CheckoutPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
     @Mock
     private RequestDispatcher requestDispatcher;
-    private PriceHistoryPageServlet servlet = new PriceHistoryPageServlet();
-    private static final String PRODUCT_ID_FROM_URL = "/1";
+    @Mock
+    private Map<String, String> errors;
+    private Cart cart;
+    private CheckoutPageServlet servlet = new CheckoutPageServlet();
+    private Currency usd = Currency.getInstance("USD");
 
     @Before
     public void setup() {
         servlet.init();
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        Currency usd = Currency.getInstance("USD");
-        Product product1 = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        servlet.productDao.save(product1);
+        Product product = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        servlet.productDao.save(product);
+        cart = servlet.cartService.getCart(request);
+        servlet.cartService.add(1L, 2, cart);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
-        when(request.getPathInfo()).thenReturn(PRODUCT_ID_FROM_URL);
-
+    public void doGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
-        verify(request).setAttribute(anyString(), anyList());
+        verify(request, times(2)).setAttribute(anyString(), any());
         verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void doPost() throws ServletException, IOException {
+        servlet.doPost(request, response);
+
+        verify(servlet).handleErrors(request, response, errors, any(), any());
     }
 
     @After
     public void clear() {
+        servlet.cartService.delete(1L, cart);
         servlet.productDao.delete(1L);
     }
 }

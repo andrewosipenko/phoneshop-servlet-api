@@ -43,6 +43,12 @@ td {
 h1 {
     text-align: center;
 }
+select {
+    width: 170px;
+}
+.date {
+    width: 170px;
+}
 /* Page specific styles */
 body.product-list {
 

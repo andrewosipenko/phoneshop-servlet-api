@@ -20,7 +20,7 @@ public class ProductDetailsPageServlet extends AbstractServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = getProductIdFromUrl(request);
+        Long productId = getItemIdFromUrl(request);
         request.setAttribute(PRODUCT, productDao.getProduct(productId));
         request.setAttribute(PRODUCTS, browsingHistoryService.getBrowsingHistory(request).getProducts());
         request.getRequestDispatcher(PRODUCT_DETAILS_JSP_PATH).forward(request, response);
@@ -30,7 +30,7 @@ public class ProductDetailsPageServlet extends AbstractServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = getProductIdFromUrl(request);
+        Long productId = getItemIdFromUrl(request);
         try {
             int quantity = validateQuantityInput(request, request.getParameter(QUANTITY));
             Cart cart = cartService.getCart(request);

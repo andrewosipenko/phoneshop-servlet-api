@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class DeleteCartItemServlet extends HttpServlet {
-    private CartService cartService;
+    protected CartService cartService;
     private static final String SUCCESSFULLY_DELETE_MESSAGE = "Cart item removed successfully";
 
     @Override

@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class PriceHistoryPageServlet extends HttpServlet {
-    private ProductDao productDao;
+    protected ProductDao productDao;
     private static final String PRICE_HISTORY_JSP_PATH = "/WEB-INF/pages/priceHistory.jsp";
     private static final String PRICE_HISTORY = "history";
 
