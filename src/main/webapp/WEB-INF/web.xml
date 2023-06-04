@@ -5,14 +5,65 @@
          version="3.1">
   <display-name>Phoneshop servlet api training</display-name>
 
-  <servlet>
+  <context-param>
+    <param-name>insertDemoData</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>com.es.phoneshop.listener.DemoDataServletContextListener</listener-class>
+  </listener>
+
+  <listener>
+      <listener-class>com.es.phoneshop.listener.CartListener</listener-class>
+  </listener>
+
+  <listener>
+      <listener-class>com.es.phoneshop.listener.RecentlyViewedProductsListener</listener-class>
+  </listener>
+
+   <servlet>
     <servlet-name>productList</servlet-name>
     <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
-  </servlet>
-  
+   </servlet>
+
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
     <url-pattern>/products</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+      <servlet-name>product</servlet-name>
+      <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>product</servlet-name>
+      <url-pattern>/products/*</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+        <servlet-name>priceHistory</servlet-name>
+        <servlet-class>com.es.phoneshop.web.PriceHistoryPageServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>priceHistory</servlet-name>
+        <url-pattern>/priceHistory/*</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+        <exception-type>com.es.phoneshop.exceptions.ProductNotFoundException</exception-type>
+    </error-page>
+
+    <error-page>
+        <location>/WEB-INF/pages/error.jsp</location>
+        <error-code>500</error-code>
+    </error-page>
+
+    <error-page>
+        <location>/WEB-INF/pages/error.jsp</location>
+        <error-code>404</error-code>
+    </error-page>
 </web-app>

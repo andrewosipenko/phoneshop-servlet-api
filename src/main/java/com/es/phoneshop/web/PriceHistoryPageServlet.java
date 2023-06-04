@@ -10,9 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
-public class ProductListPageServlet extends HttpServlet {
+public class PriceHistoryPageServlet extends HttpServlet {
 
     private ProductService productService;
 
@@ -24,22 +23,14 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String query = request.getParameter("query");
-        String sortField = request.getParameter("sort");
-        String sortOrder = request.getParameter("order");
-
-        List<Product> products;
-
-        if (query != null && sortField != null && sortOrder != null) {
-            products = productService.findProducts(query, sortField, sortOrder);
-        } else if (query != null) {
-            products = productService.findProducts(query);
-        } else {
-            products = productService.findProducts();
+        String productId = request.getPathInfo();
+        if (productId != null && productId.contains("/")) {
+            productId = productId.substring(productId.indexOf('/') + 1);
         }
+        Product product = productService.getProduct(Long.parseLong(productId));
 
-        request.setAttribute("products", products);
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.setAttribute("product", product);
+        request.getRequestDispatcher("/WEB-INF/pages/priceHistory.jsp").forward(request, response);
     }
 
     public void setProductService(ProductService productService) {

@@ -1,37 +1,65 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.price.PriceHistory;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
+import java.util.UUID;
+import java.util.Date;
+import java.util.Objects;
+
+import static java.lang.Math.abs;
 
 public class Product {
-    private Long id;
+
+    private long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private List<PriceHistory> priceHistory;
 
     public Product() {
+        UUID uuid = UUID.randomUUID();
+        this.id = abs(uuid.getMostSignificantBits());
+        this.code = "";
+        this.description = "";
+        this.price = BigDecimal.ZERO;
+        this.currency = Currency.getInstance("USD");
+        this.stock = 0;
+        this.imageUrl = "";
+        this.priceHistory = new ArrayList<>();
+        priceHistory.add(new PriceHistory(price, new Date()));
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = id;
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        UUID uuid = UUID.randomUUID();
+        this.id = uuid.getMostSignificantBits();
         this.code = code;
         this.description = description;
         this.price = price;
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+        this.priceHistory = new ArrayList<>();
+        priceHistory.add(new PriceHistory(price, new Date()));
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -56,6 +84,7 @@ public class Product {
     }
 
     public void setPrice(BigDecimal price) {
+        priceHistory.add(new PriceHistory(price, new Date()));
         this.price = price;
     }
 
@@ -81,5 +110,26 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<PriceHistory> getPriceHistory() {
+        return priceHistory;
+    }
+
+    public void setPriceHistory(List<PriceHistory> priceHistory) {
+        this.priceHistory = priceHistory;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id == product.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
