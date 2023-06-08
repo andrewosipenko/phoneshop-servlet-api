@@ -4,27 +4,37 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
-<jsp:useBean id="productsRecentlyViewed" type="java.util.LinkedList" scope="request"/>
-<tags:master pageTitle="Product List">
-    <p>
-        Welcome to Expert-Soft training!
-    </p>
+<tags:master pageTitle="Advanced Search">
     <form>
-        <input type="text" name="description" value="${param.description}">
-        <button>Search</button>
-    </form>
-    <c:if test="${not empty param.message && empty errors}">
-        <p class="success">
-                ${param.message}
+        <h2>Advanced Search</h2>
+        <table>
+            <tags:advancedSearchFormRow name="description" label="Description"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
+            <td>
+                <select name="searchType">
+                    <c:forEach var="searchType" items="${searchTypes}">
+                        <option value="${searchType}"
+                                <c:if test="${searchType eq param['searchType']}">
+                                    selected
+                                </c:if>> ${searchType}
+                        </option>
+                    </c:forEach>
+                </select>
+                <c:set var="error" value="${errors['searchType']}"/>
+                <c:if test="${not empty error}">
+                    <p class="error">
+                            ${error}
+                    </p>
+                </c:if>
+            </td>
+            <tags:advancedSearchFormRow name="minPrice" label="Min price"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
+            <tags:advancedSearchFormRow name="maxPrice" label="Max price"
+                                        errors="${errors}"></tags:advancedSearchFormRow>
+        </table>
+        <p>
+            <button>Search</button>
         </p>
-    </c:if>
-    <c:if test="${not empty errors}">
-        <p class="error">
-            An error occurred while adding to the cart
-        </p>
-    </c:if>
-    <form action="${pageContext.servletContext.contextPath}/products/advancedSearch">
-        <button>Advanced Search</button>
     </form>
     <table>
         <thead>
@@ -81,29 +91,4 @@
             </form>
         </c:forEach>
     </table>
-    <footer>
-        <h1>Recently Viewed</h1>
-        <div id="mainDiv">
-            <c:forEach var="product" items="${productsRecentlyViewed}">
-                <table>
-                    <tr>
-                        <td><img src="${product.imageUrl}"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-                                    ${product.description}
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <fmt:formatNumber value="${product.price}" type="currency"
-                                              currencySymbol="${product.currency.symbol}"/>
-                        </td>
-                    </tr>
-                </table>
-            </c:forEach>
-        </div>
-    </footer>
 </tags:master>

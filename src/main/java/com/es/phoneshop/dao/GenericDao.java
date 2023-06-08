@@ -14,9 +14,9 @@ public class GenericDao<T extends IdentifiableItem> {
 
     public T get(Long id) {
         return lock.read(() -> items.stream()
-                .filter(item -> item.getId().equals(id))
-                .findAny()
-                .orElseThrow(NoSuchElementException::new));
+           .filter(item -> item.getId().equals(id))
+           .findAny()
+           .orElseThrow(NoSuchElementException::new));
     }
 
     public void save(T item) {
